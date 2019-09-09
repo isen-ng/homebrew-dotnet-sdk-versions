@@ -8,29 +8,30 @@ cask 'dotnet-sdk-2.2.401' do
   homepage 'https://www.microsoft.com/net/core#macos'
 
   conflicts_with cask: [
-                         'dotnet',
-                         'dotnet-preview',
-                         'dotnet-sdk-preview',
-                       ]
+    "dotnet",
+    "dotnet-preview",
+    "dotnet-sdk-preview"
+  ]
 
   depends_on macos: '>= :sierra'
 
   pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
-  #binary '/usr/local/share/dotnet/dotnet'
+  binary '/usr/local/share/dotnet/dotnet'
 
-  uninstall pkgutil: [
-                     "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64",
-                     "com.microsoft.dotnet.hostfxr.2.2.6.component.osx.x64",
-                     "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.2.2.6.component.osx.x64",
-                     "com.microsoft.dotnet.sharedhost.2.2.6.component.osx.x64"
-                   ]
-            # delete:  [
-            #            '/etc/paths.d/dotnet',
-            #            '/etc/paths.d/dotnet-cli-tools',
-            #          ]
+  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64",
+            delete: [
+              '/etc/paths.d/dotnet',
+              '/etc/paths.d/dotnet-cli-tools'
+            ]
 
   zap trash: [
-               '~/.dotnet',
-               '~/.nuget',
-             ]
+    '~/.dotnet',
+    '~/.nuget'
+  ],
+      pkgutil: [
+        "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64",
+        'com.microsoft.dotnet.hostfxr.2.2.6.component.osx.x64',
+        'com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.2.2.6.component.osx.x64',
+        'com.microsoft.dotnet.sharedhost.component.osx.x64'
+      ]
 end
