@@ -17,7 +17,7 @@ cask 'dotnet-sdk-2.2.301' do
                      "com.microsoft.dotnet.hostfxr.2.2.6.component.osx.x64",
                      "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.2.2.6.component.osx.x64",
                      "com.microsoft.dotnet.sharedhost.2.2.6.component.osx.x64"
-                   ],
+                   ]
             # delete:  [
             #            '/etc/paths.d/dotnet',
             #            '/etc/paths.d/dotnet-cli-tools',
