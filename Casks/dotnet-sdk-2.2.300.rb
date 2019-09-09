@@ -19,8 +19,8 @@ cask 'dotnet-sdk-2.2.300' do
   ],
       pkgutil: [
         "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64",
-        'com.microsoft.dotnet.hostfxr.2.2.6.component.osx.x64',
-        'com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.2.2.6.component.osx.x64',
+        'com.microsoft.dotnet.hostfxr.2.2.5.component.osx.x64',
+        'com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.2.2.5.component.osx.x64',
         'com.microsoft.dotnet.sharedhost.component.osx.x64'
       ]
 end
