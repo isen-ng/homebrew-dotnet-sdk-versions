@@ -1,14 +1,8 @@
-cask "dotnet-sdk-2.2.300" do
-  # version "2.2.301,2.2.6"
-  # sha256 "5c39f1ed440d913206d471288100c0f1bc8429a3e53e51892df0a160aba2ff07"
+cask "dotnet-sdk-2.1.500" do
+  version "2.1.500,2.1.6"
+  sha256 '897de45f5764c3efb9a35d225eb668d355f24c34920a26a1310115658fee3283'
 
-  # url "https://download.visualstudio.microsoft.com/download/pr/1440e4a9-4e5f-4148-b8d2-8a2b3da4e622/d0c5cb2712e51c188200ea420d771c2f/dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
-
-  version '2.2.300,2.2.6'
-  sha256 'f7ba19f3f30af6db1e9fb760ac9f9e7d1ce7acb1c204223a1c1bae02cbab493a'
-
-  url "https://download.visualstudio.microsoft.com/download/pr/60aefe1e-e5af-4a40-8985-7e4d270a53aa/5033e8abbd2e218abf77207611be0504/dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
-
+  url "https://download.visualstudio.microsoft.com/download/pr/59a7b78f-4e86-473b-b230-c84d15505cec/766e3e5f35e7bb9677dd785071c5fbf7/dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
   appcast "https://www.microsoft.com/net/download/macos"
   name ".NET Core SDK #{version.before_comma}"
   homepage "https://www.microsoft.com/net/core#macos"

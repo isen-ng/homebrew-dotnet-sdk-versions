@@ -15,12 +15,14 @@ dotnet --list-sdks
 ```
 
 ### Versions
-| DotNet Version | SDK                  | Is latest
-|----------------|----------------------|------------
-| dotnet 2.2.401 | `dotnet-sdk-2.2.401` | Yes
-| dotnet 2.2.301 | `dotnet-sdk-2.2.301` |
-| dotnet 2.2.300 | `dotnet-sdk-2.2.300` |
-| dotnet 2.2.107 | `dotnet-sdk-2.2.107` |
+
+| Version              | DotNet SDK     | Is latest
+|----------------------|----------------|-----------
+| `dotnet-sdk-2.2.400` | dotnet 2.2.401 | Yes
+| `dotnet-sdk-2.2.300` | dotnet 2.2.301 |
+| `dotnet-sdk-2.2.100` | dotnet 2.2.107 |
+| `dotnet-sdk-2.1.500` | dotnet 2.1.500 |
+| `dotnet-sdk-2.1.400` | dotnet 2.1.403 |
 
 *Note*: Latest version conflicts with the official version
 
@@ -36,3 +38,8 @@ brew cask zap <version>
 ```
 
 *Important*: Uninstalling the offical version will also remove these dependencies, so you'll need to reinstall the particular version you want to use again.
+
+## Using a particular version
+
+The `dotnet` command will automatically use the latest appropriate version unless specified by
+[global.json](https://docs.microsoft.com/en-us/dotnet/core/tools/global-json).
