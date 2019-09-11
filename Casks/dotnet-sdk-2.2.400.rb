@@ -8,9 +8,7 @@ cask "dotnet-sdk-2.2.400" do
   homepage "https://www.microsoft.com/net/core#macos"
 
   conflicts_with cask: [
-    "dotnet",
-    "dotnet-preview",
-    "dotnet-sdk-preview"
+    "dotnet-sdk"
   ]
 
   depends_on macos: ">= :sierra"
