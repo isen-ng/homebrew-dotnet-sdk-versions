@@ -19,7 +19,22 @@ cache:
     - /usr/local/Homebrew/Library/Homebrew/vendor/portable-ruby
 
 install:
-  - echo \"installing ...\"
+  - |
+    # Force strict error checking.
+    set -o errexit
+    set -o pipefail
+  - |
+    # Switch to master branch.
+    export HOMEBREW_COLOR=1
+    export HOMEBREW_DEVELOPER=1
+    export HOMEBREW_NO_AUTO_UPDATE=1
+    brew update
+  - |
+    # Mirror the repo as a tap.
+    TAP_DIR="$(brew --repository)/Library/Taps/${TRAVIS_REPO_SLUG}"
+    mkdir -p "${TAP_DIR}"
+    rsync -az --delete "${TRAVIS_BUILD_DIR}/" "${TAP_DIR}/"
+    export TRAVIS_BUILD_DIR="${TAP_DIR}"
+    builtin cd "${TRAVIS_BUILD_DIR}"
 
-script:
-  - echo \"Running ...\"
+script: brew cask ci
