@@ -9,6 +9,10 @@ matrix:
       rvm: system
   fast_finish: true
 
+branches:
+  only:
+    - master
+
 cache:
   directories:
     - /usr/local/Homebrew/Library/Homebrew/vendor/bundle
@@ -19,4 +23,3 @@ install:
 
 script:
   - echo \"Running ...\"
-  
