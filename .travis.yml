@@ -1,0 +1,22 @@
+language: ruby
+
+sudo: true
+
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode10
+      rvm: system
+  fast_finish: true
+
+cache:
+  directories:
+    - /usr/local/Homebrew/Library/Homebrew/vendor/bundle
+    - /usr/local/Homebrew/Library/Homebrew/vendor/portable-ruby
+
+install:
+  - echo \"installing ...\"
+
+script:
+  - echo \"Running ...\"
+  
