@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  update_sdk_versions:
     docker:
       # specify the version you desire here
       - image: circleci/python:3.7-stretch-node-browsers-legacy
@@ -18,3 +18,15 @@ jobs:
       - run: 
           name: "Run script .."
           command: echo "Running circle ci ..."
+workflows:
+  version: 2
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - update_sdk_versions
