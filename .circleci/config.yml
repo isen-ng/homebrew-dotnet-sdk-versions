@@ -7,14 +7,18 @@ jobs:
     steps:
       - run: sudo apt-get update
       - run: sudo apt-get install -y jq
-      - run: sudo apt install -y hub
       - run: jq --version
-      - run: hub --version
       - run: sha256sum --version
       - run: git --version
       - run: wget --version
       - run: sed --version
-
+      - run: |
+        os=$(uname | awk '{print tolower($0)}'); \
+        wget --quiet "https://github.com/github/hub/releases/download/v2.12.3/hub-$os-amd64-2.12.3.tgz"; \
+        tar -xf hub-$os-amd64-2.12.3.tgz; \
+        export PATH="$PWD/hub-$os-amd64-2.12.3/bin:$PATH"
+      - run: hub --version
+      
   update_sdk_versions:
     docker:
       # specify the version you desire here
