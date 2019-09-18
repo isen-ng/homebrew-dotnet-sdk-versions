@@ -12,13 +12,13 @@ jobs:
       - run: git --version
       - run: wget --version
       - run: sed --version
-      - run: |
+      - run: |-
         os=$(uname | awk '{print tolower($0)}'); \
         wget --quiet "https://github.com/github/hub/releases/download/v2.12.3/hub-$os-amd64-2.12.3.tgz"; \
         tar -xf hub-$os-amd64-2.12.3.tgz; \
         export PATH="$PWD/hub-$os-amd64-2.12.3/bin:$PATH"
       - run: hub --version
-      
+
   update_sdk_versions:
     docker:
       # specify the version you desire here
