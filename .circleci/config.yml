@@ -6,7 +6,8 @@ jobs:
     working_directory: ~/repo
     steps:
       - run: sudo apt-get update
-      - run: sudo apt-get install -y jq hub
+      - run: sudo apt-get install -y jq
+      - run: sudo apt install -y hub
       - run: jq --version
       - run: hub --version
       - run: sha256sum --version
