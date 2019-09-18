@@ -2,21 +2,7 @@
 
 set -u
 set -e
-DEBUG=true
-
-function check_hub {
-  command -v hub > /dev/null 2>&1
-  if test $? = 1; then
-    echo "Installing hub"
-    os=$(uname | awk '{print tolower($0)}')
-    wget --quiet "https://github.com/github/hub/releases/download/v2.12.3/hub-$os-amd64-2.12.3.tgz"
-    tar -xf hub-$os-amd64-2.12.3.tgz
-    export PATH="$PWD/hub-$os-amd64-2.12.3/bin:$PATH"
-    rm -rf hub-$os-amd64-2.12.3.tgz
-  fi
-  # Check that hub is in the PATH
-  which hub
-}
+DEBUG=false
 
 function update_casks {
   FILE_VERSION_REGEX="dotnet-sdk-([0-9\.]{5,8}).rb"
@@ -188,8 +174,6 @@ function update_casks {
     hub pull-request --base master --head "update-$FILENAME-to-$LATEST_SDK_VERSION" -m "[Auto] Update $FILENAME to $LATEST_SDK_VERSION"
   done
 }
-
-check_hub
 
 cd Casks
 
