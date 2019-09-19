@@ -37,4 +37,5 @@ install:
     export TRAVIS_BUILD_DIR="${TAP_DIR}"
     builtin cd "${TRAVIS_BUILD_DIR}"
 
-script: brew cask ci
+script: ./travis-ci.sh
+# script: brew cask ci

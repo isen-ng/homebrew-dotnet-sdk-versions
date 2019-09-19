@@ -2,26 +2,32 @@ version: 2
 jobs:
   update_sdk_versions:
     docker:
-      # specify the version you desire here
-      - image: circleci/python:3.7-stretch-node-browsers-legacy
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+      - image: circleci/python:3.7
 
     working_directory: ~/repo
 
     steps:
+      # install required apps
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y jq wget sed git
+      
+      # install github cli so we can send PRs
+      - run: |
+          os=$(uname | awk '{print tolower($0)}'); \
+          wget --quiet "https://github.com/github/hub/releases/download/v2.12.3/hub-$os-amd64-2.12.3.tgz"; \
+          tar -xf hub-$os-amd64-2.12.3.tgz; \
+          sudo mv $PWD/hub-$os-amd64-2.12.3/bin/hub /usr/local/bin/hub
+      - run: hub --version
+
+      # add write-enabled deploy key to our machine so we can send PRs
       - add_ssh_keys:
           fingerprints:
             - "0a:d3:a9:32:74:e2:32:24:08:c2:08:0d:c5:89:a8:45"
 
       - checkout
 
-      - run: 
-          name: "Run script .."
-          command: echo "Running circle ci ..."
+      # run with DRY_RUN=false
+      - run: ./auto_updater.sh false
 workflows:
   version: 2
   nightly:
