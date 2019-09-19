@@ -33,7 +33,8 @@ workflows:
   weekly:
     triggers:
       - schedule:
-          cron: "0 19 * * mon"
+          # run at 1700UTC (3am +8GMT) every monday
+          cron: "0 19 * * 1"
           filters:
             branches:
               only:
