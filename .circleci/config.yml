@@ -30,7 +30,7 @@ jobs:
       - run: ./auto_updater.sh false
 workflows:
   version: 2
-  nightly:
+  weekly:
     triggers:
       - schedule:
           cron: "0 19 * * mon"
