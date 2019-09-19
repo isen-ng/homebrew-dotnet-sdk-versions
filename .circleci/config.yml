@@ -4,8 +4,6 @@ jobs:
     docker:
       - image: circleci/python:3.7-stretch-node-browsers-legacy
     working_directory: ~/repo
-    environment: 
-      BASH_ENV: ~/.bashrc 
     steps:
       - run: sudo apt-get update
       - run: sudo apt-get install -y jq
