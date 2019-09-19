@@ -12,12 +12,13 @@ cask 'dotnet-sdk-2.2.200' do
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64"
 
-  zap trash: 
+  zap 
+  trash:
   [
     '~/.dotnet',
     '~/.nuget',
   ],
-  pkgutil: 
+  pkgutil:
   [
     "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64",
     "com.microsoft.dotnet.hostfxr.#{version.after_comma.before_colon}.component.osx.x64",
