@@ -2,7 +2,8 @@
 
 set -u
 set -e
-DEBUG=false
+DEBUG=
+NO_PR=
 
 function update_casks {
   FILE_VERSION_REGEX="dotnet-sdk-([0-9\.]{5,8}).rb"
@@ -143,8 +144,10 @@ function update_casks {
 
     echo "Updating $FILENAME to $LATEST_SDK_VERSION ..."
 
-    git checkout "update-$FILENAME-to-$LATEST_SDK_VERSION" || git checkout -b "update-$FILENAME-$LATEST_SDK_VERSION"
-    git reset --hard origin/master
+    if [ ! -z "$NO_PR" ]; then
+      git checkout "update-$FILENAME-to-$LATEST_SDK_VERSION" || git checkout -b "update-$FILENAME-$LATEST_SDK_VERSION"
+      git reset --hard origin/master
+    fi
 
     # download the sdk file to calculate its sha256
     wget -O "$LATEST_SDK_VERSION.pkg" "$LATEST_SDK_URL"
@@ -167,18 +170,22 @@ function update_casks {
     # todo: use a template instead of sed
     sed -i "s@dotnet ${CURRENT_SDK_VERSION}@dotnet ${LATEST_SDK_VERSION}@g" $README_FILENAME
 
-    git add $FILENAME
-    git add $README_FILENAME
-    git commit -m "update $FILENAME from $CASK_VERSION to $LATEST_CASK_VERSION"
-    git push origin "update-$FILENAME-to-$LATEST_SDK_VERSION"
-    hub pull-request --base master --head "update-$FILENAME-to-$LATEST_SDK_VERSION" -m "[Auto] Update $FILENAME to $LATEST_SDK_VERSION"
+    if [ ! -z "$NO_PR" ]; then
+      git add $FILENAME
+      git add $README_FILENAME
+      git commit -m "update $FILENAME from $CASK_VERSION to $LATEST_CASK_VERSION"
+      git push origin "update-$FILENAME-to-$LATEST_SDK_VERSION"
+      hub pull-request --base master --head "update-$FILENAME-to-$LATEST_SDK_VERSION" -m "[Auto] Update $FILENAME to $LATEST_SDK_VERSION"
+    fi
   done
 }
 
 cd Casks
 
-git fetch --all
-git reset --hard origin/master
+if [ ! -z "$NO_PR" ]; then
+  git fetch --all
+  git reset --hard origin/master
+fi
 
 update_casks
 
