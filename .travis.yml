@@ -38,4 +38,9 @@ install:
     builtin cd "${TRAVIS_BUILD_DIR}"
 
 script: ./travis-ci.sh
+# The reason why we do not simply run `brew cask ci` is because the task 
+# will complain and fail if we do not remove all installed sub-packages during `uninstall`.
+# However, we should not remove the sub-packages because they are the shared runtime between
+# different versions and the other parallelly installed versions will fail to run if we 
+# remove them.
 # script: brew cask ci
