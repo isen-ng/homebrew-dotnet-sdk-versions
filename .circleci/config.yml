@@ -6,7 +6,7 @@ jobs:
     working_directory: ~/repo
     steps:
       - run: sudo apt-get update
-      - run: sudo apt-get install -y jq wget sed sha256sum git
+      - run: sudo apt-get install -y jq wget sed git
       - run: jq --version
       - run: sha256sum --version
       - run: git --version
