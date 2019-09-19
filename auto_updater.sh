@@ -2,21 +2,7 @@
 
 set -u
 set -e
-DEBUG=true
-
-function check_hub {
-  command -v hub > /dev/null 2>&1
-  if test $? = 1; then
-    echo "Installing hub"
-    os=$(uname | awk '{print tolower($0)}')
-    wget --quiet "https://github.com/github/hub/releases/download/v2.12.3/hub-$os-amd64-2.12.3.tgz"
-    tar -xf hub-$os-amd64-2.12.3.tgz
-    export PATH="$PWD/hub-$os-amd64-2.12.3/bin:$PATH"
-    rm -rf hub-$os-amd64-2.12.3.tgz
-  fi
-  # Check that hub is in the PATH
-  which hub
-}
+DRY_RUN=true
 
 function update_casks {
   FILE_VERSION_REGEX="dotnet-sdk-([0-9\.]{5,8}).rb"
@@ -44,7 +30,7 @@ function update_casks {
     CURRENT_SDK_PATCH_VERSION=$(echo $CURRENT_SDK_VERSION | cut -d. -f3)
     CURRENT_SDK_PATCH_MAJOR_VERSION="${CURRENT_SDK_PATCH_VERSION:0:1}"
 
-    if [ ! -z "$DEBUG" ]; then
+    if [ "$DRY_RUN" = true ]; then
       echo "CASK_VERSION: $CASK_VERSION"
       echo "CASK_SHA256: $CASK_SHA256"
       echo "CASK_URL: $CASK_URL"
@@ -60,7 +46,7 @@ function update_casks {
     RELEASES_JSON=$(curl --silent "$RELEASES_URL")
 
     # look for SDK releases
-    SDK_RELEASES=$(echo "$RELEASES_JSON" | jq --arg v "2.2.$CURRENT_SDK_PATCH_MAJOR_VERSION[0-9]{2}" '[.releases[] | select(."release-version" | test ($v))]')
+    SDK_RELEASES=$(echo "$RELEASES_JSON" | jq --arg v "^2.2.$CURRENT_SDK_PATCH_MAJOR_VERSION[0-9]{2}$" '[.releases[] | select(."release-version" | test ($v))]')
     LATEST_SDK_RELEASE=$(echo $SDK_RELEASES | jq 'max_by(."release-version" | [splits("[.]")] | map(tonumber))')
 
     LATEST_SDK_RELEASE_SDK_VERSION=$(echo $LATEST_SDK_RELEASE | jq '.sdk.version | select(.!=null)' | tr -d "\"")
@@ -68,7 +54,7 @@ function update_casks {
     LATEST_SDK_RELEASE_URL=$(echo $LATEST_SDK_RELEASE | jq '.sdk.files[]? | select(.name == "dotnet-sdk-osx-x64.pkg").url' | tr -d "\"")
     LATEST_SDK_RELEASE_HASH=$(echo $LATEST_SDK_RELEASE | jq '.sdk.files[]? | select(.name == "dotnet-sdk-osx-x64.pkg").hash' | tr -d "\"")
 
-    if [ ! -z "$DEBUG" ]; then
+    if [ "$DRY_RUN" = true ]; then
       echo "LATEST_SDK_RELEASE_SDK_VERSION: $LATEST_SDK_RELEASE_SDK_VERSION"
       echo "LATEST_SDK_RELEASE_RUNTIME_VERSION: $LATEST_SDK_RELEASE_RUNTIME_VERSION"
       echo "LATEST_SDK_RELEASE_URL: $LATEST_SDK_RELEASE_URL"
@@ -86,7 +72,7 @@ function update_casks {
     LATEST_RUNTIME_RELEASE_URL=$(echo $LATEST_RUNTIME_SDK_RELEASE | jq '.files[]? | select(.name == "dotnet-sdk-osx-x64.pkg").url' | tr -d "\"")
     LATEST_RUNTIME_RELEASE_HASH=$(echo $LATEST_RUNTIME_SDK_RELEASE | jq '.files[]? | select(.name == "dotnet-sdk-osx-x64.pkg").hash' | tr -d "\"")
     
-    if [ ! -z "$DEBUG" ]; then
+    if [ "$DRY_RUN" = true ]; then
       echo "LATEST_RUNTIME_RELEASE_SDK_VERSION: $LATEST_RUNTIME_RELEASE_SDK_VERSION"
       echo "LATEST_RUNTIME_RELEASE_RUNTIME_VERSION: $LATEST_RUNTIME_RELEASE_RUNTIME_VERSION"
       echo "LATEST_RUNTIME_RELEASE_URL: $LATEST_RUNTIME_RELEASE_URL"
@@ -121,7 +107,7 @@ function update_casks {
       fi
     fi
 
-    if [ ! -z "$DEBUG" ]; then
+    if [ "$DRY_RUN" = true ]; then
       echo "LATEST_SDK_VERSION: $LATEST_SDK_VERSION"
       echo "LATEST_RUNTIME_VERSION: $LATEST_RUNTIME_VERSION"
       echo "LATEST_SDK_URL: $LATEST_SDK_URL"
@@ -139,7 +125,7 @@ function update_casks {
     CURRENT_PATCH_VERSION=$(echo $CURRENT_SDK_PATCH_VERSION | cut -d. -f3)
     LATEST_PATCH_VERSION=$(echo $LATEST_SDK_VERSION | cut -d. -f3)
 
-    if [ ! -z "$DEBUG" ]; then
+    if [ "$DRY_RUN" = true ]; then
       echo "CURRENT_PATCH_VERSION: $CURRENT_PATCH_VERSION"
       echo "LATEST_PATCH_VERSION: $LATEST_PATCH_VERSION"
       echo "-----------------------------------------------------------------"
@@ -150,27 +136,29 @@ function update_casks {
       continue
     fi
 
-    if [ "$CURRENT_PATCH_VERSION" -gt "$LATEST_PATCH_VERSION" ]; then
+    if [ "$CURRENT_PATCH_VERSION" -eq "$LATEST_PATCH_VERSION" ] && [ "$CASK_URL" -eq "$LATEST_SDK_URL" ]; then
       echo "Current $FILENAME [$SDK_PATCH_VERSION] is the latest version. Nothing to update"
       continue
     fi
 
     echo "Updating $FILENAME to $LATEST_SDK_VERSION ..."
 
-    git checkout "update-$FILENAME-to-$LATEST_SDK_VERSION" || git checkout -b "update-$FILENAME-$LATEST_SDK_VERSION"
-    git reset --hard origin/master
+    if [ "$DRY_RUN" != true ]; then
+      git checkout "update-$FILENAME-to-$LATEST_SDK_VERSION" || git checkout -b "update-$FILENAME-$LATEST_SDK_VERSION"
+      git reset --hard origin/master
+    fi
 
     # download the sdk file to calculate its sha256
     wget -O "$LATEST_SDK_VERSION.pkg" "$LATEST_SDK_URL"
     LATEST_SDK_SHA256=$(sha256sum "$LATEST_SDK_VERSION.pkg" | cut -d" " -f1)
     rm -f "$LATEST_SDK_VERSION.pkg"
-    if [ ! -z "$DEBUG" ]; then
+    if [ "$DRY_RUN" = true ]; then
       echo "LATEST_SDK_SHA256: $LATEST_SDK_SHA256"
     fi
 
     # update values
     LATEST_CASK_VERSION="$LATEST_SDK_VERSION,$LATEST_RUNTIME_VERSION"
-    if [ ! -z "$DEBUG" ]; then
+    if [ "$DRY_RUN" = true ]; then
       echo "LATEST_CASK_VERSION: $LATEST_CASK_VERSION"
     fi
     sed -i "s@${CASK_VERSION}@${LATEST_CASK_VERSION}@g" $FILENAME
@@ -181,20 +169,22 @@ function update_casks {
     # todo: use a template instead of sed
     sed -i "s@dotnet ${CURRENT_SDK_VERSION}@dotnet ${LATEST_SDK_VERSION}@g" $README_FILENAME
 
-    git add $FILENAME
-    git add $README_FILENAME
-    git commit -m "update $FILENAME from $CASK_VERSION to $LATEST_CASK_VERSION"
-    git push origin "update-$FILENAME-to-$LATEST_SDK_VERSION"
-    hub pull-request --base master --head "update-$FILENAME-to-$LATEST_SDK_VERSION" -m "[Auto] Update $FILENAME to $LATEST_SDK_VERSION"
+    if [ "$DRY_RUN" != true ]; then
+      git add $FILENAME
+      git add $README_FILENAME
+      git commit -m "update $FILENAME from $CASK_VERSION to $LATEST_CASK_VERSION"
+      git push origin "update-$FILENAME-to-$LATEST_SDK_VERSION"
+      hub pull-request --base master --head "update-$FILENAME-to-$LATEST_SDK_VERSION" -m "[Auto] Update $FILENAME to $LATEST_SDK_VERSION"
+    fi
   done
 }
 
-check_hub
-
 cd Casks
 
-git fetch --all
-git reset --hard origin/master
+if [ "$DRY_RUN" != true ]; then
+  git fetch --all
+  git reset --hard origin/master
+fi
 
 update_casks
 
