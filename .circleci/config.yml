@@ -3,7 +3,7 @@ jobs:
   update_sdk_versions:
     docker:
       # specify the version you desire here
-      - image: circleci/python:3.7-stretch-node-browsers-legacy
+      - image: circleci/python:3.7
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
