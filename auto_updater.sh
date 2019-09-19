@@ -2,7 +2,7 @@
 
 set -u
 set -e
-DRY_RUN=true
+DRY_RUN=
 
 function update_casks {
   FILE_VERSION_REGEX="dotnet-sdk-([0-9\.]{5,8}).rb"
