@@ -28,14 +28,17 @@ if any_casks_modified; then
   MODIFIED_CASK_FILE=${modified_casks[0]}
 
   echo "Running brew audit $MODIFIED_CASK_FILE ..."
-  brew audit $MODIFIED_CASK_FILE
+  brew cask audit $MODIFIED_CASK_FILE
 
   echo "Running brew style $MODIFIED_CASK_FILE ..."
-  brew style $MODIFIED_CASK_FILE
+  brew cask style $MODIFIED_CASK_FILE
 
   echo "Running brew install $MODIFIED_CASK_FILE ..."
-  brew install $MODIFIED_CASK_FILE
+  brew cask install $MODIFIED_CASK_FILE
 
   echo "Running brew uninstall $MODIFIED_CASK_FILE ..."
-  brew uninstall $MODIFIED_CASK_FILE
+  brew cask uninstall $MODIFIED_CASK_FILE
+
+  echo "Running brew zap $MODIFIED_CASK_FILE ..."
+  brew cask zap $MODIFIED_CASK_FILE
 fi
