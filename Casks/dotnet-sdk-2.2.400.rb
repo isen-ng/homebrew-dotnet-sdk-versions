@@ -10,7 +10,6 @@ cask 'dotnet-sdk-2.2.400' do
                          'dotnet',
                          'dotnet-sdk',
                        ]
-
   depends_on macos: '>= :sierra'
 
   pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
