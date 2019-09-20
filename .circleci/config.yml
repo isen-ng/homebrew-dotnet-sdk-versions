@@ -16,7 +16,9 @@ jobs:
           os=$(uname | awk '{print tolower($0)}'); \
           wget --quiet "https://github.com/github/hub/releases/download/v2.12.3/hub-$os-amd64-2.12.3.tgz"; \
           tar -xf hub-$os-amd64-2.12.3.tgz; \
-          sudo mv $PWD/hub-$os-amd64-2.12.3/bin/hub /usr/local/bin/hub
+          sudo mv $PWD/hub-$os-amd64-2.12.3/bin/hub /usr/local/bin/hub; \
+          rm -rf hub-$os-amd64-2.12.3.tgz; \
+          rm -rf $PWD/hub-$os-amd64-2.12.3;
       - run: hub --version
 
       # add write-enabled deploy key to our machine so we can send PRs
@@ -27,7 +29,7 @@ jobs:
       - checkout
 
       # run with DRY_RUN=false
-      - run: ./auto_updater.sh false
+      - run: ./auto_updater.sh
 workflows:
   version: 2
   nightly:
