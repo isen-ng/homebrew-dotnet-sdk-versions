@@ -26,7 +26,7 @@ function update_casks {
     CASK_URL=$(cat $FILENAME | grep -e "url '*'" | awk '{print $2}' | tr -d "'")
     CURRENT_SDK_VERSION=$(echo $CASK_VERSION | cut -d, -f1)
     CURRENT_RUNTIME_VERSION=$(echo $CASK_VERSION | cut -d, -f2)
-    CURRENT_SDK_MINOR_VERSION=$(echo $CURRENT_SDK_VERSION | cut -d. -f1 -f2)
+    CURRENT_SDK_MINOR_VERSION=$(echo $CURRENT_SDK_VERSION | cut -d. -f1,2)
     CURRENT_SDK_PATCH_VERSION=$(echo $CURRENT_SDK_VERSION | cut -d. -f3)
     CURRENT_SDK_PATCH_MAJOR_VERSION="${CURRENT_SDK_PATCH_VERSION:0:1}"
 
@@ -66,8 +66,6 @@ function update_casks {
     RUNTIME_RELEASES=$(echo "$RELEASES_JSON" | jq --arg v "^2.2.[0-9]{1,2}$" '[.releases[] | select(."release-version" | test ($v))]')
     LATEST_RUNTIME_RELEASE=$(echo $RUNTIME_RELEASES | jq 'max_by(."release-version" | [splits("[.]")] | map(tonumber))')
     LATEST_RUNTIME_SDK_RELEASE=$(echo $LATEST_RUNTIME_RELEASE | jq --arg v "^2.2.$CURRENT_SDK_PATCH_MAJOR_VERSION[0-9]{2}$" '.sdks[]? | select(."version" | test($v))')
-
-    # echo "$LATEST_RUNTIME_RELEASE"
 
     LATEST_RUNTIME_RELEASE_SDK_VERSION=$(echo $LATEST_RUNTIME_SDK_RELEASE | jq '.version' | tr -d "\"")
     LATEST_RUNTIME_RELEASE_RUNTIME_VERSION=$(echo $LATEST_RUNTIME_RELEASE | jq '."release-version"' | tr -d "\"")
