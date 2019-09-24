@@ -142,9 +142,10 @@ function update_casks {
     fi
 
     echo "$FILENAME: Updating to $LATEST_SDK_VERSION ..."
+    GIT_BRANCH_NAME="update-$FILENAME-to-$LATEST_SDK_VERSION"
 
     if [ "$DRY_RUN" != true ]; then
-      git checkout "update-$FILENAME-to-$LATEST_SDK_VERSION" || git checkout -b "update-$FILENAME-$LATEST_SDK_VERSION"
+      git checkout "$GIT_BRANCH_NAME" || git checkout -b "$GIT_BRANCH_NAME"
       git reset --hard origin/master
     fi
 
@@ -173,8 +174,8 @@ function update_casks {
       git add $FILENAME
       git add $README_FILENAME
       git commit -m "update $FILENAME from $CASK_VERSION to $LATEST_CASK_VERSION"
-      git push origin "update-$FILENAME-to-$LATEST_SDK_VERSION"
-      hub pull-request --base master --head "update-$FILENAME-to-$LATEST_SDK_VERSION" -m "[Auto] Update $FILENAME to $LATEST_SDK_VERSION"
+      git push origin "$GIT_BRANCH_NAME"
+      hub pull-request --base master --head "$GIT_BRANCH_NAME" -m "[Auto] Update $FILENAME to $LATEST_SDK_VERSION"
     fi
   done
 }
