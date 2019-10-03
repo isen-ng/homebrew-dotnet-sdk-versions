@@ -136,7 +136,7 @@ function update_casks {
       continue
     fi
 
-    if [ "$CURRENT_PATCH_VERSION" -eq "$LATEST_PATCH_VERSION" ] && [ "$CASK_URL" != "$LATEST_SDK_URL" ]; then
+    if [ "$CURRENT_PATCH_VERSION" -eq "$LATEST_PATCH_VERSION" ] && [ "$CASK_URL" == "$LATEST_SDK_URL" ]; then
       echo "$FILENAME: Current [$CURRENT_SDK_VERSION] is the latest version. Nothing to update"
       continue
     fi
