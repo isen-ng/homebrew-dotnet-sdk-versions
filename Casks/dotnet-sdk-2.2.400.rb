@@ -11,7 +11,7 @@ cask 'dotnet-sdk-2.2.400' do
                          'dotnet',
                          'dotnet-sdk',
                        ]
-  else
+  end
   
   depends_on macos: '>= :sierra'
 
