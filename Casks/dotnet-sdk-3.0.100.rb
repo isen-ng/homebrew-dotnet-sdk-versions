@@ -8,9 +8,9 @@ cask 'dotnet-sdk-3.0.100' do
 
   if MacOS.version > :sierra
     conflicts_with cask: [
-                         'dotnet',
-                         'dotnet-sdk',
-                       ]
+                           'dotnet',
+                           'dotnet-sdk',
+                         ]
   end
   
   depends_on macos: '>= :sierra'
