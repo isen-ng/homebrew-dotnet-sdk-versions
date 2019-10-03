@@ -8,11 +8,11 @@ cask 'dotnet-sdk-2.2.400' do
 
   if MacOS.version <= :sierra
     conflicts_with cask: [
-                         'dotnet',
-                         'dotnet-sdk',
-                       ]
+                           'dotnet',
+                           'dotnet-sdk',
+                         ]
   end
-  
+
   depends_on macos: '>= :sierra'
 
   pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
