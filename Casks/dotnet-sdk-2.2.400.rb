@@ -6,10 +6,13 @@ cask 'dotnet-sdk-2.2.400' do
   name ".NET Core SDK #{version.before_comma}"
   homepage 'https://www.microsoft.com/net/core#macos'
 
-  conflicts_with cask: [
+  if MacOS.version <= :sierra
+    conflicts_with cask: [
                          'dotnet',
                          'dotnet-sdk',
                        ]
+  else
+  
   depends_on macos: '>= :sierra'
 
   pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
