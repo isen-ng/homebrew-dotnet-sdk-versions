@@ -30,7 +30,7 @@ cask 'dotnet-sdk-2.99.400' do
   url '???'
   
 
-  ... so on a so forth ...
+  ... so on and so forth ...
 
 end
 ```
