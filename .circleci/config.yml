@@ -36,9 +36,6 @@ jobs:
       - run: ./auto_updater.sh false
 workflows:
   version: 2
-  commit:
-    jobs:
-      - update_sdk_versions
   nightly:
     triggers:
       - schedule:
