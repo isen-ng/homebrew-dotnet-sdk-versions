@@ -19,15 +19,13 @@ dotnet --list-sdks
 | Version              | DotNet SDK     | Remarks
 |----------------------|----------------|-----------
 | `dotnet-sdk-3.0.100` | dotnet 3.0.100 | Conflicts with official cask if `OS > sierra`
-| `dotnet-sdk-2.2.400` | dotnet 2.2.402 | Yes
+| `dotnet-sdk-2.2.400` | dotnet 2.2.402 | Conflicts with official cask if `OS == sierra`
 | `dotnet-sdk-2.2.300` | dotnet 2.2.301 |
 | `dotnet-sdk-2.2.200` | dotnet 2.2.206 |
 | `dotnet-sdk-2.2.100` | dotnet 2.2.109 |
 | `dotnet-sdk-2.1.800` | dotnet 2.1.802 | Latest LTS
 | `dotnet-sdk-2.1.500` | dotnet 2.1.500 |
 | `dotnet-sdk-2.1.400` | dotnet 2.1.403 |
-
-*Note*: Latest version conflicts with the official version
 
 ## Uninstalling
 
