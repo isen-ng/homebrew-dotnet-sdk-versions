@@ -18,7 +18,7 @@ dotnet --list-sdks
 
 | Version              | DotNet SDK     | Remarks
 |----------------------|----------------|-----------
-| `dotnet-sdk-2.2.400` | dotnet 2.2.401 | Yes
+| `dotnet-sdk-2.2.400` | dotnet 2.2.402 | Yes
 | `dotnet-sdk-2.2.300` | dotnet 2.2.301 |
 | `dotnet-sdk-2.2.200` | dotnet 2.2.206 |
 | `dotnet-sdk-2.2.100` | dotnet 2.2.109 |
