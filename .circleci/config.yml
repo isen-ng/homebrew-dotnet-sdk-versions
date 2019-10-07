@@ -16,7 +16,9 @@ jobs:
           os=$(uname | awk '{print tolower($0)}'); \
           wget --quiet "https://github.com/github/hub/releases/download/v2.12.3/hub-$os-amd64-2.12.3.tgz"; \
           tar -xf hub-$os-amd64-2.12.3.tgz; \
-          sudo mv $PWD/hub-$os-amd64-2.12.3/bin/hub /usr/local/bin/hub
+          sudo mv $PWD/hub-$os-amd64-2.12.3/bin/hub /usr/local/bin/hub; \
+          rm -rf hub-$os-amd64-2.12.3.tgz; \
+          rm -rf $PWD/hub-$os-amd64-2.12.3;
       - run: hub --version
 
       # add write-enabled deploy key to our machine so we can send PRs
@@ -25,6 +27,10 @@ jobs:
             - "0a:d3:a9:32:74:e2:32:24:08:c2:08:0d:c5:89:a8:45"
 
       - checkout
+
+      # required to push commits
+      - run: git config --global user.email "3904043+isengrim613@users.noreply.github.com"
+      - run: git config --global user.name "Isen Ng"
 
       # run with DRY_RUN=false
       - run: ./auto_updater.sh false

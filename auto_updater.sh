@@ -9,7 +9,7 @@ function update_casks {
   README_FILENAME="../README.md"
 
   for FILENAME in *.rb; do
-    echo "Checking $FILENAME ..."
+    echo "$FILENAME: Checking for updates  ..."
 
     FILE_VERSION=""
 
@@ -21,12 +21,12 @@ function update_casks {
         continue
     fi
 
-    CASK_VERSION=$(cat $FILENAME | grep 'version ' | awk '{print $2}' | tr -d "\"")
-    CASK_SHA256=$(cat $FILENAME | grep 'sha256 ' | awk '{print $2}' | tr -d "\"")
-    CASK_URL=$(cat $FILENAME | grep 'url ' | awk '{print $2}' | tr -d "\"")
+    CASK_VERSION=$(cat $FILENAME | grep -e "version '*'" | awk '{print $2}' | tr -d "'")
+    CASK_SHA256=$(cat $FILENAME | grep -e "sha256 '*'" | awk '{print $2}' | tr -d "'")
+    CASK_URL=$(cat $FILENAME | grep -e "url '*'" | awk '{print $2}' | tr -d "'")
     CURRENT_SDK_VERSION=$(echo $CASK_VERSION | cut -d, -f1)
     CURRENT_RUNTIME_VERSION=$(echo $CASK_VERSION | cut -d, -f2)
-    CURRENT_SDK_MINOR_VERSION=$(echo $CURRENT_SDK_VERSION | cut -d. -f1 -f2)
+    CURRENT_SDK_MINOR_VERSION=$(echo $CURRENT_SDK_VERSION | cut -d. -f1,2)
     CURRENT_SDK_PATCH_VERSION=$(echo $CURRENT_SDK_VERSION | cut -d. -f3)
     CURRENT_SDK_PATCH_MAJOR_VERSION="${CURRENT_SDK_PATCH_VERSION:0:1}"
 
@@ -63,9 +63,9 @@ function update_casks {
     fi
 
     # look for runtime releases
-    RUNTIME_RELEASES=$(echo "$RELEASES_JSON" | jq --arg v "^2.2.[0-9]{1,2}$" '[.releases[] | select(."release-version" | test ($v))]')
+    RUNTIME_RELEASES=$(echo "$RELEASES_JSON" | jq --arg v "^[0-9]{1}.[0-9]{1}.[0-9]{1,2}$" '[.releases[] | select(."release-version" | test ($v))]')
     LATEST_RUNTIME_RELEASE=$(echo $RUNTIME_RELEASES | jq 'max_by(."release-version" | [splits("[.]")] | map(tonumber))')
-    LATEST_RUNTIME_SDK_RELEASE=$(echo $LATEST_RUNTIME_RELEASE | jq --arg v "2.2.$CURRENT_SDK_PATCH_MAJOR_VERSION[0-9]{2}" '.sdks[] | select(."version" | test($v))')
+    LATEST_RUNTIME_SDK_RELEASE=$(echo $LATEST_RUNTIME_RELEASE | jq --arg v "^[0-9]{1}.[0-9]{1}.$CURRENT_SDK_PATCH_MAJOR_VERSION[0-9]{2}$" '.sdks[]? | select(."version" | test($v))')
 
     LATEST_RUNTIME_RELEASE_SDK_VERSION=$(echo $LATEST_RUNTIME_SDK_RELEASE | jq '.version' | tr -d "\"")
     LATEST_RUNTIME_RELEASE_RUNTIME_VERSION=$(echo $LATEST_RUNTIME_RELEASE | jq '."release-version"' | tr -d "\"")
@@ -132,19 +132,20 @@ function update_casks {
     fi
 
     if [ "$CURRENT_PATCH_VERSION" -gt "$LATEST_PATCH_VERSION" ]; then
-      echo "Current $FILENAME [$SDK_PATCH_VERSION] is greater than latest version [$LATEST_SDK_VERSION] in $RELEASES_URL"
+      echo "$FILENAME: Current [$CURRENT_SDK_VERSION] is greater than latest version [$LATEST_SDK_VERSION] in $RELEASES_URL"
       continue
     fi
 
-    if [ "$CURRENT_PATCH_VERSION" -eq "$LATEST_PATCH_VERSION" ] && [ "$CASK_URL" -eq "$LATEST_SDK_URL" ]; then
-      echo "Current $FILENAME [$SDK_PATCH_VERSION] is the latest version. Nothing to update"
+    if [ "$CURRENT_PATCH_VERSION" -eq "$LATEST_PATCH_VERSION" ] && [ "$CASK_URL" == "$LATEST_SDK_URL" ]; then
+      echo "$FILENAME: Current [$CURRENT_SDK_VERSION] is the latest version. Nothing to update"
       continue
     fi
 
-    echo "Updating $FILENAME to $LATEST_SDK_VERSION ..."
+    echo "$FILENAME: Updating to $LATEST_SDK_VERSION ..."
+    GIT_BRANCH_NAME="update-$FILENAME-to-$LATEST_SDK_VERSION"
 
     if [ "$DRY_RUN" != true ]; then
-      git checkout "update-$FILENAME-to-$LATEST_SDK_VERSION" || git checkout -b "update-$FILENAME-$LATEST_SDK_VERSION"
+      git checkout "$GIT_BRANCH_NAME" || git checkout -b "$GIT_BRANCH_NAME"
       git reset --hard origin/master
     fi
 
@@ -173,8 +174,8 @@ function update_casks {
       git add $FILENAME
       git add $README_FILENAME
       git commit -m "update $FILENAME from $CASK_VERSION to $LATEST_CASK_VERSION"
-      git push origin "update-$FILENAME-to-$LATEST_SDK_VERSION"
-      hub pull-request --base master --head "update-$FILENAME-to-$LATEST_SDK_VERSION" -m "[Auto] Update $FILENAME to $LATEST_SDK_VERSION"
+      git push origin "$GIT_BRANCH_NAME" --force
+      hub pull-request --base master --head "$GIT_BRANCH_NAME" -m "[Auto] Update $FILENAME to $LATEST_SDK_VERSION"
     fi
   done
 }

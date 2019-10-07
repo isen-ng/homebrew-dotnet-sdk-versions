@@ -1,12 +1,12 @@
-cask 'dotnet-sdk-2.2.400' do
-  version '2.2.402,2.2.7'
-  sha256 'e74d816bc034d0fcdfa847286a6cad097227d4864da1c97fe801012af0c26341'
+cask 'dotnet-sdk-3.0.100' do
+  version '3.0.100,3.0.0'
+  sha256 '6a5a475d9aa1955470cd2370c9f501bc6a5a05ad5fb74109ddb9da278b55101a'
 
-  url 'https://download.visualstudio.microsoft.com/download/pr/7430e32b-092b-4448-add7-2dcf40a7016d/1076952734fbf775062b48344d1a1587/dotnet-sdk-2.2.402-osx-x64.pkg'
+  url 'https://download.visualstudio.microsoft.com/download/pr/5c281f95-91c4-499d-baa2-31fec919047a/38c6964d72438ac30032bce516b655d9/dotnet-sdk-3.0.100-osx-x64.pkg'
   name ".NET Core SDK #{version.before_comma}"
   homepage 'https://www.microsoft.com/net/core#macos'
 
-  if MacOS.version <= :sierra
+  if MacOS.version > :sierra
     conflicts_with cask: [
                            'dotnet',
                            'dotnet-sdk',
