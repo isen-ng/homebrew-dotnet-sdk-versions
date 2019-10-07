@@ -36,10 +36,11 @@ jobs:
       - run: ./auto_updater.sh false
 workflows:
   version: 2
-  nightly:
+  weekly:
     triggers:
       - schedule:
-          cron: "0 0 * * *"
+          # run at 1700UTC (3am +8GMT) every monday
+          cron: "0 19 * * 1"
           filters:
             branches:
               only:
