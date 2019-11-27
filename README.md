@@ -1,5 +1,8 @@
 # dotnet-sdk versions tap
 
+![Continuous-integration](https://img.shields.io/travis/com/isen-ng/homebrew-dotnet-sdk-versions/master?label=continuous-integration)
+![Auto-updates](https://img.shields.io/circleci/build/github/isen-ng/homebrew-dotnet-sdk-versions/master?label=auto-updates)
+
 This tap contains different versions that you can install in parallel to the latest version provided by the [official
 cask](https://github.com/Homebrew/homebrew-cask/blob/master/Casks/dotnet-sdk.rb).
 
