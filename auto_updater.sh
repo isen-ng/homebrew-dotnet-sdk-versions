@@ -4,6 +4,14 @@ set -u
 set -e
 DRY_RUN=${1:-true}
 
+function check_fork {
+  git ls-remote --exit-code fork > /dev/null 2>&1
+  if test $? = 1; then
+    # we should use the same user as configured, otherwise if PAT user is different, this will fail
+    git remote add fork "git@github.com:$GITHUB_USER/homebrew-dotnet-sdk-versions.git"
+  fi
+}
+
 function update_casks {
   FILE_VERSION_REGEX="dotnet-sdk-([0-9\.]{5,8}).rb"
   README_FILENAME="../README.md"
@@ -171,11 +179,13 @@ function update_casks {
     sed -i "s@dotnet ${CURRENT_SDK_VERSION}@dotnet ${LATEST_SDK_VERSION}@g" $README_FILENAME
 
     if [ "$DRY_RUN" != true ]; then
+      check_fork
+
       git add $FILENAME
       git add $README_FILENAME
       git commit -m "update $FILENAME from $CASK_VERSION to $LATEST_CASK_VERSION"
-      git push origin "$GIT_BRANCH_NAME" --force
-      hub pull-request --base master --head "$GIT_BRANCH_NAME" -m "[Auto] Update $FILENAME to $LATEST_SDK_VERSION"
+      git push fork "$GIT_BRANCH_NAME" --force
+      hub pull-request --base isen-ng:master --head "$GIT_BRANCH_NAME" -m "[Auto] Update \"$FILENAME\" to $LATEST_SDK_VERSION"
     fi
   done
 }
