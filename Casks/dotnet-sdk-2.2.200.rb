@@ -21,4 +21,8 @@ cask 'dotnet-sdk-2.2.200' do
                  "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.after_comma}.component.osx.x64",
                  'com.microsoft.dotnet.sharedhost.component.osx.x64',
                ]
+
+  caveats 'Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, '\
+          'so you\'ll need to reinstall the particular version cask you want from this tap again '\
+          'for the `dotnet` command to work again.'
 end
