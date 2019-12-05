@@ -6,23 +6,11 @@ cask 'dotnet-sdk-3.0.100' do
   name ".NET Core SDK #{version.before_comma}"
   homepage 'https://www.microsoft.com/net/core#macos'
 
-  if MacOS.version > :sierra
-    conflicts_with cask: [
-                           'dotnet',
-                           'dotnet-sdk',
-                         ]
-  end
-
-  depends_on macos: '>= :sierra'
+  depends_on macos: '> :sierra'
 
   pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
-  binary '/usr/local/share/dotnet/dotnet'
 
-  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64",
-            delete:  [
-                       '/etc/paths.d/dotnet',
-                       '/etc/paths.d/dotnet-cli-tools',
-                     ]
+  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64"
 
   zap trash:   [
                  '~/.dotnet',
