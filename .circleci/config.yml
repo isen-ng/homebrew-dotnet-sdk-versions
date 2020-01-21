@@ -47,3 +47,11 @@ workflows:
                 - master
     jobs:
       - update_sdk_versions
+  instafix:
+    jobs:
+      - update_sdk_versions:
+          filters:
+            tags:
+              only: /auto_updater.*/
+            branches:
+              ignore: /.*/
