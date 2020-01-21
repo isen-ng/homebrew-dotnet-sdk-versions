@@ -5,9 +5,7 @@ set -e
 DRY_RUN=${1:-true}
 
 function check_fork {
-  git ls-remote --exit-code fork > /dev/null 2>&1
-  if test $? = 1; then
-    # we should use the same user as configured, otherwise if PAT user is different, this will fail
+  if ! git ls-remote fork > /dev/null 2>&1; then
     git remote add fork "git@github.com:$GITHUB_USER/homebrew-dotnet-sdk-versions.git"
   fi
 }
