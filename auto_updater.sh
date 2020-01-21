@@ -6,7 +6,7 @@ DRY_RUN=${1:-true}
 
 function check_fork {
   if ! git ls-remote fork > /dev/null 2>&1; then
-    git remote add fork "git@github.com:$GITHUB_USER/homebrew-dotnet-sdk-versions.git"
+    git remote add fork "https://github.com/$GITHUB_USER/homebrew-dotnet-sdk-versions.git"
   fi
 }
 
