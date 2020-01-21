@@ -29,8 +29,8 @@ jobs:
       - checkout
 
       # required to push commits
-      - run: git config --global user.email "58249579+isen-ng-machine-user@users.noreply.github.com"
-      - run: git config --global user.name "Isen Ng Machine User"
+      - run: git config --global user.email "3904043+isen-ng@users.noreply.github.com"
+      - run: git config --global user.name "Isen Ng"
 
       # run with DRY_RUN=false
       - run: ./auto_updater.sh false
