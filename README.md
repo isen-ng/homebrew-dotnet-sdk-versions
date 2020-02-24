@@ -27,7 +27,7 @@ dotnet --list-sdks
 | `dotnet-sdk-2.2.300` | dotnet 2.2.301 |
 | `dotnet-sdk-2.2.200` | dotnet 2.2.207 |
 | `dotnet-sdk-2.2.100` | dotnet 2.2.110 |
-| `dotnet-sdk-2.1.800` | dotnet 2.1.803 |
+| `dotnet-sdk-2.1.800` | dotnet 2.1.804 |
 | `dotnet-sdk-2.1.500` | dotnet 2.1.511 |
 | `dotnet-sdk-2.1.400` | dotnet 2.1.403 |
 
