@@ -173,7 +173,7 @@ function update_casks {
     if [ "$DRY_RUN" != true ]; then
       git add $FILENAME
       git add $README_FILENAME
-      git commit -m "update $FILENAME from $CASK_VERSION to $LATEST_CASK_VERSION"
+      git commit -m "[Auto] update $FILENAME from $CASK_VERSION to $LATEST_CASK_VERSION"
       git push origin "$GIT_BRANCH_NAME" --force
       hub pull-request --base master --head "$GIT_BRANCH_NAME" -m "[Auto] Update \"$FILENAME\" to $LATEST_SDK_VERSION"
     fi
