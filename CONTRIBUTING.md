@@ -3,12 +3,21 @@
 ## Automatic updates
 
 Each working cask will be updated weekly automatically by running `auto_updater.sh` through a 
-CircleCi workflow schedule.
+CircleCi scheduled workflow.
 
 The script will enumerate over each cask, search through the releases in their respective 
 `releases.json` and author a pull request if there is a newer version released.
 
 All the releases and their notes are published [here](https://github.com/dotnet/core/tree/master/release-notes).
+
+## Automatic commits
+
+Each day of the week, except the day that the auto updater is running, the `auto_committer.sh` script is ran
+through a Github Actions scheduled workflow.
+
+This script will comb through existing pull requests created by `auto-updater.sh`, check their status, and if
+they are mergeable, (squash and) merge the commit. Only those with conflicts, or merge issues will require
+manual intervention from the author. In this case, the author will be notified via a failed run.
 
 ## Adding a new cask
 
