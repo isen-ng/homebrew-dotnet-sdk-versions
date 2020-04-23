@@ -18,4 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Run auto_committer.sh
+        env:
+          GITHUB_USER: ${{ secrets.GITHUB_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./auto_committer.sh
