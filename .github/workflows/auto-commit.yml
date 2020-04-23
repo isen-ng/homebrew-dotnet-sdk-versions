@@ -4,8 +4,8 @@ on:
   schedule:
     # Runs at 19:00GMT, Tuesday to Sunday
     - cron: "0 19 * * Tue,Wed,Thu,Fri,Sat,Sun"
-  pull_request:
-    branches: [ master ]
+  # pull_request:
+  #   branches: [ master ]
 
 jobs:
   commit:
