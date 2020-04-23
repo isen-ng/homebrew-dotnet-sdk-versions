@@ -11,7 +11,6 @@ PR_LIST=$(hub api repos/$REPO/pulls?state=open&base=master)
 
 echo $PR_LIST
 echo "BOOM"
-jq
 echo "BOOM1"
 echo "{\"a\": \"b\"}" | jq -r .
 echo "BOOM2"
@@ -26,20 +25,20 @@ PR_LIST=$(echo $PR_LIST | jq -r 'map(.head |= {ref, sha})')
 
 if [ "$DRY_RUN" == true ]; then
   echo "[debug] List of PRs retrived:"
-  echo "$PR_LIST" | jq -r
+  echo "$PR_LIST" | jq -r .
 fi
 
 FILTERED_PR_LIST=$(echo $PR_LIST | jq -r --arg owner "$OWNER" --arg title_filter "$TITLE_FILTER" '[.[] | select(.user.login == $owner) | select(.draft == false) | select(.title | contains($title_filter))]')
 
 if [ "$DRY_RUN" == true ]; then
   echo "[debug] List of PRs to process:"
-  echo "$FILTERED_PR_LIST" | jq -r
+  echo "$FILTERED_PR_LIST" | jq -r .
 fi
 
 EXIT_CODE=0
 
 for row in $(echo "$FILTERED_PR_LIST" | jq -r '.[] | @base64'); do
-  PR=$(echo $row | base64 --decode | jq -r)
+  PR=$(echo $row | base64 --decode | jq -r .)
 
   PR_NUMBER=$(echo $PR | jq -r '.number')
   PR_URL=$(echo $PR | jq -r '.html_url')
@@ -61,7 +60,7 @@ for row in $(echo "$FILTERED_PR_LIST" | jq -r '.[] | @base64'); do
 
   if [ "$DRY_RUN" == true ]; then
     echo "[debug] PR details:"
-    echo "$PR_DETAILS" | jq -r
+    echo "$PR_DETAILS" | jq -r .
   fi
 
   # checks whether there is a conflict
