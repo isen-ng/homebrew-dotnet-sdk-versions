@@ -3,7 +3,7 @@ name: Auto commits auto created PRs
 on:
   schedule:
     # Runs at 19:00GMT, Tuesday to Sunday
-    - cron: "0 19 * * 2-7"
+    - cron: "0 19 * * Tue,Wed,Thu,Fri,Sat,Sun"
   pull_request:
     branches: [ master ]
 
