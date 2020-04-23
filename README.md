@@ -2,7 +2,7 @@
 
 [![Continuous-integration](https://img.shields.io/travis/com/isen-ng/homebrew-dotnet-sdk-versions/master?label=continuous-integration)](https://travis-ci.com/isen-ng/homebrew-dotnet-sdk-versions)
 [![Auto-updater](https://img.shields.io/circleci/build/github/isen-ng/homebrew-dotnet-sdk-versions/master?label=auto-updater)](https://circleci.com/gh/isen-ng/homebrew-dotnet-sdk-versions)
-[![Auto-committer](https://img.shields.io/circleci/build/github/isen-ng/homebrew-dotnet-sdk-versions/master?label=auto-committer)](https://circleci.com/gh/isen-ng/homebrew-dotnet-sdk-versions)
+[![Auto-committer](https://img.shields.io/github/workflow/status/isen-ng/homebrew-dotnet-sdk-versions/auto-committer?label=auto-committer)](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions?query=workflow%3Aauto-committer)
 
 This tap contains different versions that you can install in parallel to the latest version provided by the [official
 cask](https://github.com/Homebrew/homebrew-cask/blob/master/Casks/dotnet-sdk.rb).
