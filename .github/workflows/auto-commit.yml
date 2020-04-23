@@ -17,5 +17,5 @@ jobs:
         uses: geertvdc/setup-hub@master
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Run auto-commit.sh
-        run: ./auto-commit.sh
+      - name: Run auto_committer.sh
+        run: ./auto_committer.sh
