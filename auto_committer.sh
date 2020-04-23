@@ -5,7 +5,7 @@ set -e
 DRY_RUN=${1:-true}
 OWNER="isen-ng"
 TITLE_FILTER="[Auto]"
-REPO="$OWNER/test-repo"
+REPO="$OWNER/homebrew-dotnet-sdk-versions"
 
 PR_LIST=$(hub api repos/$REPO/pulls?state=open&base=master)
 
