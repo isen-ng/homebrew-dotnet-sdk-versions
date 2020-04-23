@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Install Hub CLI
         uses: geertvdc/setup-hub@master
-      - name: Checkout latest
-        uses: actions/checkout@latest
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Run auto-commit.sh
         run: ./auto-commit.sh
