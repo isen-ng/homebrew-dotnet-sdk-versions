@@ -1,0 +1,21 @@
+name: Auto commits auto created PRs
+
+on:
+  schedule:
+    # Runs at 19:00GMT, Tuesday to Sunday
+    - cron: "0 19 * * 2-7"
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  auto-commit:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Hub CLI
+        uses: geertvdc/setup-hub@master
+      - name: Checkout latest
+        uses: actions/checkout@latest
+      - name: Run auto-commit.sh
+        run: ./auto-commit.sh
