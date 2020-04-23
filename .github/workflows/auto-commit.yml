@@ -1,0 +1,24 @@
+name: auto-committer
+
+on:
+  schedule:
+    # Runs at 19:00GMT, Tuesday to Sunday
+    - cron: "0 19 * * Tue,Wed,Thu,Fri,Sat,Sun"
+  # pull_request:
+  #   branches: [ master ]
+
+jobs:
+  commit:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Hub CLI
+        uses: geertvdc/setup-hub@master
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run auto_committer.sh
+        env:
+          GITHUB_USER: ${{ secrets.GITHUB_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./auto_committer.sh
