@@ -9,15 +9,6 @@ REPO="$OWNER/homebrew-dotnet-sdk-versions"
 
 PR_LIST=$(hub api repos/$REPO/pulls?state=open&base=master)
 
-echo $PR_LIST
-echo "BOOM"
-echo "BOOM1"
-echo "{\"a\": \"b\"}" | jq -r .
-echo "BOOM2"
-echo $PR_LIST | jq -r .
-echo "BOOM3"
-echo $PR_LIST | jq -r 'map(. |= {title, url, html_url, number, state, user, head, draft})'
-
 # reduce the number of elements in the result set, so that it can be passed into functions
 PR_LIST=$(echo $PR_LIST | jq -r 'map(. |= {title, url, html_url, number, state, user, head, draft})')
 PR_LIST=$(echo $PR_LIST | jq -r 'map(.user |= {login})')
