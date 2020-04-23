@@ -3,6 +3,7 @@
 set -u
 set -e
 DRY_RUN=${1:-true}
+DEBUG=${2:-true}
 OWNER="isen-ng"
 TITLE_FILTER="[Auto]"
 REPO="$OWNER/homebrew-dotnet-sdk-versions"
@@ -14,14 +15,14 @@ PR_LIST=$(echo $PR_LIST | jq -r 'map(. |= {title, url, html_url, number, state, 
 PR_LIST=$(echo $PR_LIST | jq -r 'map(.user |= {login})')
 PR_LIST=$(echo $PR_LIST | jq -r 'map(.head |= {ref, sha})')
 
-if [ "$DRY_RUN" == true ]; then
+if [ "$DEBUG" == true ]; then
   echo "[debug] List of PRs retrived:"
   echo "$PR_LIST" | jq -r .
 fi
 
 FILTERED_PR_LIST=$(echo $PR_LIST | jq -r --arg owner "$OWNER" --arg title_filter "$TITLE_FILTER" '[.[] | select(.user.login == $owner) | select(.draft == false) | select(.title | contains($title_filter))]')
 
-if [ "$DRY_RUN" == true ]; then
+if [ "$DEBUG" == true ]; then
   echo "[debug] List of PRs to process:"
   echo "$FILTERED_PR_LIST" | jq -r .
 fi
@@ -49,7 +50,7 @@ for row in $(echo "$FILTERED_PR_LIST" | jq -r '.[] | @base64'); do
 
   PR_DETAILS=$(echo "$PR_DETAILS" | jq -r '. |= {mergeable, merge_commit_sha}')
 
-  if [ "$DRY_RUN" == true ]; then
+  if [ "$DEBUG" == true ]; then
     echo "[debug] PR details:"
     echo "$PR_DETAILS" | jq -r .
   fi
@@ -70,7 +71,7 @@ for row in $(echo "$FILTERED_PR_LIST" | jq -r '.[] | @base64'); do
     continue
   fi
   
-  if [ "$DRY_RUN" == true ]; then
+  if [ "$DEBUG" == true ]; then
     echo "[debug] This is mergeable with SHA: $HEAD_SHA"
   fi
 
@@ -94,7 +95,7 @@ for row in $(echo "$FILTERED_PR_LIST" | jq -r '.[] | @base64'); do
     continue
   fi
 
-  if [ "$DRY_RUN" == true ]; then
+  if [ "$DEBUG" == true ]; then
     echo "[debug] This is mergeable after checking commit status"
   fi
 
@@ -117,7 +118,7 @@ for row in $(echo "$FILTERED_PR_LIST" | jq -r '.[] | @base64'); do
   fi
 
   if [ "$DRY_RUN" == true ]; then
-    echo "[debug] DRY RUN:"
+    echo "[info] THIS IS A DRY RUN:"
   fi
   echo "[info] PR merged: $PR_URL"
 done
