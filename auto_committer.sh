@@ -13,7 +13,7 @@ echo $PR_LIST
 echo "BOOM"
 jq
 echo "BOOM1"
-echo "{\"a\": \"b\"}" | jq -r
+echo "{\"a\": \"b\"}" | jq -c
 echo "BOOM2"
 echo $PR_LIST | jq -r
 echo "BOOM3"
