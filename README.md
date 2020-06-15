@@ -30,7 +30,7 @@ dotnet --list-sdks
 | `dotnet-sdk-2.2.200` | dotnet 2.2.207 |
 | `dotnet-sdk-2.2.100` | dotnet 2.2.110 |
 | `dotnet-sdk-2.1.800` | dotnet 2.1.806 |
-| `dotnet-sdk-2.1.500` | dotnet 2.1.514 |
+| `dotnet-sdk-2.1.500` | dotnet 2.1.515 |
 | `dotnet-sdk-2.1.400` | dotnet 2.1.403 |
 
 ## Uninstalling
