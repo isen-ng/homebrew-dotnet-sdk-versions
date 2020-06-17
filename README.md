@@ -23,13 +23,13 @@ dotnet --list-sdks
 | Version              | DotNet SDK     | Remarks
 |----------------------|----------------|-----------
 | `dotnet-sdk-3.1.200` | dotnet 3.1.202 | Conflicts with official cask if `OS > sierra`. Latest LTS
-| `dotnet-sdk-3.1.100` | dotnet 3.1.104 |
+| `dotnet-sdk-3.1.100` | dotnet 3.1.105 |
 | `dotnet-sdk-3.0.100` | dotnet 3.0.103 |
 | `dotnet-sdk-2.2.400` | dotnet 2.2.402 | Conflicts with official cask if `OS == sierra`
 | `dotnet-sdk-2.2.300` | dotnet 2.2.301 |
 | `dotnet-sdk-2.2.200` | dotnet 2.2.207 |
 | `dotnet-sdk-2.2.100` | dotnet 2.2.110 |
-| `dotnet-sdk-2.1.800` | dotnet 2.1.806 |
+| `dotnet-sdk-2.1.800` | dotnet 2.1.807 |
 | `dotnet-sdk-2.1.500` | dotnet 2.1.515 |
 | `dotnet-sdk-2.1.400` | dotnet 2.1.403 |
 
