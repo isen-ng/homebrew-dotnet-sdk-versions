@@ -21,9 +21,9 @@ function update_casks {
         continue
     fi
 
-    CASK_VERSION=$(cat $FILENAME | grep -e "version '*'" | awk '{print $2}' | tr -d "'")
-    CASK_SHA256=$(cat $FILENAME | grep -e "sha256 '*'" | awk '{print $2}' | tr -d "'")
-    CASK_URL=$(cat $FILENAME | grep -e "url '*'" | awk '{print $2}' | tr -d "'")
+    CASK_VERSION=$(cat $FILENAME | grep -e "version \"*\"" | awk '{print $2}' | tr -d "\"")
+    CASK_SHA256=$(cat $FILENAME | grep -e "sha256 \"*\"" | awk '{print $2}' | tr -d "\"")
+    CASK_URL=$(cat $FILENAME | grep -e "url \"*\"" | awk '{print $2}' | tr -d "\"")
     CURRENT_SDK_VERSION=$(echo $CASK_VERSION | cut -d, -f1)
     CURRENT_RUNTIME_VERSION=$(echo $CASK_VERSION | cut -d, -f2)
     CURRENT_SDK_MINOR_VERSION=$(echo $CURRENT_SDK_VERSION | cut -d. -f1,2)
