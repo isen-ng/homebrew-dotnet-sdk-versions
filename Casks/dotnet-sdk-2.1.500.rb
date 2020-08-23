@@ -1,8 +1,8 @@
 cask "dotnet-sdk-2.1.500" do
-  version "2.1.516,2.1.20"
-  sha256 "3565e1f7314a4cb7277c025a8ae7652ee9d0cca6fdc3c0a3330af50dee2af148"
+  version "2.1.517,2.1.21"
+  sha256 "1d972e2b7c09e3ce3102a14d11d865c3c70c3e2fca3512c6f8b92cd45dac76da"
 
-  url "https://download.visualstudio.microsoft.com/download/pr/3430b27f-f317-4736-a078-63b020936f92/b1fe7fd7e25ca936a7a82b29b065c4f9/dotnet-sdk-2.1.516-osx-x64.pkg"
+  url "https://download.visualstudio.microsoft.com/download/pr/94bf192a-3fca-4ebf-b4bd-0d61d6bf30c8/ee7dde5e78e098e267080d327fa19a7c/dotnet-sdk-2.1.517-osx-x64.pkg"
   name ".NET Core SDK #{version.before_comma}"
   homepage "https://www.microsoft.com/net/core#macos"
 
