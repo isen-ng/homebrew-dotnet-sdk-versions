@@ -4,8 +4,8 @@ cask "dotnet-sdk3-1-300" do
 
   url "https://download.visualstudio.microsoft.com/download/pr/fff497aa-e6f6-4556-b67b-d139e772156f/4efa99b6bf0cb59104920dfd5f65f8a8/dotnet-sdk-3.1.302-osx-x64.pkg"
   name ".NET Core SDK #{version.before_comma}"
+  desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
   homepage "https://www.microsoft.com/net/core#macos"
-  desc ".NET Core SDK for OSX. This cask follows releases on https://github.com/dotnet/core/tree/master"
 
   if MacOS.version > :sierra
     conflicts_with cask: [
