@@ -29,7 +29,7 @@ dotnet --list-sdks
 | `dotnet-sdk-2.2.400` | dotnet 2.2.402 | Conflicts with official cask if `OS == sierra`
 | `dotnet-sdk2-2-300` | dotnet 2.2.301 |
 | `dotnet-sdk-2.2.200` | dotnet 2.2.207 |
-| `dotnet-sdk-2.2.100` | dotnet 2.2.110 |
+| `dotnet-sdk2-2-100` | dotnet 2.2.110 |
 | `dotnet-sdk-2.1.800` | dotnet 2.1.809 |
 | `dotnet-sdk-2.1.500` | dotnet 2.1.517 |
 | `dotnet-sdk-2.1.400` | dotnet 2.1.403 |
