@@ -23,7 +23,7 @@ if any_casks_modified; then
 
   if [ "${#modified_casks[@]}" -gt 1 ]; then
     echo "More than one cask modified; please submit a pull request for each cask separately."
-    exit 0
+    exit 1
   fi
 
   MODIFIED_CASK_FILE=${modified_casks[0]}
