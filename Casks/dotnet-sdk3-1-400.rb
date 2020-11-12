@@ -7,23 +7,11 @@ cask "dotnet-sdk3-1-400" do
   desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
   homepage "https://www.microsoft.com/net/core#macos"
 
-  if MacOS.version > :sierra
-    conflicts_with cask: [
-      "dotnet",
-      "dotnet-sdk",
-    ]
-  end
-
   depends_on macos: "> :sierra"
 
   pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
-  binary "/usr/local/share/dotnet/dotnet"
 
-  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64",
-            delete:  [
-              "/etc/paths.d/dotnet",
-              "/etc/paths.d/dotnet-cli-tools",
-            ]
+  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64"
 
   zap trash:   ["~/.dotnet", "~/.nuget"],
       pkgutil: [
