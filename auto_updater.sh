@@ -5,7 +5,7 @@ set -e
 DRY_RUN=${1:-true}
 
 function update_casks {
-  FILE_VERSION_REGEX="dotnet-sdk-([0-9\.]{5,8}).rb"
+  FILE_VERSION_REGEX="dotnet-sdk([0-9-]{5,8}).rb"
   README_FILENAME="../README.md"
 
   for FILENAME in *.rb; do
