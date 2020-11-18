@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install Hub CLI
-        uses: geertvdc/setup-hub@master
       - name: Checkout
         uses: actions/checkout@v2
       - name: Run auto_committer.sh
