@@ -13,7 +13,7 @@ Install one of the previous versions by tapping this repository and running the 
 
 ```
 brew tap isen-ng/dotnet-sdk-versions
-brew cask install <version>
+brew install --cask <version>
 
 dotnet --list-sdks
 ```
@@ -40,10 +40,10 @@ dotnet --list-sdks
 Because the dotnet packages uses shared dependencies between different versions, it is unwise to delete these 
 dependencies when uninstalling a particular version as it will cause other versions not to work. 
 
-If there is a need to purge these dependencies, use the `zap` command:
+If there is a need to purge these dependencies, use the `zap` flag:
 
 ```
-brew cask zap <version>
+brew uninstall --zap --cask <version>
 ```
 
 *Important*: Uninstalling the offical version will also remove these dependencies, so you'll need to reinstall the particular version you want to use again.
