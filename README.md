@@ -11,7 +11,7 @@ Install one of the previous versions by tapping this repository and running the 
 
 ## Installing one of the versions here
 
-```
+```bash
 brew tap isen-ng/dotnet-sdk-versions
 brew install --cask <version>
 
@@ -42,7 +42,7 @@ dependencies when uninstalling a particular version as it will cause other versi
 
 If there is a need to purge these dependencies, use the `zap` flag:
 
-```
+```bash
 brew uninstall --zap --cask <version>
 ```
 
