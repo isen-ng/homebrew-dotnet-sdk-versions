@@ -30,17 +30,17 @@ if any_casks_modified; then
 
   echo "Running brew audit $MODIFIED_CASK_FILE ..."
   echo "------------------------------------"
-  brew cask audit $MODIFIED_CASK_FILE
+  brew audit --cask $MODIFIED_CASK_FILE
 
   echo "Running brew style $MODIFIED_CASK_FILE ..."
   echo "------------------------------------"
-  brew cask style $MODIFIED_CASK_FILE
+  brew style --cask $MODIFIED_CASK_FILE
 
   echo "Running brew install $MODIFIED_CASK_FILE ..."
   echo "------------------------------------"
-  brew cask install $MODIFIED_CASK_FILE
+  brew install --cask $MODIFIED_CASK_FILE
 
   echo "Running brew zap (uninstall will run implicity) $MODIFIED_CASK_FILE ..."
   echo "------------------------------------"
-  brew cask zap $MODIFIED_CASK_FILE
+  brew uninstall --cask --zap $MODIFIED_CASK_FILE
 fi
