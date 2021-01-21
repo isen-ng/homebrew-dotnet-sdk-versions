@@ -162,9 +162,15 @@ function update_casks {
     if [ "$DRY_RUN" = true ]; then
       echo "LATEST_CASK_VERSION: $LATEST_CASK_VERSION"
     fi
+
+    LATEST_SDK_URL_WITH_INTERPOLATION="${LATEST_SDK_URL/$LATEST_SDK_VERSION/#\{version.before_comma\}}"
+    if [ "$DRY_RUN" = true ]; then
+      echo "LATEST_SDK_URL_WITH_INTERPOLATION: $LATEST_SDK_URL_WITH_INTERPOLATION"
+    fi
+    
     sed -i "s@${CASK_VERSION}@${LATEST_CASK_VERSION}@g" $FILENAME
     sed -i "s@${CASK_SHA256}@${LATEST_SDK_SHA256}@g" $FILENAME
-    sed -i "s@${CASK_URL}@${LATEST_SDK_URL}@g" $FILENAME
+    sed -i "s@${CASK_URL}@${LATEST_SDK_URL_WITH_INTERPOLATION}@g" $FILENAME
 
     # update readme
     # todo: use a template instead of sed
