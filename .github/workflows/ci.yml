@@ -88,11 +88,17 @@ jobs:
         run: brew style '${{ matrix.cask.path || matrix.tap }}'
         if: always() && steps.gems.outcome == 'success' && !matrix.cask
 
-      - name: Run brew audit --cask ${{ matrix.cask.token || matrix.tap }}
+      - name: Run brew audit --cask ${{ matrix.cask.token }}
         run: |
-          brew audit --cask ${{ join(matrix.audit_args, ' ') }} '${{ matrix.cask.path || matrix.tap }}'
+          brew audit --cask ${{ join(matrix.audit_args, ' ') }} '${{ matrix.cask.path }}'
         timeout-minutes: 30
-        if: always() && steps.gems.outcome == 'success' && !matrix.skip_audit
+        if: always() && steps.gems.outcome == 'success' && !matrix.skip_audit && matrix.cask.token
+
+      - name: Run brew audit --tap=${{ matrix.tap }}
+        run: |
+          brew audit --tap='${{ matrix.tap }}'
+        timeout-minutes: 30
+        if: always() && steps.gems.outcome == 'success' && !matrix.skip_audit && !matrix.cask.token
 
       - name: Gather cask information
         id: info
