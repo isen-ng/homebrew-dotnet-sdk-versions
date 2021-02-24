@@ -30,6 +30,8 @@ function update_casks {
     CURRENT_SDK_PATCH_VERSION=$(echo $CURRENT_SDK_VERSION | cut -d. -f3)
     CURRENT_SDK_PATCH_MAJOR_VERSION="${CURRENT_SDK_PATCH_VERSION:0:1}"
 
+    CASK_URL="${CASK_URL/\#\{version.before_comma\}/${CURRENT_SDK_VERSION}}"
+
     if [ "$DRY_RUN" = true ]; then
       echo "CASK_VERSION: $CASK_VERSION"
       echo "CASK_SHA256: $CASK_SHA256"
