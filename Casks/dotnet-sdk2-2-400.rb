@@ -17,7 +17,6 @@ cask "dotnet-sdk2-2-400" do
   depends_on macos: ">= :sierra"
 
   pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
-  binary "/usr/local/share/dotnet/dotnet"
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64",
             delete:  [

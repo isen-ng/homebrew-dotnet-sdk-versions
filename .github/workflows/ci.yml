@@ -145,15 +145,10 @@ jobs:
         if: always() && steps.info.outcome == 'success' && join(fromJSON(steps.info.outputs.formula_conflicts)) != ''
         timeout-minutes: 30
 
-      # - name: Uninstall conflicting casks
-      #   run: |
-      #     brew uninstall --cask ${{ join(fromJSON(steps.info.outputs.cask_conflicts), ' ') }}
-      #   if: always() && steps.info.outcome == 'success' && join(fromJSON(steps.info.outputs.cask_conflicts)) != ''
-      #   timeout-minutes: 30
       - name: Uninstall conflicting casks
         run: |
-          brew uninstall --cask dotnet dotnet-sdk homebrew/cask-versions/dotnet-preview homebrew/cask-versions/dotnet-sdk-preview
-        if: always() && steps.info.outcome == 'success'
+          brew uninstall --cask ${{ join(fromJSON(steps.info.outputs.cask_conflicts), ' ') }}
+        if: always() && steps.info.outcome == 'success' && join(fromJSON(steps.info.outputs.cask_conflicts)) != ''
         timeout-minutes: 30
 
       - name: Run brew uninstall --cask --zap ${{ matrix.cask.token }}
