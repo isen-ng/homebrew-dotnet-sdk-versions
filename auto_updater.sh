@@ -23,18 +23,19 @@ function update_casks {
 
     CASK_VERSION=$(cat $FILENAME | grep -e "version \"*\"" | awk '{print $2}' | tr -d "\"")
     CASK_SHA256=$(cat $FILENAME | grep -e "sha256 \"*\"" | awk '{print $2}' | tr -d "\"")
-    CASK_URL=$(cat $FILENAME | grep -e "url \"*\"" | awk '{print $2}' | tr -d "\"")
+    CASK_URL_WITH_INTERPOLATION=$(cat $FILENAME | grep -e "url \"*\"" | awk '{print $2}' | tr -d "\"")
     CURRENT_SDK_VERSION=$(echo $CASK_VERSION | cut -d, -f1)
     CURRENT_RUNTIME_VERSION=$(echo $CASK_VERSION | cut -d, -f2)
     CURRENT_SDK_MINOR_VERSION=$(echo $CURRENT_SDK_VERSION | cut -d. -f1,2)
     CURRENT_SDK_PATCH_VERSION=$(echo $CURRENT_SDK_VERSION | cut -d. -f3)
     CURRENT_SDK_PATCH_MAJOR_VERSION="${CURRENT_SDK_PATCH_VERSION:0:1}"
 
-    CASK_URL="${CASK_URL/\#\{version.before_comma\}/${CURRENT_SDK_VERSION}}"
+    CASK_URL="${CASK_URL_WITH_INTERPOLATION/\#\{version.before_comma\}/${CURRENT_SDK_VERSION}}"
 
     if [ "$DRY_RUN" = true ]; then
       echo "CASK_VERSION: $CASK_VERSION"
       echo "CASK_SHA256: $CASK_SHA256"
+      echo "CASK_URL_WITH_INTERPOLATION: $CASK_URL_WITH_INTERPOLATION"
       echo "CASK_URL: $CASK_URL"
       echo "CURRENT_SDK_VERSION: $CURRENT_SDK_VERSION"
       echo "CURRENT_RUNTIME_VERSION: $CURRENT_RUNTIME_VERSION"
@@ -172,7 +173,7 @@ function update_casks {
     
     sed -i "s@${CASK_VERSION}@${LATEST_CASK_VERSION}@g" $FILENAME
     sed -i "s@${CASK_SHA256}@${LATEST_SDK_SHA256}@g" $FILENAME
-    sed -i "s@${CASK_URL}@${LATEST_SDK_URL_WITH_INTERPOLATION}@g" $FILENAME
+    sed -i "s@${CASK_URL_WITH_INTERPOLATION}@${LATEST_SDK_URL_WITH_INTERPOLATION}@g" $FILENAME
 
     # update readme
     # todo: use a template instead of sed
