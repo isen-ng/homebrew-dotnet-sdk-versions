@@ -13,6 +13,10 @@ cask "dotnet-sdk5-0-200" do
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64"
 
+  livecheck do
+    skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions"
+  end
+
   zap trash:   ["~/.dotnet", "~/.nuget"],
       pkgutil: [
         "com.microsoft.dotnet.hostfxr.#{version.after_comma}.component.osx.x64",
