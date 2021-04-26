@@ -11,10 +11,6 @@ cask "dotnet-sdk3-1-400" do
     skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
   end
 
-  livecheck do
-    skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
-  end
-
   depends_on macos: "> :sierra"
 
   pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
