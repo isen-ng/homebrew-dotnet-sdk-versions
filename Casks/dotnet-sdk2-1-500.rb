@@ -8,7 +8,7 @@ cask "dotnet-sdk2-1-500" do
   homepage "https://www.microsoft.com/net/core#macos"
 
   livecheck do
-    url "git@github.com:isen-ng/homebrew-dotnet-sdk-versions.git"
+    skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
   end
 
   depends_on macos: ">= :sierra"
