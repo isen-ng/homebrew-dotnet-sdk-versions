@@ -22,18 +22,18 @@ dotnet --list-sdks
 
 | Version             | DotNet SDK     | Remarks
 |---------------------|----------------|-----------
-| `dotnet-sdk5-0-200` | dotnet 5.0.201 | 
+| `dotnet-sdk5-0-200` | dotnet 5.0.202 | 
 | `dotnet-sdk3-1-400` | dotnet 3.1.408 | 
 | `dotnet-sdk3-1-300` | dotnet 3.1.302 | 
 | `dotnet-sdk3-1-200` | dotnet 3.1.202 |
-| `dotnet-sdk3-1-100` | dotnet 3.1.113 |
+| `dotnet-sdk3-1-100` | dotnet 3.1.114 |
 | `dotnet-sdk3-0-100` | dotnet 3.0.103 |
 | `dotnet-sdk2-2-400` | dotnet 2.2.402 | Conflicts with official cask if `OS == sierra`
 | `dotnet-sdk2-2-300` | dotnet 2.2.301 |
 | `dotnet-sdk2-2-200` | dotnet 2.2.207 |
 | `dotnet-sdk2-2-100` | dotnet 2.2.110 |
 | `dotnet-sdk2-1-800` | dotnet 2.1.814 |
-| `dotnet-sdk2-1-500` | dotnet 2.1.522 |
+| `dotnet-sdk2-1-500` | dotnet 2.1.523 |
 | `dotnet-sdk2-1-400` | dotnet 2.1.403 |
 
 **Note**: Installing dotnet sdk 5 using this tap or the official pkg from Microsoft will uninstall all other 
