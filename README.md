@@ -27,7 +27,7 @@ dotnet --list-sdks
 | `dotnet-sdk3-1-400` | dotnet 3.1.413 |
 | `dotnet-sdk3-1-300` | dotnet 3.1.302 |
 | `dotnet-sdk3-1-200` | dotnet 3.1.202 |
-| `dotnet-sdk3-1-100` | dotnet 3.1.119 |
+| `dotnet-sdk3-1-100` | dotnet 3.1.120 |
 | `dotnet-sdk3-0-100` | dotnet 3.0.103 |
 | `dotnet-sdk2-2-400` | dotnet 2.2.402 | Conflicts with official cask if `OS == sierra`
 | `dotnet-sdk2-2-300` | dotnet 2.2.301 |
