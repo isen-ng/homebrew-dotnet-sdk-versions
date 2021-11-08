@@ -23,7 +23,7 @@ dotnet --list-sdks
 | Version             | DotNet SDK     | Remarks
 |---------------------|----------------|-----------
 | `dotnet-sdk5-0-400` | dotnet 5.0.402 |
-| `dotnet-sdk5-0-200` | dotnet 5.0.208 |
+| `dotnet-sdk5-0-200` | dotnet 5.0.209 |
 | `dotnet-sdk3-1-400` | dotnet 3.1.414 |
 | `dotnet-sdk3-1-300` | dotnet 3.1.302 |
 | `dotnet-sdk3-1-200` | dotnet 3.1.202 |
