@@ -1,8 +1,8 @@
 cask "dotnet-sdk5-0-400" do
-  version "5.0.402,5.0.11"
-  sha256 "525d0ff470e3d0e16b06787e72bdaf34df385007ee9125aa6f30eced69ef6a61"
+  version "5.0.403,5.0.12"
+  sha256 "c36eecd7751d890864807241feb24d27622bc4330a8458d26ea9eec9766aac2f"
 
-  url "https://download.visualstudio.microsoft.com/download/pr/88bc1553-e90f-4a4f-9574-65d9a5065cd2/1d5646e1abb8b4d4a61ba0b0be976047/dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
+  url "https://download.visualstudio.microsoft.com/download/pr/e33ad12e-b121-4205-934a-bb5fff892d1c/41598bac64f46f1e7a772867aaed638e/dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
   name ".NET Core SDK #{version.before_comma}"
   desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
   homepage "https://www.microsoft.com/net/core#macos"
