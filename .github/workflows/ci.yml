@@ -84,19 +84,21 @@ jobs:
         id: gems
         run: brew install-bundler-gems
 
-      - name: Run brew style ${{ matrix.cask.token || matrix.tap }}
-        run: brew style '${{ matrix.cask.path || matrix.tap }}'
+      - name: Run brew style ${{ matrix.tap }}
+        run: brew style '${{ matrix.tap }}'
         if: always() && steps.gems.outcome == 'success' && !matrix.cask
 
+      - name: Run brew style ${{ matrix.cask.token }}
+        run: brew style '${{ matrix.cask.path }}'
+        if: always() && steps.gems.outcome == 'success' && matrix.cask.token
+
       - name: Run brew audit --cask ${{ matrix.cask.token }}
-        run: |
-          brew audit --cask ${{ join(matrix.audit_args, ' ') }} '${{ matrix.cask.path }}'
+        run: brew audit --cask ${{ join(matrix.audit_args, ' ') }} '${{ matrix.cask.path }}'
         timeout-minutes: 30
         if: always() && steps.gems.outcome == 'success' && !matrix.skip_audit && matrix.cask.token
 
       - name: Run brew audit --tap=${{ matrix.tap }}
-        run: |
-          brew audit --tap='${{ matrix.tap }}'
+        run: brew audit --tap='${{ matrix.tap }}'
         timeout-minutes: 30
         if: always() && steps.gems.outcome == 'success' && !matrix.skip_audit && !matrix.cask.token
 
