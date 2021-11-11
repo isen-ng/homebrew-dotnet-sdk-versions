@@ -112,7 +112,7 @@ class Application:
     url_x64_pattern = re.compile('url_x64 "([^\s]+)"')
     url_arm64_pattern = re.compile('url_arm64 "([^\s]+)"')
 
-    dry_run = True
+    really_push = False
 
     @staticmethod
     def run():
@@ -325,7 +325,7 @@ class Application:
     def _prepare_git_branch(file_path, latest_sdk_release):
         branch_name = "update-{0}-to-{1}".format(file_path, latest_sdk_release['sdk']['version'])
 
-        if not Application.dry_run:
+        if Application.really_push:
             os.system('git checkout "{0}" || git checkout -b "{0}"'.format(branch_name))
             os.system('git reset --hard origin/master')
 
@@ -335,7 +335,7 @@ class Application:
     def _push_git_branch(file_path, sdk_version, latest_sdk_release, branch_name):
         commit_message = '[Auto] update {0} from {1} to {2}'.format(file_path, str(sdk_version), latest_sdk_release['sdk']['version'])
 
-        if not Application.dry_run:
+        if Application.really_push:
             os.system('git add {0}'.format(file_path))
             os.system('git add {0}'.format('README.md'))
             os.system('git commit -m "{0}"'.format(commit_message))
@@ -356,6 +356,6 @@ if __name__ == "__main__":
     parser.add_argument("--really_push", action='store_true', default=False, help='Indicates whether we really push to git or not')
 
     args = parser.parse_args()
-    Application.dry_run = not args.really_push
+    Application.really_push = args.really_push
 
     Application.run()
