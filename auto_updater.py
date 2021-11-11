@@ -209,12 +209,14 @@ class Application:
 
     @staticmethod
     def _update_intel_only_cask(file_path, latest_sdk_release):
-        # download the sdk to calculate sha256
-        sdk_url, sha_256 = _find_and_verify_sdk_url(latest_sdk_release, 'x64')
+        sdk_url, sha_256 = Application._find_download_and_verify_sdk_url(latest_sdk_release, 'x64')
+        if sdk_url is None:
+            return False
 
         with open(file_path, 'r') as file:
             content = file.read()
 
+        # url needs to have SOME version interpolation to make brew audit happy
         url_with_interpolation = sdk_url.replace(latest_sdk_release['sdk']['version'], '#{version.before_comma}')
 
         new_version = 'version "{0},{1}"'.format(latest_sdk_release['sdk']['version'], latest_sdk_release['runtime']['version'])
@@ -235,13 +237,15 @@ class Application:
 
     @staticmethod
     def _update_intel_arm_only_cask(file_path, latest_sdk_release):
-        # download the sdk to calculate sha256
-        x64_sdk_url, x64_sha_256 = _find_and_verify_sdk_url(latest_sdk_release, 'x64')
-        arm64_sdk_url, arm64_sha_256 = _find_and_verify_sdk_url(latest_sdk_release, 'arm64')
+        x64_sdk_url, x64_sha_256 = Application._find_download_and_verify_sdk_url(latest_sdk_release, 'x64')
+        arm64_sdk_url, arm64_sha_256 = Application._find_download_and_verify_sdk_url(latest_sdk_release, 'arm64')
+        if sdk_url is None or arm64_sdk_url is None:
+            return False
 
         with open(file_path, 'r') as file:
             content = file.read()
 
+        # url needs to have SOME version interpolation to make brew audit happy
         x64_url_with_interpolation = x64_sdk_url.replace(latest_sdk_release['sdk']['version'], '#{version.before_comma}')
         arm64_url_with_interpolation = arm64_sdk_url.replace(latest_sdk_release['sdk']['version'], '#{version.before_comma}')
 
@@ -280,16 +284,16 @@ class Application:
             file.write(content)
 
     @staticmethod
-    def _find_and_verify_sdk_url(sdk_release, arch):
+    def _find_download_and_verify_sdk_url(sdk_release, arch):
         sdk_url, sdk_sha_512 = Application._find_sdk_url(sdk_release, arch)
         if sdk_url is None:
             Application._output("Could not find sdk url for sdk_release[{0}]. Skipping".format(sdk_release['sdk']['version']))
-            return False
+            return None, None
 
         sha_256, sha_512 = Application._download_and_calculate_sha256(sdk_url)
         if not sdk_sha_512 == sha_512:
             Application._output("Downloaded sha512[{0}] does not match provided sha512[{1}]. Man-in-the-middle? Skipping".format(sha_512, sdk_sha_512))
-            return False
+            return None, None
 
         return sdk_url, sha_256
 
@@ -321,7 +325,7 @@ class Application:
     def _prepare_git_branch(file_path, latest_sdk_release):
         branch_name = "update-{0}-to-{1}".format(file_path, latest_sdk_release['sdk']['version'])
 
-        if not dry_run:
+        if not Application.dry_run:
             os.system('git checkout "{0}" || git checkout -b "{0}"'.format(branch_name))
             os.system('git reset --hard origin/master')
 
@@ -331,7 +335,7 @@ class Application:
     def _push_git_branch(file_path, sdk_version, latest_sdk_release, branch_name):
         commit_message = '[Auto] update {0} from {1} to {2}'.format(file_path, str(sdk_version), latest_sdk_release['sdk']['version'])
 
-        if not dry_run:
+        if not Application.dry_run:
             os.system('git add {0}'.format(file_path))
             os.system('git add {0}'.format('README.md'))
             os.system('git commit -m "{0}"'.format(commit_message))
