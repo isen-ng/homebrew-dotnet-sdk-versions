@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import glob
 import hashlib
 import json
@@ -7,6 +8,7 @@ import os
 import re
 import requests
 import urllib.request
+
 
 class SdkVersion:
     def __init__(self, version_string):
@@ -105,6 +107,13 @@ class Application:
     # `url "https://download.visualstudio.microsoft.com/download/pr/38102737-cb48-46c2-8f52-fb7102b50ae7/d81958d71c3c2679796e1ecfbd9cc903/dotnet-sdk-#{version.before_comma}-osx-x64.pkg"`
     url_pattern = re.compile('url "([^\s]+)"')
 
+    sha_256_x64_pattern = re.compile('sha256_x64 "([0-9a-z]+)"')
+    sha_256_arm64_pattern = re.compile('sha256_arm64 "([0-9a-z]+)"')
+    url_x64_pattern = re.compile('url_x64 "([^\s]+)"')
+    url_arm64_pattern = re.compile('url_arm64 "([^\s]+)"')
+
+    dry_run = True
+
     @staticmethod
     def run():
         for file_path in glob.glob('Casks/*.rb'):
@@ -129,15 +138,17 @@ class Application:
                 Application._output("Latest version[{0}] is not greater than current version[{1}]. Skipping".format(latest_sdk_release_version, sdk_version))
                 continue
 
+            git_branch_name = Application._prepare_git_branch(file_path, latest_sdk_release)
+
             is_cask_updated = False
             if not is_arm_supported:
                 is_cask_updated = Application._update_intel_only_cask(file_path, latest_sdk_release)
-            # else:
-            #     Application._update_inte_arm_cask()
+            else:
+                is_cask_updated = Application._update_intel_arm_cask(file_path, latest_sdk_release)
 
             if is_cask_updated:
                 Application._update_read_me(sdk_version, latest_sdk_release)
-
+                Application._push_git_branch(file_path, sdk_version, latest_sdk_release, git_branch_name)
 
     @staticmethod
     def _find_versions(file_path):
@@ -196,18 +207,10 @@ class Application:
 
             return False
 
-    @staticmethod    
+    @staticmethod
     def _update_intel_only_cask(file_path, latest_sdk_release):
         # download the sdk to calculate sha256
-        sdk_url, sdk_sha_512 = Application._find_sdk_url(latest_sdk_release, 'x64')
-        if sdk_url is None:
-            Application._output("Could not find sdk url for sdk_release[{0}]. Skipping".format(latest_sdk_release['sdk']['version']))
-            return False
-
-        sha_256, sha_512 = Application._download_and_calculate_sha256(sdk_url)
-        if not sdk_sha_512 == sha_512:
-            Application._output("Downloaded sha512[{0}] does not match provided sha512[{1}]. Hacker? Skipping".format(sha_512, sdk_sha_512))
-            return False
+        sdk_url, sha_256 = _find_and_verify_sdk_url(latest_sdk_release, 'x64')
 
         with open(file_path, 'r') as file:
             content = file.read()
@@ -230,6 +233,39 @@ class Application:
 
         return True
 
+    @staticmethod
+    def _update_intel_arm_only_cask(file_path, latest_sdk_release):
+        # download the sdk to calculate sha256
+        x64_sdk_url, x64_sha_256 = _find_and_verify_sdk_url(latest_sdk_release, 'x64')
+        arm64_sdk_url, arm64_sha_256 = _find_and_verify_sdk_url(latest_sdk_release, 'arm64')
+
+        with open(file_path, 'r') as file:
+            content = file.read()
+
+        url_with_interpolation = sdk_url.replace(latest_sdk_release['sdk']['version'], '#{version.before_comma}')
+
+        new_version = 'version "{0},{1}"'.format(latest_sdk_release['sdk']['version'], latest_sdk_release['runtime']['version'])
+        new_x64_sha_256 = 'sha256_x64 "{0}"'.format(sha_256)
+        new_x64_url = 'url_x64 "{0}"'.format(url_with_interpolation)
+        new_arm64_sha_256 = 'sha256_arm64 "{0}"'.format(sha_256)
+        new_arm64_url = 'url_arm64 "{0}"'.format(url_with_interpolation)
+        Application._log('new_version', new_version)
+        Application._log('new_x64_sha_256', new_x64_sha_256)
+        Application._log('new_x64_url', new_x64_url)
+        Application._log('new_arm64_sha_256', new_arm64_sha_256)
+        Application._log('new_arm64_url', new_arm64_url)
+
+        content = Application.version_pattern.sub(new_version, content)
+        content = Application.sha_256_x64_pattern.sub(new_x64_sha_256, content)
+        content = Application.url_x64_pattern.sub(new_x64_url, content)
+        content = Application.sha_256_arm64_pattern.sub(new_arm64_sha_256, content)
+        content = Application.url_arm64_pattern.sub(new_arm64_url, content)
+
+        with open(file_path, 'w') as file:
+            file.write(content)
+
+        return True
+
     @staticmethod    
     def _update_read_me(sdk_release, latest_sdk_release):
         file_path = 'README.md'
@@ -241,6 +277,20 @@ class Application:
 
         with open(file_path, 'w') as file:
             file.write(content)
+
+    @staticmethod
+    def _find_and_verify_sdk_url(sdk_release, arch):
+        sdk_url, sdk_sha_512 = Application._find_sdk_url(sdk_release, arch)
+        if sdk_url is None:
+            Application._output("Could not find sdk url for sdk_release[{0}]. Skipping".format(sdk_release['sdk']['version']))
+            return False
+
+        sha_256, sha_512 = Application._download_and_calculate_sha256(sdk_url)
+        if not sdk_sha_512 == sha_512:
+            Application._output("Downloaded sha512[{0}] does not match provided sha512[{1}]. Man-in-the-middle? Skipping".format(sha_512, sdk_sha_512))
+            return False
+
+        return sdk_url, sha_256
 
     @staticmethod
     def _find_sdk_url(sdk_release, arch):
@@ -267,6 +317,27 @@ class Application:
         return sha256.hexdigest(), sha512.hexdigest()
 
     @staticmethod
+    def _prepare_git_branch(file_path, latest_sdk_release):
+        branch_name = "update-{0}-to-{1}".format(file_path, latest_sdk_release['sdk']['version'])
+
+        if not dry_run:
+            os.system('git checkout "{0}" || git checkout -b "{0}"'.format(branch_name))
+            os.system('git reset --hard origin/master')
+
+        return branch_name
+
+    @staticmethod
+    def _push_git_branch(file_path, sdk_version, latest_sdk_release, branch_name):
+        commit_message = '[Auto] update {0} from {1} to {2}'.format(file_path, str(sdk_version), latest_sdk_release['sdk']['version'])
+
+        if not dry_run:
+            os.system('git add {0}'.format(file_path))
+            os.system('git add {0}'.format('README.md'))
+            os.system('git commit -m "{0}"'.format(commit_message))
+            os.system('git push origin {0}'.format(branch_name))
+            os.system('hub pull-request --base master --head "{0}" -m "{1}"'.format(branch_name, commit_message))
+
+    @staticmethod
     def _log(name, value = ''):
         print('{0}: {1}'.format(name, str(value)))
 
@@ -275,4 +346,11 @@ class Application:
         print(message)
 
 
-Application.run()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--really_push", action='store_true', default=False, help='Indicates whether we really push to git or not')
+
+    args = parser.parse_args()
+    Application.dry_run = not args.really_push
+
+    Application.run()

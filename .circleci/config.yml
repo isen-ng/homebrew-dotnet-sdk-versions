@@ -33,7 +33,7 @@ jobs:
       - run: git config --global user.name "Isen Ng"
 
       # run with DRY_RUN=false
-      - run: ./auto_updater.sh false
+      - run: ./auto_updater.py --really_push
 workflows:
   version: 2
   weekly:
