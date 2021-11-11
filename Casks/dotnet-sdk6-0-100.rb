@@ -1,6 +1,7 @@
 cask "dotnet-sdk6-0-100" do
   version "6.0.100,6.0.0"
 
+  arch = Hardware::CPU.intel? ? "x64" : "arm64"
   sha256_x64 = "9203560506408d8f88774358b03cdcfcfa0495682fde6034b24f7ccaeddce2ef"
   sha256_arm64 = "df96e334b5ac10e9e4abccf81376f52da1ed0fb0ad3822709e3c27b8c0bfa01a"
   url_x64 = "https://download.visualstudio.microsoft.com/download/pr/14a45451-4cc9-48e1-af69-0aff75891d09/ff6e83986a2a9a535015fb3104a90a1b/dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
@@ -24,15 +25,15 @@ cask "dotnet-sdk6-0-100" do
 
   depends_on macos: "> :sierra"
 
-  pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
+  pkg "dotnet-sdk-#{version.before_comma}-osx-#{arch}.pkg"
 
-  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64"
+  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.#{arch}"
 
   zap trash:   ["~/.dotnet", "~/.nuget"],
       pkgutil: [
-        "com.microsoft.dotnet.hostfxr.#{version.after_comma}.component.osx.x64",
-        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.after_comma}.component.osx.x64",
-        "com.microsoft.dotnet.sharedhost.component.osx.x64",
+        "com.microsoft.dotnet.hostfxr.#{version.after_comma}.component.osx.#{arch}",
+        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.after_comma}.component.osx.#{arch}",
+        "com.microsoft.dotnet.sharedhost.component.osx.#{arch}",
       ]
 
   caveats "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, "\
