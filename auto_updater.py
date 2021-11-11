@@ -242,13 +242,14 @@ class Application:
         with open(file_path, 'r') as file:
             content = file.read()
 
-        url_with_interpolation = sdk_url.replace(latest_sdk_release['sdk']['version'], '#{version.before_comma}')
+        x64_url_with_interpolation = x64_sdk_url.replace(latest_sdk_release['sdk']['version'], '#{version.before_comma}')
+        arm64_url_with_interpolation = arm64_sdk_url.replace(latest_sdk_release['sdk']['version'], '#{version.before_comma}')
 
         new_version = 'version "{0},{1}"'.format(latest_sdk_release['sdk']['version'], latest_sdk_release['runtime']['version'])
         new_x64_sha_256 = 'sha256_x64 "{0}"'.format(sha_256)
-        new_x64_url = 'url_x64 "{0}"'.format(url_with_interpolation)
+        new_x64_url = 'url_x64 "{0}"'.format(x64_url_with_interpolation)
         new_arm64_sha_256 = 'sha256_arm64 "{0}"'.format(sha_256)
-        new_arm64_url = 'url_arm64 "{0}"'.format(url_with_interpolation)
+        new_arm64_url = 'url_arm64 "{0}"'.format(arm64_url_with_interpolation)
         Application._log('new_version', new_version)
         Application._log('new_x64_sha_256', new_x64_sha_256)
         Application._log('new_x64_url', new_x64_url)
