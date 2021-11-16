@@ -8,12 +8,16 @@ cask "dotnet-sdk5-0-400" do
   homepage "https://www.microsoft.com/net/core#macos"
 
   livecheck do
-    skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions"
+    skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
   end
 
   depends_on macos: "> :sierra"
 
   pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
+
+  postflight do
+    FileUtils.ln_sf("/usr/local/share/dotnet/x64/dotnet", "#{HOMEBREW_PREFIX}/bin")
+  end
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64"
 
