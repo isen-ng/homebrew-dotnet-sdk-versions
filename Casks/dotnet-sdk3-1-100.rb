@@ -22,7 +22,7 @@ cask "dotnet-sdk3-1-100" do
         "com.microsoft.dotnet.hostfxr.#{version.after_comma}.component.osx.x64",
         "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.after_comma}.component.osx.x64",
         "com.microsoft.dotnet.pack.apphost.#{version.after_comma}.component.osx.x64.pkg",
-        "com.microsoft.dotnet.sharedhost.component.osx.x64"
+        "com.microsoft.dotnet.sharedhost.component.osx.x64",
       ]
 
   caveats "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, "\
