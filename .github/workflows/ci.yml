@@ -188,25 +188,6 @@ jobs:
         if: always() && steps.info.outcome == 'success' && !matrix.skip_install
         timeout-minutes: 30
 
-      - name: Run brew install --cask ${{ matrix.cask.token }} again for zapping
-        id: install
-        run: brew install --cask '${{ matrix.cask.path }}'
-        if: >
-          always() && steps.info.outcome == 'success' &&
-          fromJSON(steps.info.outputs.macos_requirement_satisfied) &&
-          !matrix.skip_install
-        timeout-minutes: 30
-
-      - name: Run brew zap --cask ${{ matrix.cask.token }}
-        run: brew zap --cask '${{ matrix.cask.path }}'
-        if: always() && steps.install.outcome == 'success' && !fromJSON(steps.info.outputs.manual_installer)
-        timeout-minutes: 30
-
-      - name: Run pkgutil after zapping
-        run: pkgutil --pkgs
-        if: always() && steps.info.outcome == 'success' && !matrix.skip_install
-        timeout-minutes: 30
-
       - name: Uninstall formula dependencies
         run: |
           brew uninstall --formula ${{ join(fromJSON(steps.info.outputs.formula_dependencies), ' ') }}
