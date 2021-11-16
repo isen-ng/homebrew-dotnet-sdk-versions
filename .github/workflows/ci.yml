@@ -161,7 +161,11 @@ jobs:
 
       - name: Run pkgutil before installation
         id: packages-before-installation
-        run: echo "::set-output name=packages::$(pkgutil --pkgs)"
+        run: |
+          PACKAGES=$(pkgutil --pkgs)
+          echo "PACKAGES_BEFORE_INSTALL<<EOF" >> $GITHUB_ENV
+          echo "$PACKAGES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
         if: always() && steps.info.outcome == 'success' && !matrix.skip_install
         timeout-minutes: 1
 
@@ -177,24 +181,11 @@ jobs:
       - name: List installed packages
         id: packages-after-installation
         run: |
-          PACKAGES_AFTER_INSTALL=$(pkgutil --pkgs)
-          echo "::set-output name=packages::PACKAGES_AFTER_INSTALL"
-          diff <(echo "${{ steps.packages-before-installation.outputs.packages }}") <(echo "$PACKAGES_AFTER_INSTALL") || true
-        if: always() && steps.info.outcome == 'success' && !matrix.skip_install
-        timeout-minutes: 1
-
-      - name: Run pkgutil after installation 2
-        run: pkgutil --groups
-        if: always() && steps.info.outcome == 'success' && !matrix.skip_install
-        timeout-minutes: 1
-
-      - name: Run pkgutil after installation 3
-        run: pkgutil --pkg-info com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.3.1.20.component.osx.x64
-        if: always() && steps.info.outcome == 'success' && !matrix.skip_install
-        timeout-minutes: 1
-
-      - name: Run pkgutil after installation 3
-        run: pkgutil --pkg-info com.microsoft.dotnet.dev.3.1.120.component.osx.x64
+          PACKAGES=$(pkgutil --pkgs) >> $GITHUB_ENV
+          echo "PACKAGES_AFTER_INSTALL<<EOF" >> $GITHUB_ENV
+          echo "$PACKAGES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          diff <(echo "${{ env.PACKAGES_BEFORE_INSTALL }}") <(echo "$PACKAGES") || true
         if: always() && steps.info.outcome == 'success' && !matrix.skip_install
         timeout-minutes: 1
 
@@ -204,7 +195,7 @@ jobs:
         timeout-minutes: 30
 
       - name: List uninstalled packages
-        run: diff <(echo "${{ steps.packages-after-installation.outputs.packages }}") <(pkgutil --pkgs) || true
+        run: diff <(echo "${{ env.PACKAGES_AFTER_INSTALL }}") <(pkgutil --pkgs) || true
         if: always() && steps.info.outcome == 'success' && !matrix.skip_install
         timeout-minutes: 1
 
