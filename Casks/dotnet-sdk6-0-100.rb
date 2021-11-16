@@ -28,7 +28,9 @@ cask "dotnet-sdk6-0-100" do
 
   pkg "dotnet-sdk-#{version.before_comma}-osx-#{arch}.pkg"
 
-  postflight script: "bash -c which dotnet || ln -s #{link} $(brew --prefix)/bin/dotnet"
+  postflight do
+    FileUtils.ln_sf("#{link}", "#{HOMEBREW_PREFIX}/bin")
+  end
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.#{arch}"
 
@@ -40,9 +42,7 @@ cask "dotnet-sdk6-0-100" do
         "com.microsoft.dotnet.sharedhost.component.osx.#{arch}",
       ]
 
-  caveats "This is an alternate version of dotnet-sdk so it will not be symlinked. If your `dotnet` is not already"\
-          "linked, you can run this to link it: `ln -s #{link} $(brew --prefix)/bin/dotnet`\n\n"\
-          "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, "\
+  caveats "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, "\
           "so you\'ll need to reinstall the particular version cask you want from this tap again "\
           "for the `dotnet` command to work again."
 end
