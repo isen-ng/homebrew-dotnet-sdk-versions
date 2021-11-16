@@ -174,13 +174,18 @@ jobs:
         timeout-minutes: 30
 
       - name: Run pkgutil after installation
-        run: pkgutil --pkgs || pkgutil --groups || pkgutil --pkg-info com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.3.1.20.component.osx.x64
+        run: pkgutil --pkgs
         if: always() && steps.info.outcome == 'success' && !matrix.skip_install
         timeout-minutes: 1
 
-      - name: Ensure sdk is installed
-        run: dotnet --list-sdks
-        if: always() && steps.install.outcome == 'success'
+      - name: Run pkgutil after installation 2
+        run: pkgutil --groups
+        if: always() && steps.info.outcome == 'success' && !matrix.skip_install
+        timeout-minutes: 1
+
+      - name: Run pkgutil after installation 3
+        run: pkgutil --pkg-info com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.3.1.20.component.osx.x64
+        if: always() && steps.info.outcome == 'success' && !matrix.skip_install
         timeout-minutes: 1
 
       - name: Run brew uninstall --cask ${{ matrix.cask.token }}
