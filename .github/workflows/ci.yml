@@ -162,7 +162,7 @@ jobs:
       - name: Run pkgutil before installation
         run: pkgutil --pkgs
         if: always() && steps.info.outcome == 'success' && !matrix.skip_install
-        timeout-minutes: 30
+        timeout-minutes: 1
 
       - name: Run brew install --cask ${{ matrix.cask.token }}
         id: install
@@ -174,9 +174,14 @@ jobs:
         timeout-minutes: 30
 
       - name: Run pkgutil after installation
-        run: pkgutil --pkgs
+        run: pkgutil --pkgs || pkgutil --groups || pkgutil --pkg-info com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.3.1.20.component.osx.x64
         if: always() && steps.info.outcome == 'success' && !matrix.skip_install
-        timeout-minutes: 30
+        timeout-minutes: 1
+
+      - name: Ensure sdk is installed
+        run: dotnet --list-sdks
+        if: always() && steps.install.outcome == 'success'
+        timeout-minutes: 1
 
       - name: Run brew uninstall --cask ${{ matrix.cask.token }}
         run: brew uninstall --cask '${{ matrix.cask.path }}'
@@ -186,7 +191,7 @@ jobs:
       - name: Run pkgutil after uninstallation
         run: pkgutil --pkgs
         if: always() && steps.info.outcome == 'success' && !matrix.skip_install
-        timeout-minutes: 30
+        timeout-minutes: 1
 
       - name: Uninstall formula dependencies
         run: |
