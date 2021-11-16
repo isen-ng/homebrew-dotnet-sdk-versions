@@ -29,7 +29,7 @@ cask "dotnet-sdk6-0-100" do
   pkg "dotnet-sdk-#{version.before_comma}-osx-#{arch}.pkg"
 
   postflight do
-    FileUtils.ln_sf("#{link}", "#{HOMEBREW_PREFIX}/bin")
+    FileUtils.ln_sf(link.to_s, "#{HOMEBREW_PREFIX}/bin/dotnet")
   end
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.#{arch}"
