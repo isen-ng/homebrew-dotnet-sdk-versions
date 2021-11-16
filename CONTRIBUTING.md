@@ -1,5 +1,12 @@
 # Contribution guide
 
+## Offical cask
+
+If there is a need to refer to the official cask, it can be found here:
+
+https://github.com/Homebrew/homebrew-cask/blob/master/Casks/dotnet-sdk.rb
+
+
 ## Automatic updates
 
 Each working cask will be updated weekly automatically by running `auto_updater.sh` through a 
@@ -63,8 +70,9 @@ git commit -m "Add support for dotnet-sdk-2.99.400.rb"
 git push fork new-cask/dotnet-sdk-2.99.400
 ```
 
-## Offical cask
+## How to upgrade a cask
 
-If there is a need to refer to the official cask, it can be found here:
-
-https://github.com/Homebrew/homebrew-cask/blob/master/Casks/dotnet-sdk.rb
+```
+brew update
+brew upgrade --cask dotnet-sdk2-1-400
+```
