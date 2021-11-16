@@ -21,7 +21,6 @@ cask "dotnet-sdk2-2-100" do
       pkgutil: [
         "com.microsoft.dotnet.hostfxr.#{version.after_comma}.component.osx.x64",
         "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.after_comma}.component.osx.x64",
-        "com.microsoft.dotnet.pack.apphost.#{version.after_comma}.component.osx.x64",
         "com.microsoft.dotnet.sharedhost.component.osx.x64",
       ]
 
