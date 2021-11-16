@@ -179,7 +179,7 @@ jobs:
         run: |
           PACKAGES_AFTER_INSTALL=$(pkgutil --pkgs)
           echo "::set-output name=packages::PACKAGES_AFTER_INSTALL"
-          diff <(echo "${{ steps.packages-before-installation.output.packages }}") <(echo "$PACKAGES_AFTER_INSTALL")
+          diff <(echo "${{ steps.packages-before-installation.outputs.packages }}") <(echo "$PACKAGES_AFTER_INSTALL") || true
         if: always() && steps.info.outcome == 'success' && !matrix.skip_install
         timeout-minutes: 1
 
@@ -204,7 +204,7 @@ jobs:
         timeout-minutes: 30
 
       - name: List uninstalled packages
-        run: diff <(echo "${{ steps.packages-after-installation.output.packages }}") <(pkgutil --pkgs)
+        run: diff <(echo "${{ steps.packages-after-installation.outputs.packages }}") <(pkgutil --pkgs) || true
         if: always() && steps.info.outcome == 'success' && !matrix.skip_install
         timeout-minutes: 1
 
