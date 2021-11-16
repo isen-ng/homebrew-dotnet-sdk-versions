@@ -27,6 +27,7 @@ cask "dotnet-sdk6-0-100" do
   depends_on macos: "> :sierra"
 
   pkg "dotnet-sdk-#{version.before_comma}-osx-#{arch}.pkg"
+  installer script: "which dotnet || ln -s #{link} $(brew --prefix)/bin/dotnet"
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.#{arch}"
 
