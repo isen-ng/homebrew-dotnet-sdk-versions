@@ -161,7 +161,7 @@ jobs:
 
       - name: Run pkgutil before installation
         id: packages-before-installation
-        run: puts "::set-output name=packages::$(pkgutil --pkgs)"
+        run: echo "::set-output name=packages::$(pkgutil --pkgs)"
         if: always() && steps.info.outcome == 'success' && !matrix.skip_install
         timeout-minutes: 1
 
@@ -178,7 +178,7 @@ jobs:
         id: packages-after-installation
         run: |
           PACKAGES_AFTER_INSTALL=$(pkgutil --pkgs)
-          puts "::set-output name=packages::PACKAGES_AFTER_INSTALL"
+          echo "::set-output name=packages::PACKAGES_AFTER_INSTALL"
           diff <(echo "${{ steps.packages-before-installation.output.packages }}") <(echo "$PACKAGES_AFTER_INSTALL")
         if: always() && steps.info.outcome == 'success' && !matrix.skip_install
         timeout-minutes: 1
