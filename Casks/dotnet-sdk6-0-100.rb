@@ -2,6 +2,7 @@ cask "dotnet-sdk6-0-100" do
   version "6.0.100,6.0.0"
 
   arch = Hardware::CPU.intel? ? "x64" : "arm64"
+  link = Hardware::CPU.intel? ? "/usr/local/share/dotnet/x64/dotnet" : "/usr/local/share/dotnet/dotnet"
   sha256_x64 = "9203560506408d8f88774358b03cdcfcfa0495682fde6034b24f7ccaeddce2ef"
   sha256_arm64 = "df96e334b5ac10e9e4abccf81376f52da1ed0fb0ad3822709e3c27b8c0bfa01a"
   url_x64 = "https://download.visualstudio.microsoft.com/download/pr/14a45451-4cc9-48e1-af69-0aff75891d09/ff6e83986a2a9a535015fb3104a90a1b/dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
@@ -37,7 +38,9 @@ cask "dotnet-sdk6-0-100" do
         "com.microsoft.dotnet.sharedhost.component.osx.#{arch}",
       ]
 
-  caveats "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, "\
+  caveats "This is an alternate version of dotnet-sdk so it will not be symlinked. If your `dotnet` is not already"\
+          "linked, you can run this to link it: `ln -s #{link} $(brew --prefix)/bin/dotnet`\n\n"\
+          "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, "\
           "so you\'ll need to reinstall the particular version cask you want from this tap again "\
           "for the `dotnet` command to work again."
 end
