@@ -11,22 +11,15 @@ cask "dotnet-sdk2-2-400" do
     skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
   end
 
-  if MacOS.version <= :sierra
-    conflicts_with cask: [
-      "dotnet",
-      "dotnet-sdk",
-    ]
-  end
-
   depends_on macos: ">= :sierra"
 
   pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
 
-  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64",
-            delete:  [
-              "/etc/paths.d/dotnet",
-              "/etc/paths.d/dotnet-cli-tools",
-            ]
+  postflight do
+    FileUtils.ln_sf("/usr/local/share/dotnet/dotnet", "#{HOMEBREW_PREFIX}/bin/dotnet")
+  end
+
+  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64"
 
   zap trash:   ["~/.dotnet", "~/.nuget"],
       pkgutil: [
