@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# DEPRECATION NOTICE
+# This updater is no longer in use. See `auto_updater.py` for the next generation updater.
+# This is still kept here to show my future self that I was once capable of writing a overly
+# complicated shell script 
+
 set -u
 set -e
 DRY_RUN=${1:-true}
