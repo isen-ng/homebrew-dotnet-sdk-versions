@@ -29,7 +29,7 @@ cask "dotnet-sdk6-0-100" do
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.#{arch}"
 
-  zap trash:   ["~/.dotnet", "~/.nuget"],
+  zap trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools" ],
       pkgutil: [
         "com.microsoft.dotnet.hostfxr.#{version.after_comma}.component.osx.#{arch}",
         "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.after_comma}.component.osx.#{arch}",
