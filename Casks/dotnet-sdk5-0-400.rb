@@ -16,7 +16,8 @@ cask "dotnet-sdk5-0-400" do
   pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
 
   postflight do
-    FileUtils.ln_sf("/usr/local/share/dotnet/x64/dotnet", "#{HOMEBREW_PREFIX}/bin/dotnet86") unless Hardware::CPU.intel?
+    FileUtils.ln_sf("/usr/local/share/dotnet/x64/dotnet", "#{HOMEBREW_PREFIX}/bin/dotnet86") \
+    unless Hardware::CPU.intel?
   end
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64"
