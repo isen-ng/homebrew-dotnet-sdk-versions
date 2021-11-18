@@ -16,7 +16,7 @@ cask "dotnet-sdk3-1-400" do
   pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
 
   postflight do
-    FileUtils.ln_sf("/usr/local/share/dotnet/x64/dotnet", "#{HOMEBREW_PREFIX}/bin/dotnet86") \
+    FileUtils.ln_sf("/usr/local/share/dotnet/x64/dotnet", "#{HOMEBREW_PREFIX}/bin/dotnetx64") \
     unless Hardware::CPU.intel?
   end
 
@@ -31,7 +31,7 @@ cask "dotnet-sdk3-1-400" do
       ]
 
   caveats "If you are installing this x64 binary on an Apple M1 (arm64) machine, the x64 version of `dotnet`"\
-          "command will be symlinked as `dotnet86`\n\n"\
+          "command will be symlinked as `dotnetx64`\n\n"\
           "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, "\
           "so you\'ll need to reinstall the particular version cask you want from this tap again "\
           "for the `dotnet` command to work again."
