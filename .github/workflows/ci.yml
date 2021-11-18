@@ -178,6 +178,14 @@ jobs:
           !matrix.skip_install
         timeout-minutes: 30
 
+      - name: ls dotnet
+        run: ls -la /usr/local/share/dotnet/dotnet
+        if: always()
+
+      - name: ls x64/dotnet
+        run: ls -la /usr/local/share/dotnet/x64/dotnet
+        if: always()      
+
       - name: List installed packages
         id: packages-after-installation
         run: |
