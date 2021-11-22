@@ -15,13 +15,9 @@ cask "dotnet-sdk2-2-300" do
 
   pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
 
-  postflight do
-    FileUtils.ln_sf("/usr/local/share/dotnet/dotnet", "#{HOMEBREW_PREFIX}/bin/dotnet")
-  end
-
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64"
 
-  zap trash:   ["~/.dotnet", "~/.nuget"],
+  zap trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"],
       pkgutil: [
         "com.microsoft.dotnet.hostfxr.#{version.after_comma}.component.osx.x64",
         "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.after_comma}.component.osx.x64",
