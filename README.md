@@ -23,7 +23,7 @@ dotnet --list-sdks
 | Version             | DotNet SDK     | Arch        | Remarks
 |---------------------|----------------|-------------|---------
 | `dotnet-sdk6-0-100` | dotnet 6.0.100 | x64 & arm64 |
-| `dotnet-sdk5-0-400` | dotnet 5.0.403 | x64         | When installed on arm64, use `dotnetx64`
+| `dotnet-sdk5-0-400` | dotnet 5.0.404 | x64         | When installed on arm64, use `dotnetx64`
 | `dotnet-sdk5-0-200` | dotnet 5.0.209 | x64         | When installed on arm64, use `dotnetx64`
 | `dotnet-sdk3-1-400` | dotnet 3.1.415 | x64         | When installed on arm64, use `dotnetx64`
 | `dotnet-sdk3-1-300` | dotnet 3.1.302 | x64         |
