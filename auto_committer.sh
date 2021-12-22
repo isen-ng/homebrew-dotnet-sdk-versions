@@ -108,14 +108,14 @@ for row in $(echo "$FILTERED_PR_LIST" | jq -r '.[] | @base64'); do
     # merge failed ???, try to process another
     if [ "$MERGED" != "true" ];
     then
-	  echo "[error] PR merge failed ???: $PR_URL"
-	  EXIT_CODE=1
-	  continue
+    echo "[error] PR merge failed ???: $PR_URL"
+    EXIT_CODE=1
+    continue
     fi
 
-	# this deletes the merged branch, but there is no longer a need
+  # this deletes the merged branch, but there is no longer a need
   # this is because github now deletes merged branches by default
-	# hub push origin :$HEAD_REF
+  # hub push origin :$HEAD_REF
 
   fi
 
