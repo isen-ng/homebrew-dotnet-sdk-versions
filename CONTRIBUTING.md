@@ -79,6 +79,6 @@ brew upgrade --cask dotnet-sdk2-1-400
 
 ## Tapping a local path
 
-````
+```
 brew tap isen-ng/dotnet-sdk-version $PWD
 ```

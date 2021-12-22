@@ -113,8 +113,10 @@ for row in $(echo "$FILTERED_PR_LIST" | jq -r '.[] | @base64'); do
 	  continue
     fi
 
-	# this deletes the merged branch
-	hub push origin :$HEAD_REF
+	# this deletes the merged branch, but there is no longer a need
+  # this is because github now deletes merged branches by default
+	# hub push origin :$HEAD_REF
+
   fi
 
   if [ "$DRY_RUN" == true ]; then
