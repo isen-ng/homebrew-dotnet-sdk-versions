@@ -236,7 +236,7 @@ class Application:
         return True
 
     @staticmethod
-    def _update_intel_arm_only_cask(file_path, latest_sdk_release):
+    def _update_intel_arm_cask(file_path, latest_sdk_release):
         x64_sdk_url, x64_sha_256 = Application._find_download_and_verify_sdk_url(latest_sdk_release, 'x64')
         arm64_sdk_url, arm64_sha_256 = Application._find_download_and_verify_sdk_url(latest_sdk_release, 'arm64')
         if sdk_url is None or arm64_sdk_url is None:
@@ -326,7 +326,7 @@ class Application:
         branch_name = "update-{0}-to-{1}".format(file_path, latest_sdk_release['sdk']['version'])
 
         if Application.really_push:
-            os.system('git checkout "{0}" || git checkout -b "{0}"'.format(branch_name))
+            os.system('git checkout -b "{0}" || git checkout "{0}"'.format(branch_name))
             os.system('git reset --hard origin/master')
 
         return branch_name
