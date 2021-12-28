@@ -107,10 +107,10 @@ class Application:
     # `url "https://download.visualstudio.microsoft.com/download/pr/38102737-cb48-46c2-8f52-fb7102b50ae7/d81958d71c3c2679796e1ecfbd9cc903/dotnet-sdk-#{version.before_comma}-osx-x64.pkg"`
     url_pattern = re.compile('url "([^\s]+)"')
 
-    sha_256_x64_pattern = re.compile('sha256_x64 "([0-9a-z]+)"')
-    sha_256_arm64_pattern = re.compile('sha256_arm64 "([0-9a-z]+)"')
-    url_x64_pattern = re.compile('url_x64 "([^\s]+)"')
-    url_arm64_pattern = re.compile('url_arm64 "([^\s]+)"')
+    sha_256_x64_pattern = re.compile('sha256_x64 = "([0-9a-z]+)"')
+    sha_256_arm64_pattern = re.compile('sha256_arm64 = "([0-9a-z]+)"')
+    url_x64_pattern = re.compile('url_x64 = "([^\s]+)"')
+    url_arm64_pattern = re.compile('url_arm64 = "([^\s]+)"')
 
     really_push = False
 
@@ -339,7 +339,7 @@ class Application:
             os.system('git add {0}'.format(file_path))
             os.system('git add {0}'.format('README.md'))
             os.system('git commit -m "{0}"'.format(commit_message))
-            os.system('git push origin {0}'.format(branch_name))
+            os.system('git push origin --force {0}'.format(branch_name))
             os.system('hub pull-request --base master --head "{0}" -m "{1}"'.format(branch_name, commit_message))
 
     @staticmethod
