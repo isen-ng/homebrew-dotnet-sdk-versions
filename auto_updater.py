@@ -141,10 +141,10 @@ class Application:
             git_branch_name = Application._prepare_git_branch(file_path, latest_sdk_release)
 
             is_cask_updated = False
-            if not is_arm_supported:
-                is_cask_updated = Application._update_intel_only_cask(file_path, latest_sdk_release)
-            else:
+            if is_arm_supported:
                 is_cask_updated = Application._update_intel_arm_cask(file_path, latest_sdk_release)
+            else:
+                is_cask_updated = Application._update_intel_only_cask(file_path, latest_sdk_release)  
 
             if is_cask_updated:
                 Application._update_read_me(sdk_version, latest_sdk_release)
