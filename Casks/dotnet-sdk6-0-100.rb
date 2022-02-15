@@ -4,8 +4,8 @@ cask "dotnet-sdk6-0-100" do
   arch = Hardware::CPU.intel? ? "x64" : "arm64"
   sha256_x64 = "09e5bf1946b3892cc9f3bcba495e0524b849e006900332e0f58baeca8498121a"
   sha256_arm64 = "9222af1505b3698c2cc929110b4b068ad99ede3291c4e365dc8c59c6b0c0d5c9"
-  url_x64 = "https://download.visualstudio.microsoft.com/download/pr/8509554d-61b4-43b8-b934-ad2e679ce18f/aa565a52b909b3133ef6763bb2868a49/dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
-  url_arm64 = "https://download.visualstudio.microsoft.com/download/pr/cc2a94b1-7f3c-44f8-a842-f288a0cff04e/32446a93655522a1f933d4afb5e15836/dotnet-sdk-#{version.before_comma}-osx-arm64.pkg"
+  url_x64 = "https://download.visualstudio.microsoft.com/download/pr/8509554d-61b4-43b8-b934-ad2e679ce18f/aa565a52b909b3133ef6763bb2868a49/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
+  url_arm64 = "https://download.visualstudio.microsoft.com/download/pr/cc2a94b1-7f3c-44f8-a842-f288a0cff04e/32446a93655522a1f933d4afb5e15836/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
 
   if Hardware::CPU.intel?
     sha256 sha256_x64
@@ -15,7 +15,7 @@ cask "dotnet-sdk6-0-100" do
     url url_arm64
   end
 
-  name ".NET Core SDK #{version.before_comma}"
+  name ".NET Core SDK #{version.csv.first}"
   desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
   homepage "https://www.microsoft.com/net/core#macos"
 
@@ -25,15 +25,15 @@ cask "dotnet-sdk6-0-100" do
 
   depends_on macos: "> :sierra"
 
-  pkg "dotnet-sdk-#{version.before_comma}-osx-#{arch}.pkg"
+  pkg "dotnet-sdk-#{version.csv.first}-osx-#{arch}.pkg"
 
-  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.#{arch}"
+  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.#{arch}"
 
   zap trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"],
       pkgutil: [
-        "com.microsoft.dotnet.hostfxr.#{version.after_comma}.component.osx.#{arch}",
-        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.after_comma}.component.osx.#{arch}",
-        "com.microsoft.dotnet.pack.apphost.#{version.after_comma}.component.osx.#{arch}",
+        "com.microsoft.dotnet.hostfxr.#{version.csv.second}.component.osx.#{arch}",
+        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.#{arch}",
+        "com.microsoft.dotnet.pack.apphost.#{version.csv.second}.component.osx.#{arch}",
         "com.microsoft.dotnet.sharedhost.component.osx.#{arch}",
       ]
 
