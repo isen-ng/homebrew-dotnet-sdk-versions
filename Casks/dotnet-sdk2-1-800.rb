@@ -2,8 +2,8 @@ cask "dotnet-sdk2-1-800" do
   version "2.1.818,2.1.30"
   sha256 "a2ec5343cedf0daeb81fb557601f334633535a53cadd4506aae09dd90ad5d0d9"
 
-  url "https://download.visualstudio.microsoft.com/download/pr/9f2c289a-f8f1-42cc-b319-091cf0394094/e08707b0494afb833f3cad1a2301aaff/dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
-  name ".NET Core SDK #{version.before_comma}"
+  url "https://download.visualstudio.microsoft.com/download/pr/9f2c289a-f8f1-42cc-b319-091cf0394094/e08707b0494afb833f3cad1a2301aaff/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
+  name ".NET Core SDK #{version.csv.first}"
   desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
   homepage "https://www.microsoft.com/net/core#macos"
 
@@ -13,14 +13,14 @@ cask "dotnet-sdk2-1-800" do
 
   depends_on macos: ">= :sierra"
 
-  pkg "dotnet-sdk-#{version.before_comma}-osx-x64.pkg"
+  pkg "dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
 
-  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.before_comma}.component.osx.x64"
+  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.x64"
 
   zap trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"],
       pkgutil: [
-        "com.microsoft.dotnet.hostfxr.#{version.after_comma}.component.osx.x64",
-        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.after_comma}.component.osx.x64",
+        "com.microsoft.dotnet.hostfxr.#{version.csv.second}.component.osx.x64",
+        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.x64",
         "com.microsoft.dotnet.sharedhost.component.osx.x64",
       ]
 
