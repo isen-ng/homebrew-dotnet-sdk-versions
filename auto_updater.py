@@ -104,7 +104,7 @@ class Application:
     # `sha256 "d290cefddb4fbdf1215724c049d86b4ce09f5dc2c5a658e3c1645c368f34c31a"`
     sha_256_pattern = re.compile('sha256 "([0-9a-z]+)"')
 
-    # `url "https://download.visualstudio.microsoft.com/download/pr/38102737-cb48-46c2-8f52-fb7102b50ae7/d81958d71c3c2679796e1ecfbd9cc903/dotnet-sdk-#{version.before_comma}-osx-x64.pkg"`
+    # `url "https://download.visualstudio.microsoft.com/download/pr/38102737-cb48-46c2-8f52-fb7102b50ae7/d81958d71c3c2679796e1ecfbd9cc903/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"`
     url_pattern = re.compile('url "([^\s]+)"')
 
     sha_256_x64_pattern = re.compile('sha256_x64 = "([0-9a-z]+)"')
@@ -217,7 +217,7 @@ class Application:
             content = file.read()
 
         # url needs to have SOME version interpolation to make brew audit happy
-        url_with_interpolation = sdk_url.replace(latest_sdk_release['sdk']['version'], '#{version.before_comma}')
+        url_with_interpolation = sdk_url.replace(latest_sdk_release['sdk']['version'], '#{version.csv.first}')
 
         new_version = 'version "{0},{1}"'.format(latest_sdk_release['sdk']['version'], latest_sdk_release['runtime']['version'])
         new_sha_256 = 'sha256 "{0}"'.format(sha_256)
@@ -246,8 +246,8 @@ class Application:
             content = file.read()
 
         # url needs to have SOME version interpolation to make brew audit happy
-        x64_url_with_interpolation = x64_sdk_url.replace(latest_sdk_release['sdk']['version'], '#{version.before_comma}')
-        arm64_url_with_interpolation = arm64_sdk_url.replace(latest_sdk_release['sdk']['version'], '#{version.before_comma}')
+        x64_url_with_interpolation = x64_sdk_url.replace(latest_sdk_release['sdk']['version'], '#{version.csv.first}')
+        arm64_url_with_interpolation = arm64_sdk_url.replace(latest_sdk_release['sdk']['version'], '#{version.csv.first}')
 
         new_version = 'version "{0},{1}"'.format(latest_sdk_release['sdk']['version'], latest_sdk_release['runtime']['version'])
         new_x64_sha_256 = 'sha256_x64 = "{0}"'.format(x64_sha_256)
