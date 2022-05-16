@@ -24,7 +24,7 @@ dotnet --list-sdks
 |---------------------|----------------|-------------|---------
 | `dotnet-sdk6-0-200` | dotnet 6.0.202 | x64 & arm64 |
 | `dotnet-sdk6-0-100` | dotnet 6.0.102 | x64 & arm64 |
-| `dotnet-sdk5-0-400` | dotnet 5.0.407 | x64         | When installed on arm64, use `dotnetx64`
+| `dotnet-sdk5-0-400` | dotnet 5.0.408 | x64         | When installed on arm64, use `dotnetx64`
 | `dotnet-sdk5-0-200` | dotnet 5.0.209 | x64         | When installed on arm64, use `dotnetx64`
 | `dotnet-sdk3-1-400` | dotnet 3.1.418 | x64         | When installed on arm64, use `dotnetx64`
 | `dotnet-sdk3-1-300` | dotnet 3.1.302 | x64         |
