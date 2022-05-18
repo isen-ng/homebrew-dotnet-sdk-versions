@@ -1,8 +1,8 @@
 cask "dotnet-sdk5-0-400" do
-  version "5.0.407,5.0.16"
-  sha256 "c5719b150c093eb5b8c487a372643e9630f59d3d318250286f29217c41e72e37"
+  version "5.0.408,5.0.17"
+  sha256 "ba10d0eb89480b8db37da6945766b167353fa342289c9a92eb102e12b4a25701"
 
-  url "https://download.visualstudio.microsoft.com/download/pr/b5abafee-b221-4765-857f-06c60e99d9e9/29d8b1073f7da4e19606ff4f116450f6/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
+  url "https://download.visualstudio.microsoft.com/download/pr/7ed34a57-4da0-4fb3-bd14-614996036744/22215f1d06b49f861f94d760881d6626/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
   name ".NET Core SDK #{version.csv.first}"
   desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
   homepage "https://www.microsoft.com/net/core#macos"
@@ -11,7 +11,7 @@ cask "dotnet-sdk5-0-400" do
     skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
   end
 
-  depends_on macos: "> :sierra"
+  depends_on macos: ">= :high_sierra"
 
   pkg "dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
 
