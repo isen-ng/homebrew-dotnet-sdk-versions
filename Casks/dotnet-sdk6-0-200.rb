@@ -23,8 +23,6 @@ cask "dotnet-sdk6-0-200" do
     skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
   end
 
-  depends_on macos: "> :mojave"
-
   pkg "dotnet-sdk-#{version.csv.first}-osx-#{arch}.pkg"
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.#{arch}"
