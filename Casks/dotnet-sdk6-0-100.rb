@@ -37,7 +37,7 @@ cask "dotnet-sdk6-0-100" do
         "com.microsoft.dotnet.sharedhost.component.osx.#{arch}",
       ]
 
-  caveats "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, "\
-          "so you\'ll need to reinstall the particular version cask you want from this tap again "\
+  caveats "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, " \
+          "so you\'ll need to reinstall the particular version cask you want from this tap again " \
           "for the `dotnet` command to work again."
 end

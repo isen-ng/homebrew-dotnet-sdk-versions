@@ -30,9 +30,9 @@ cask "dotnet-sdk3-1-400" do
         "com.microsoft.dotnet.sharedhost.component.osx.x64",
       ]
 
-  caveats "If you are installing this x64 binary on an Apple M1 (arm64) machine, the x64 version of `dotnet`"\
-          "command will be symlinked as `dotnetx64`\n\n"\
-          "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, "\
-          "so you\'ll need to reinstall the particular version cask you want from this tap again "\
+  caveats "If you are installing this x64 binary on an Apple M1 (arm64) machine, the x64 version of `dotnet`" \
+          "command will be symlinked as `dotnetx64`\n\n" \
+          "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, " \
+          "so you\'ll need to reinstall the particular version cask you want from this tap again " \
           "for the `dotnet` command to work again."
 end
