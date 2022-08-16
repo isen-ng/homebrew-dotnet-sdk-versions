@@ -1,7 +1,7 @@
 cask "dotnet-sdk6-0-200" do
+  arch arm: "arm64", intel: "x64"
   version "6.0.202,6.0.4"
 
-  arch arm: "arm64", intel: "x64"
   sha256_x64 = "e3378b6c90c6ae98b026db14ae7a7703dc01eae79c00d5e455cd73365a54c3f9"
   sha256_arm64 = "7d5c2f37cfc2fee080deac1d972f8413c84d97532157a346bac72f607b91a7c5"
   url_x64 = "https://download.visualstudio.microsoft.com/download/pr/4332c16b-5a65-4adf-b25d-f6a46ef2b335/1a1edc2dab547161e2448390c3d4f56d/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
