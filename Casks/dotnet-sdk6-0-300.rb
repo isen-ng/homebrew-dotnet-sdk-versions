@@ -1,5 +1,6 @@
 cask "dotnet-sdk6-0-300" do
   arch arm: "arm64", intel: "x64"
+
   version "6.0.302,6.0.7"
 
   sha256_x64 = "863a6b5a8ba6b0b2c1674bc952358e31c33cb0f4d98e8e6767241642bd1db9d1"
