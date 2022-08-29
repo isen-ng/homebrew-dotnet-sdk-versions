@@ -15,9 +15,8 @@ cask "dotnet-sdk3-1-400" do
 
   pkg "dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
 
-  postflight do
+  on_arm do
     FileUtils.ln_sf("/usr/local/share/dotnet/x64/dotnet", "#{HOMEBREW_PREFIX}/bin/dotnetx64") \
-    unless Hardware::CPU.intel?
   end
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.x64"
