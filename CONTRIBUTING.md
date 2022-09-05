@@ -51,11 +51,11 @@ cask 'dotnet-sdk-2.99.400' do
 end
 ```
 
-Then run `auto_updater.sh` in dry run mode.
+Then run `auto_updater.py` in dry run mode.
 
 ```
 # passing in no arguments defaults to dry run mode
-./auto_updater.sh
+./auto_updater.py
 ```
 
 The dry run mode will update all casks, including the cask you've just added without committing and publishing pull
