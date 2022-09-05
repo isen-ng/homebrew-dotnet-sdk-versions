@@ -1,4 +1,4 @@
-cask "dotnet-sdk-preview" do
+cask "dotnet-sdk7-preview" do
   arch arm: "arm64", intel: "x64"
 
   version "7.0.100-preview.7.22377.5,7.0.0-preview.7.22375.6"
