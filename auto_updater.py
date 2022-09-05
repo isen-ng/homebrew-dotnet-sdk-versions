@@ -202,7 +202,7 @@ class Application:
     def _cask_supports_arm(file_path):
         with open(file_path, 'r') as file:
             for line in file:
-                if 'arch = Hardware::CPU.intel? ? "x64" : "arm64"' in line.strip(): 
+                if 'arch arm: "arm64", intel: "x64"' in line.strip(): 
                     return True
 
             return False
