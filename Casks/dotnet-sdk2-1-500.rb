@@ -25,6 +25,6 @@ cask "dotnet-sdk2-1-500" do
       ]
 
   caveats "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, " \
-          "so you\'ll need to reinstall the particular version cask you want from this tap again " \
+          "so you'll need to reinstall the particular version cask you want from this tap again " \
           "for the `dotnet` command to work again."
 end
