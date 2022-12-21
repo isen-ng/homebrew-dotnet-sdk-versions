@@ -23,7 +23,7 @@ dotnet --list-sdks
 | Version             | DotNet SDK     | Arch        | Remarks
 |---------------------|----------------|-------------|---------
 | `dotnet-sdk7-0-100` | dotnet 7.0.101 | x64 & arm64 |
-| `dotnet-sdk6-0-400` | dotnet 6.0.403 | x64 & arm64 |
+| `dotnet-sdk6-0-400` | dotnet 6.0.404 | x64 & arm64 |
 | `dotnet-sdk6-0-300` | dotnet 6.0.303 | x64 & arm64 |
 | `dotnet-sdk6-0-200` | dotnet 6.0.202 | x64 & arm64 |
 | `dotnet-sdk6-0-100` | dotnet 6.0.108 | x64 & arm64 |
