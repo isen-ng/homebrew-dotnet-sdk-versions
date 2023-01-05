@@ -9,8 +9,8 @@ https://github.com/Homebrew/homebrew-cask/blob/master/Casks/dotnet-sdk.rb
 
 ## Automatic updates
 
-Each working cask will be updated weekly automatically by running `auto_updater.sh` through a 
-CircleCi scheduled workflow.
+Each working cask will be updated weekly automatically by running `auto_updater.py` through a 
+Github Actions scheduled workflow.
 
 The script will enumerate over each cask, search through the releases in their respective 
 `releases.json` and author a pull request if there is a newer version released.
@@ -30,7 +30,7 @@ manual intervention from the author. In this case, the author will be notified v
 
 Install the necessary tools if you already haven't
 
-```
+```shell
 ./brew_install_necessary.sh
 ```
 
@@ -38,7 +38,7 @@ Use the existing casks as a template and fill in the version number till the pat
 
 The runtime version, `sha256`, and the `url` isn't important and can be filled with placeholder text.
 
-```
+```ruby
 cask 'dotnet-sdk-2.99.400' do
   version '2.99.400,2.0.0'
   sha256 '?????'
@@ -53,7 +53,7 @@ end
 
 Then run `auto_updater.py` in dry run mode.
 
-```
+```shell
 # passing in no arguments defaults to dry run mode
 ./auto_updater.py
 ```
@@ -63,7 +63,7 @@ requests.
 
 Branch out, add the file you want to commit, commit, and push.
 
-```
+```shell
 git checkout -b new-cask/dotnet-sdk-2.99.400
 git add Casks/dotnet-sdk-2.99.400.rb
 git commit -m "Add support for dotnet-sdk-2.99.400.rb"
@@ -72,13 +72,13 @@ git push fork new-cask/dotnet-sdk-2.99.400
 
 ## How to upgrade a cask
 
-```
+```shell
 brew update
 brew upgrade --cask dotnet-sdk2-1-400
 ```
 
 ## Tapping a local path
 
-```
+```shell
 brew tap isen-ng/dotnet-sdk-version $PWD
 ```
