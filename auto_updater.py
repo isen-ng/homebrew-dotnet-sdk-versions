@@ -6,7 +6,6 @@ import hashlib
 import json
 import os
 import re
-import requests
 import urllib.request
 
 
@@ -267,7 +266,7 @@ class CaskService:
 
         return True
 
-    @staticmethod    
+    @staticmethod
     def update_read_me(sdk_release, latest_sdk_release):
         file_path = 'README.md'
 
@@ -287,7 +286,7 @@ class CaskService:
             return None, None
 
         sha_256, sha_512 = CaskService._download_and_calculate_sha256(sdk_url)
-        if not sdk_sha_512 == sha_512:
+        if not sdk_sha_512.casefold() == sha_512.casefold():
             Logger.output("Downloaded sha512[{0}] does not match provided sha512[{1}]. Man-in-the-middle? Skipping".format(sha_512, sdk_sha_512))
             return None, None
 
@@ -307,13 +306,14 @@ class CaskService:
         sha256 = hashlib.sha256()
         sha512 = hashlib.sha512()
 
-        with requests.get(url, stream = True) as r:
-            r.raise_for_status()
-            for chunk in r.iter_content(chunk_size=8192): 
+        with urllib.request.urlopen(url) as r:
+            while True:
+                chunk = r.read(8192)
                 if chunk:
                     sha256.update(chunk)
                     sha512.update(chunk)
-
+                else:
+                    break
 
         return sha256.hexdigest(), sha512.hexdigest()
 
@@ -349,7 +349,7 @@ class GitService:
             os.system('git add {0}'.format('README.md'))
             os.system('git commit -m "{0}"'.format(commit_message))
             os.system('git push origin --force {0}'.format(branch_name))
-            os.system('hub pull-request --base master --head "{0}" -m "{1}"'.format(branch_name, commit_message))
+            os.system('gh pr create --base master --head "{0}" --title "{1}"'.format(branch_name, commit_message))
 
 
 class PreviewUpdater:
@@ -357,7 +357,7 @@ class PreviewUpdater:
     version_pattern = re.compile('version "([0-9.,-preview]+)"')
 
     def __init__(self, git_service):
-        self.git_service = git_service    
+        self.git_service = git_service
         self.cask_service = CaskService(self.version_pattern)
 
     def run(self):
@@ -440,7 +440,7 @@ class Updater:
     version_pattern = re.compile('version "([0-9.,]+)"')
 
     def __init__(self, git_service):
-        self.git_service = git_service    
+        self.git_service = git_service
         self.cask_service = CaskService(self.version_pattern)
 
     def run(self):

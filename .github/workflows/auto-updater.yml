@@ -1,0 +1,28 @@
+name: auto-updater
+
+on:
+  schedule:
+    # run at 1700UTC (3am +8GMT) every monday
+    - cron: "0 19 * * 1"
+  workflow_dispatch:
+  
+
+jobs:
+  update:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set git username and email, so we can commit and push
+        run: |
+          git config --global user.email "3904043+isen-ng@users.noreply.github.com"
+          git config --global user.name "Isen Ng"
+
+      - name: Run auto_updater.py
+        env:
+          GITHUB_USER: ${{ secrets.GITHUB_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./auto_updater.py --really_push
