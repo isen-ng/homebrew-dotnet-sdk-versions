@@ -4,8 +4,8 @@ import argparse
 import glob
 import hashlib
 import json
-import os
 import re
+import subprocess
 import urllib.request
 
 
@@ -336,8 +336,9 @@ class GitService:
         branch_name = "update-{0}-to-{1}".format(file_path, latest_sdk_release['sdk']['version'])
 
         if self.really_push:
-            os.system('git checkout -b "{0}" || git checkout "{0}"'.format(branch_name))
-            os.system('git reset --hard origin/master')
+            subprocess.run(['git', 'checkout', '-b', branch_name], check = False)
+            subprocess.run(['git', 'checkout', branch_name], check = True)
+            subprocess.run(['git', 'reset', '--hard', 'origin/master'], check = True)
 
         return branch_name
 
@@ -345,11 +346,11 @@ class GitService:
         commit_message = '[Auto] update {0} from {1} to {2}'.format(file_path, str(sdk_version), latest_sdk_release['sdk']['version'])
 
         if self.really_push:
-            os.system('git add {0}'.format(file_path))
-            os.system('git add {0}'.format('README.md'))
-            os.system('git commit -m "{0}"'.format(commit_message))
-            os.system('git push origin --force {0}'.format(branch_name))
-            os.system('gh pr create --base master --head "{0}" --title "{1}" --body ""'.format(branch_name, commit_message))
+            subprocess.run(['git', 'add', file_path], check = True)
+            subprocess.run(['git', 'add', 'README.md'], check = True)
+            subprocess.run(['git', 'commit', '-m', commit_message], check = True)
+            subprocess.run(['git', 'push', 'origin', '--force', branch_name], check = True)
+            subprocess.run(['gh', 'pr', 'create', '--base', 'master', '--head', branch_name, '--title', commit_message, '--body', ''], check = True)
 
 
 class PreviewUpdater:
