@@ -24,5 +24,5 @@ jobs:
       - name: Run auto_updater.py
         env:
           GITHUB_USER: ${{ secrets.GITHUB_USER }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.UPDATER_PUSH_TOKEN }}
         run: ./auto_updater.py --really_push
