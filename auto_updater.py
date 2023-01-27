@@ -349,7 +349,7 @@ class GitService:
             os.system('git add {0}'.format('README.md'))
             os.system('git commit -m "{0}"'.format(commit_message))
             os.system('git push origin --force {0}'.format(branch_name))
-            os.system('gh pr create --base master --head "{0}" --title "{1}"'.format(branch_name, commit_message))
+            os.system('gh pr create --base master --head "{0}" --title "{1}" --body ""'.format(branch_name, commit_message))
 
 
 class PreviewUpdater:
