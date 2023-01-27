@@ -1,7 +1,7 @@
 # dotnet-sdk versions tap
 
 [![Continuous-integration](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/ci.yml/badge.svg)](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/ci.yml)
-[![Auto-updater](https://img.shields.io/circleci/build/github/isen-ng/homebrew-dotnet-sdk-versions/master?label=auto-updater)](https://circleci.com/gh/isen-ng/homebrew-dotnet-sdk-versions)
+[![Auto-updater](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/auto-updater.yml/badge.svg)](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/auto-updater.yml)
 [![Auto-committer](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/auto-commit.yml/badge.svg)](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/auto-commit.yml)
 
 

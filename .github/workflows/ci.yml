@@ -26,7 +26,7 @@ jobs:
         run: brew tap homebrew/cask
 
       - name: Check out Pull Request
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -39,7 +39,7 @@ jobs:
   test:
     name: ${{ matrix.name }}
     needs: generate-matrix
-    runs-on: macos-latest
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
         include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
@@ -54,39 +54,30 @@ jobs:
         run: brew tap isen-ng/dotnet-sdk-versions
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           persist-credentials: false
 
-      # Workaround until the `cache` action uses the changes from
-      # https://github.com/actions/toolkit/pull/580.
-      - name: Unlink workspace
-        run: |
-          mv "${GITHUB_WORKSPACE}" "${GITHUB_WORKSPACE}-link"
-          mkdir "${GITHUB_WORKSPACE}"
-
       - name: Cache Homebrew Gems
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.set-up-homebrew.outputs.gems-path }}
           key: ${{ runner.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
           restore-keys: ${{ runner.os }}-rubygems-
 
-      # Workaround until the `cache` action uses the changes from
-      # https://github.com/actions/toolkit/pull/580.
-      - name: Re-link workspace
-        run: |
-          rmdir "${GITHUB_WORKSPACE}"
-          mv "${GITHUB_WORKSPACE}-link" "${GITHUB_WORKSPACE}"
-
       - name: Install Homebrew Gems
         id: gems
         run: brew install-bundler-gems
 
+      - name: Run brew readall ${{ matrix.tap }}
+        id: readall
+        run: brew readall '${{ matrix.tap }}'
+        if: always() && steps.gems.outcome == 'success'
+
       - name: Run brew style ${{ matrix.tap }}
         run: brew style '${{ matrix.tap }}'
-        if: always() && steps.gems.outcome == 'success' && !matrix.cask
+        if: always() && steps.readall.outcome == 'success' && !matrix.cask
 
       - name: Run brew audit --tap=${{ matrix.tap }}
         run: brew audit --tap='${{ matrix.tap }}'
@@ -210,13 +201,6 @@ jobs:
           brew uninstall --cask ${{ join(fromJSON(steps.info.outputs.cask_dependencies), ' ') }}
         if: always() && steps.install.outcome == 'success' && join(fromJSON(steps.info.outputs.cask_dependencies)) != ''
         timeout-minutes: 30
-
-      # Workaround until the `cache` action uses the changes from
-      # https://github.com/actions/toolkit/pull/580.
-      - name: Unlink workspace
-        run: |
-          rm "${GITHUB_WORKSPACE}"
-          mkdir "${GITHUB_WORKSPACE}"
 
   conclusion:
     name: conclusion
