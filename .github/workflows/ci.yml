@@ -89,7 +89,7 @@ jobs:
         if: always() && steps.gems.outcome == 'success' && matrix.cask.token
 
       - name: Run brew audit --cask ${{ matrix.cask.token }}
-        run: brew audit --cask ${{ join(matrix.audit_args, ' ') }} '${{ matrix.cask.token }}''
+        run: brew audit --cask ${{ join(matrix.audit_args, ' ') }} '${{ matrix.cask.token }}'
         timeout-minutes: 30
         if: always() && steps.gems.outcome == 'success' && !matrix.skip_audit && matrix.cask.token
 
