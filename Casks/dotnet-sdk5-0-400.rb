@@ -2,6 +2,10 @@ cask "dotnet-sdk5-0-400" do
   version "5.0.408,5.0.17"
   sha256 "ba10d0eb89480b8db37da6945766b167353fa342289c9a92eb102e12b4a25701"
 
+  on_arm do
+    FileUtils.ln_sf("/usr/local/share/dotnet/x64/dotnet", "#{HOMEBREW_PREFIX}/bin/dotnetx64") \
+  end
+
   url "https://download.visualstudio.microsoft.com/download/pr/7ed34a57-4da0-4fb3-bd14-614996036744/22215f1d06b49f861f94d760881d6626/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
   name ".NET Core SDK #{version.csv.first}"
   desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
@@ -14,10 +18,6 @@ cask "dotnet-sdk5-0-400" do
   depends_on macos: ">= :high_sierra"
 
   pkg "dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
-
-  on_arm do
-    FileUtils.ln_sf("/usr/local/share/dotnet/x64/dotnet", "#{HOMEBREW_PREFIX}/bin/dotnetx64") \
-  end
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.x64"
 

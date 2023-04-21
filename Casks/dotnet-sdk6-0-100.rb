@@ -8,13 +8,15 @@ cask "dotnet-sdk6-0-100" do
   url_x64 = "https://download.visualstudio.microsoft.com/download/pr/528fff70-36c8-4103-87fb-3717512537ad/9a96634944cde13e55e367778246057e/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
   url_arm64 = "https://download.visualstudio.microsoft.com/download/pr/56748cfd-0e22-44b3-a253-018d156b076d/4f669bc1d8355e18c25a2b7b97e57cf6/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
 
-  on_intel do
-    sha256 sha256_x64
-    url url_x64
-  end
   on_arm do
     sha256 sha256_arm64
+
     url url_arm64
+  end
+  on_intel do
+    sha256 sha256_x64
+
+    url url_x64
   end
 
   name ".NET Core SDK #{version.csv.first}"
