@@ -9,6 +9,7 @@ ln -s /usr/local/bin/gsed /usr/local/bin/sed
 
 brew install jq
 brew install git
-brew install hub
+brew install gh
 brew install wget
 brew install curl
+brew install python
