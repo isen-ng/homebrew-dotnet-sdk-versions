@@ -38,7 +38,7 @@ dotnet --list-sdks
 | `dotnet-sdk3-1-200` | dotnet 3.1.202 | x64         |
 | `dotnet-sdk3-1-100` | dotnet 3.1.120 | x64         |
 | `dotnet-sdk3-0-100` | dotnet 3.0.103 | x64         |
-| `dotnet-sdk2-2-400` | dotnet 2.2.402 | x64         |
+| `dotnet-sdk2-2-400` | dotnet 2.2.402 | x64         | 
 | `dotnet-sdk2-2-300` | dotnet 2.2.301 | x64         |
 | `dotnet-sdk2-2-200` | dotnet 2.2.207 | x64         |
 | `dotnet-sdk2-2-100` | dotnet 2.2.110 | x64         |
@@ -46,8 +46,8 @@ dotnet --list-sdks
 | `dotnet-sdk2-1-500` | dotnet 2.1.526 | x64         |
 | `dotnet-sdk2-1-400` | dotnet 2.1.403 | x64         |
 
-**Note**: Installing dotnet sdk 5 using this tap or the official pkg from Microsoft will uninstall all other
-dotnet sdks on your machine. To overcome this you'll need to re-install the sdk versions you want from this tap
+**Note**: Installing dotnet sdk 5 using this tap or the official pkg from Microsoft will uninstall all other 
+dotnet sdks on your machine. To overcome this you'll need to re-install the sdk versions you want from this tap 
 after installing/upgrading to dotnet sdk 5.
 
 
@@ -63,8 +63,8 @@ if there are problems with the compatibility of the preview versions.
 
 ## Uninstalling
 
-Because the dotnet packages uses shared dependencies between different versions, it is unwise to delete these
-dependencies when uninstalling a particular version as it will cause other versions not to work.
+Because the dotnet packages uses shared dependencies between different versions, it is unwise to delete these 
+dependencies when uninstalling a particular version as it will cause other versions not to work. 
 
 If there is a need to purge these dependencies, use the `zap` flag:
 
