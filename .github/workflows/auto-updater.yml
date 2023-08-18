@@ -2,8 +2,8 @@ name: auto-updater
 
 on:
   schedule:
-    # run at 1700UTC (3am +8GMT) every monday
-    - cron: "0 19 * * 1"
+    # run at 1700UTC (1am +8GMT) everyday
+    - cron: "0 17 * * *"
   workflow_dispatch:
   
 

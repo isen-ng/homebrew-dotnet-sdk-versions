@@ -2,10 +2,10 @@ name: auto-committer
 
 on:
   schedule:
-    # Runs at 19:00GMT, Tuesday to Sunday
-    - cron: "0 19 * * Tue,Wed,Thu,Fri,Sat,Sun"
-  # pull_request:
-  #   branches: [ master ]
+    # run at 1900UTC (3am +8GMT) everyday, 2 hours after auto updater
+    - cron: "0 19 * * *"
+  workflow_dispatch:
+  
 
 jobs:
   commit:
