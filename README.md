@@ -5,7 +5,7 @@
 [![Auto-committer](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/auto-commit.yml/badge.svg)](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/auto-commit.yml)
 
 This tap contains different versions that you can install in parallel to the latest version provided by the
-[official cask](https://github.com/Homebrew/homebrew-cask/blob/master/Casks/dotnet-sdk.rb).
+[official cask](https://github.com/Homebrew/homebrew-cask/blob/master/Casks/d/dotnet-sdk.rb).
 
 Install one of the previous versions by tapping this repository and running the install command.
 
