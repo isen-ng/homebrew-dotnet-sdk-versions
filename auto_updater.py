@@ -109,6 +109,16 @@ class PreviewSdkVersion:
         self.build = int(version_split[4])
         self.update_specific_build = int(version_split[5])
         self.version_string = version_string
+        self.version_tuple = (
+            self.major,
+            self.minor,
+            self.feature,
+            self.patch,
+            self.is_rc,
+            self.update,
+            self.build,
+            self.update_specific_build
+        )
 
     def __str__(self):
         return self.version_string
@@ -132,10 +142,7 @@ class PreviewSdkVersion:
         return not other < self
 
     def __lt__(self, other):
-        return (self.major < other.major \
-            or self.minor < other.minor \
-            or self.update < other.update) \
-            and self.is_rc <= other.is_rc
+        return self.version_tuple < other.version_tuple
 
 
 class PreviewRuntimeVersion:
@@ -150,7 +157,15 @@ class PreviewRuntimeVersion:
         self.build = int(version_split[4])
         self.update_specific_build = int(version_split[5])
         self.version_string = version_string
-
+        self.version_tuple = (
+            self.major,
+            self.minor,
+            self.patch,
+            self.is_rc,
+            self.update,
+            self.build,
+            self.update_specific_build
+        )
     def __str__(self):
         return self.version_string
 
@@ -170,10 +185,7 @@ class PreviewRuntimeVersion:
         return not other < self
 
     def __lt__(self, other):
-        return (self.major < other.major \
-            or self.minor < other.minor \
-            or self.update < other.update) \
-            and self.is_rc < other.is_rc
+        return self.version_tuple < other.version_tuple
 
 
 class CaskService:
