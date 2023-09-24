@@ -98,16 +98,27 @@ class RuntimeVersion:
 
 class PreviewSdkVersion:
     def __init__(self, version_string):
-        # 7.0.100-preview.1.22110.4
+        # 7.0.100-preview.1.22110.4, 8.0.100-rc.1.23463.5
         version_split = version_string.split('.')
         self.major = int(version_split[0])
         self.minor = int(version_split[1])
-        self.feature = int(version_split[2][0])
-        self.patch = int(version_split[2][1:-8])
-        self.update = int(version_split[3])
-        self.build = int(version_split[4])
-        self.update_specific_build = int(version_split[5])
+        feature = int(version_split[2][0])
+        patch = int(version_split[2].split('-')[0][1:])
+        is_rc = 'rc' in version_split[2]
+        update = int(version_split[3])
+        build = int(version_split[4])
+        update_specific_build = int(version_split[5])
         self.version_string = version_string
+        self.version_tuple = (
+            self.major,
+            self.minor,
+            feature,
+            patch,
+            is_rc,
+            update,
+            build,
+            update_specific_build
+        )
 
     def __str__(self):
         return self.version_string
@@ -131,9 +142,7 @@ class PreviewSdkVersion:
         return not other < self
 
     def __lt__(self, other):
-        return self.major < other.major \
-            or self.minor < other.minor \
-            or self.update < other.update
+        return self.version_tuple < other.version_tuple
 
 
 class PreviewRuntimeVersion:
@@ -142,11 +151,21 @@ class PreviewRuntimeVersion:
         version_split = version_string.split('.')
         self.major = int(version_split[0])
         self.minor = int(version_split[1])
-        self.patch = int(version_split[2][:-8])
-        self.update = int(version_split[3])
-        self.build = int(version_split[4])
-        self.update_specific_build = int(version_split[5])
+        patch = int(version_split[2].split('-')[0])
+        is_rc = 'rc' in version_split[2]
+        update = int(version_split[3])
+        build = int(version_split[4])
+        update_specific_build = int(version_split[5])
         self.version_string = version_string
+        self.version_tuple = (
+            self.major,
+            self.minor,
+            patch,
+            is_rc,
+            update,
+            build,
+            update_specific_build
+        )
 
     def __str__(self):
         return self.version_string
@@ -167,9 +186,7 @@ class PreviewRuntimeVersion:
         return not other < self
 
     def __lt__(self, other):
-        return self.major < other.major \
-            or self.minor < other.minor \
-            or self.update < other.update
+        return self.version_tuple < other.version_tuple
 
 
 class CaskService:
@@ -354,8 +371,8 @@ class GitService:
 
 
 class PreviewUpdater:
-    # `version "7.0.100-preview.7.22377.5,7.0.0-preview.7.22375.6"`
-    version_pattern = re.compile('version "([0-9.,-preview]+)"')
+    # `version "7.0.100-preview.7.22377.5, 7.0.0-preview.7.22375.6, 8.0.100-rc.1.23463.5"`
+    version_pattern = re.compile('version "([0-9.,-preview,-rc]+)"')
 
     def __init__(self, git_service):
         self.git_service = git_service
@@ -413,14 +430,17 @@ class PreviewUpdater:
     @staticmethod
     def _find_latest_sdk_preview_release(sdk_version, releases_json):
         sdk_major_minor_version = sdk_version.getMajorMinor()
-        sdk_major_minor_version_regex = '^' + sdk_major_minor_version + '.[0-9]{3}-preview.[0-9.]+'
+        sdk_major_minor_version_preview_regex = '^' + sdk_major_minor_version + '.[0-9]{3}-preview.[0-9.]+'
+        sdk_major_minor_version_rc_regex = '^' + sdk_major_minor_version + '.[0-9]{3}-rc.[0-9.]+'
 
         latest_sdk_release = None
         latest_sdk_release_version = None
         releases = releases_json['releases']
 
         for release in releases:
-            match = re.search(sdk_major_minor_version_regex, release['sdk']['version'])
+            match = re.search(sdk_major_minor_version_preview_regex, release['sdk']['version'])
+            if not match:
+                match = re.search(sdk_major_minor_version_rc_regex, release['sdk']['version'])
             if not match:
                 continue
 
