@@ -102,22 +102,22 @@ class PreviewSdkVersion:
         version_split = version_string.split('.')
         self.major = int(version_split[0])
         self.minor = int(version_split[1])
-        self.feature = int(version_split[2][0])
-        self.patch = int(version_split[2].split('-')[0][1:])
-        self.is_rc = 'rc' in version_split[2]
-        self.update = int(version_split[3])
-        self.build = int(version_split[4])
-        self.update_specific_build = int(version_split[5])
+        feature = int(version_split[2][0])
+        patch = int(version_split[2].split('-')[0][1:])
+        is_rc = 'rc' in version_split[2]
+        update = int(version_split[3])
+        build = int(version_split[4])
+        update_specific_build = int(version_split[5])
         self.version_string = version_string
         self.version_tuple = (
             self.major,
             self.minor,
-            self.feature,
-            self.patch,
-            self.is_rc,
-            self.update,
-            self.build,
-            self.update_specific_build
+            feature,
+            patch,
+            is_rc,
+            update,
+            build,
+            update_specific_build
         )
 
     def __str__(self):
@@ -151,21 +151,22 @@ class PreviewRuntimeVersion:
         version_split = version_string.split('.')
         self.major = int(version_split[0])
         self.minor = int(version_split[1])
-        self.patch = int(version_split[2].split('-')[0])
-        self.is_rc = 'rc' in version_split[2]
-        self.update = int(version_split[3])
-        self.build = int(version_split[4])
-        self.update_specific_build = int(version_split[5])
+        patch = int(version_split[2].split('-')[0])
+        is_rc = 'rc' in version_split[2]
+        update = int(version_split[3])
+        build = int(version_split[4])
+        update_specific_build = int(version_split[5])
         self.version_string = version_string
         self.version_tuple = (
             self.major,
             self.minor,
-            self.patch,
-            self.is_rc,
-            self.update,
-            self.build,
-            self.update_specific_build
+            patch,
+            is_rc,
+            update,
+            build,
+            update_specific_build
         )
+
     def __str__(self):
         return self.version_string
 
