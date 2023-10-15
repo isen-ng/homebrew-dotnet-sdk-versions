@@ -15,8 +15,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Run auto_committer.sh
+
+      - name: Run auto_committer.py
         env:
           GITHUB_USER: ${{ secrets.GITHUB_USER }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./auto_committer.sh false
+        run: ./auto_committer.py --really_merge
