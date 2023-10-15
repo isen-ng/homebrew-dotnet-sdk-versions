@@ -62,16 +62,17 @@ class GitService:
         # DIRTY -> There are merge conflicts
         # BLOCKED -> Checks pending or checks failed
         # CLEAN -> PR is ready to be merged
-        ready_pull_requests = [x for x in auto_pull_requests if x['mergeStateStatus'] == 'CLEAN']
-        conflicted_pull_requests = [x for x in auto_pull_requests if x['mergeStateStatus'] == 'DIRTY']
+        # BEHIND -> PR is not up to date but it is possible to be ready to be merged
 
+        # find ready PRs by finding PRs that has conclusion = "SUCCESS" (after filtering by "CLEAN" and "BEHIND")
+        possible_ready_pull_requests = [x for x in auto_pull_requests if x['mergeStateStatus'] in ('CLEAN', 'BEHIND')]
+        ready_pull_requests = [pr for pr in possible_ready_pull_requests if any(item for item in pr['statusCheckRollup'] if item['name'] == 'conclusion' and item['conclusion'] == 'SUCCESS')]
+
+        # find failing PRs by finding PRs that has conclusion = "FAILURE" (after filtering by "BLOCKED")
         failed_or_pending_pull_requests = [x for x in auto_pull_requests if x['mergeStateStatus'] == 'BLOCKED']
         failed_pull_requests = [pr for pr in failed_or_pending_pull_requests if any(item for item in pr['statusCheckRollup'] if item['name'] == 'conclusion' and item['conclusion'] == 'FAILURE')]
 
-        # remove useless keys, for better display later
-        ready_pull_requests = Utils._remove_keys(ready_pull_requests, 'mergeStateStatus', 'statusCheckRollup')
-        conflicted_pull_requests = Utils._remove_keys(conflicted_pull_requests, 'mergeStateStatus', 'statusCheckRollup')
-        failed_pull_requests = Utils._remove_keys(failed_pull_requests, 'mergeStateStatus', 'statusCheckRollup')
+        conflicted_pull_requests = [x for x in auto_pull_requests if x['mergeStateStatus'] == 'DIRTY']
 
         return ready_pull_requests, conflicted_pull_requests, failed_pull_requests
 
@@ -82,20 +83,6 @@ class GitService:
             return
     
         subprocess.run(['gh', 'pr', 'merge', str(pull_request['number']), '--squash'], check = True)
-
-
-class Utils:
-    @staticmethod
-    def _remove_keys(pull_requests, *args):
-        result = pull_requests
-        for keyToRemove in args:
-            result = Utils._remove_key(result, keyToRemove)
-
-        return result
-
-    @staticmethod
-    def _remove_key(pull_requests, keyToRemove):
-        return [{key: value for key, value in pull_request.items() if key != keyToRemove} for pull_request in pull_requests]
 
 
 if __name__ == "__main__":
