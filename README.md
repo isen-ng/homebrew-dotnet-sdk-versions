@@ -24,7 +24,7 @@ dotnet --list-sdks
 
 | Version             | .NET SDK | Arch        | Remarks                                  |
 | ------------------- | -------- | ----------- | ---------------------------------------- |
-| `dotnet-sdk8-0-100` | 8.0.100  | x64 & arm64 |                                          |
+| `dotnet-sdk8-0-100` | 8.0.101  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-400` | 7.0.404  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-300` | 7.0.306  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-200` | 7.0.203  | x64 & arm64 |                                          |
@@ -57,7 +57,7 @@ after installing/upgrading to .NET SDK 5.
 
 | Version               | .NET SDK              | Arch        | Remarks |
 | --------------------- | --------------------- | ----------- | ------- |
-| `dotnet-sdk8-preview` | 8.0.100-rc.2.23502.2  | x64 & arm64 |         |
+| `dotnet-sdk8-preview` | 8.0.101-rc.2.23502.2  | x64 & arm64 |         |
 | `dotnet-sdk7-preview` | 7.0.100-rc.2.22477.23 | x64 & arm64 |         |
 
 **Note**: Preview versions is a newly supported feature (as of September 2022). Please send feedback/create issues
