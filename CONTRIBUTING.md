@@ -7,6 +7,11 @@ If there is a need to refer to the official cask, it can be found here:
 https://github.com/Homebrew/homebrew-cask/blob/master/Casks/dotnet-sdk.rb
 
 
+## Continuous integration reference
+
+`.github/workflows/ci.yml` is referenced from the official cask ci: https://github.com/Homebrew/homebrew-cask/blob/master/.github/workflows/ci.yml.
+If ci is broken, there is a good chance that we can find updates from the official cask ci that fixes our ci.
+
 ## Automatic updates
 
 Each working cask will be updated weekly automatically by running `auto_updater.py` through a 
