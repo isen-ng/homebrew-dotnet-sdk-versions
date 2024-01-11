@@ -7,6 +7,7 @@ on:
 env:
   HOMEBREW_DEVELOPER: 1
   HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_INSTALL_FROM_API: 1
   HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
@@ -19,11 +20,9 @@ jobs:
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
         with:
+          core: false
+          cask: true
           test-bot: false
-
-      # This is AdoptOpenJDK specific - make sure it isn't removed
-      - name: Tap homebrew/cask
-        run: brew tap homebrew/cask
 
       - name: Check out Pull Request
         uses: actions/checkout@v3
@@ -34,13 +33,14 @@ jobs:
       - name: Generate CI matrix
         id: generate-matrix
         run: |
-          brew ruby -- "$(brew --repository homebrew/cask)/cmd/lib/generate-matrix.rb" "${{ github.event.pull_request.url }}"
+          brew ruby -- "$(brew --repository homebrew/cask)/cmd/lib/generate-matrix.rb" --url="${{ github.event.pull_request.url }}"
 
   test:
     name: ${{ matrix.name }}
     needs: generate-matrix
     runs-on: ${{ matrix.runner }}
     strategy:
+      fail-fast: false
       matrix:
         include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
@@ -48,31 +48,35 @@ jobs:
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
         with:
+          core: false
+          cask: true
           test-bot: false
 
       - name: Tap isen-ng/dotnet-sdk-versions
         run: brew tap isen-ng/dotnet-sdk-versions
 
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout pull request
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
 
       - name: Cache Homebrew Gems
+        id: cache
         uses: actions/cache@v3
         with:
           path: ${{ steps.set-up-homebrew.outputs.gems-path }}
-          key: ${{ runner.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
-          restore-keys: ${{ runner.os }}-rubygems-
+          key: ${{ matrix.runner }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+          restore-keys: ${{ matrix.runner }}-rubygems-
 
       - name: Install Homebrew Gems
         id: gems
         run: brew install-bundler-gems
+        if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run brew readall ${{ matrix.tap }}
         id: readall
-        run: brew readall '${{ matrix.tap }}'
+        run: brew readall --os=all --arch=all '${{ matrix.tap }}'
         if: always() && steps.gems.outcome == 'success'
 
       - name: Run brew style ${{ matrix.tap }}
