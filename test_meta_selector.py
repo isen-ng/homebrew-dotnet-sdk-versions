@@ -30,6 +30,14 @@ class MetaSelectorTests(unittest.TestCase):
         # TODO: assert that the correct version has been selected in
         #       the generated file
 
+    def _test_run_should_set_url_to_meta_readme(self):
+        # TODO
+        pass
+
+    def _test_run_should_add_dotnet_dependency(self):
+        # TODO
+        pass
+
     def create(self):
         return MetaSelector(self._workdir)
 
