@@ -16,6 +16,8 @@ jobs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
+
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
