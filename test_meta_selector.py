@@ -3,6 +3,8 @@ from meta_selector import MetaSelector
 import tempfile
 import os
 import shutil
+import subprocess
+from typing import List, Dict
 
 
 class MetaSelectorTests(unittest.TestCase):
@@ -27,26 +29,81 @@ class MetaSelectorTests(unittest.TestCase):
         sut.run()
 
         self.assertWorkFileExists(expected_file)
-        # TODO: assert that the correct version has been selected in
-        #       the generated file
+        # file name already matched - the cask definition should too
+        full_path = self.work_file(expected_file)
+        with open(full_path, "r") as fp:
+            lines = fp.readlines()
+            interesting = [l for l in lines if l.startswith("cask")]
+            self.assertEqual(1, len(interesting))
+            self.assertEqual("cask \"dotnet-sdk7\" do", interesting[0].rstrip())
 
-    def _test_run_should_set_url_to_meta_readme(self):
-        # TODO
-        pass
+    def test_run_should_set_url_to_meta_readme_from_current_repository(self):
+        # TODO: determine the location via `git remote -v`, observing the origin
+        #       then test that this is what the script uses as the base url to META.md
+        stdout = (subprocess.run(
+            ["git", "remote", "-v"],
+            stdout=subprocess.PIPE
+        ).stdout.decode("utf-8")).splitlines()
+        interesting = [l for l in stdout if l.startswith("origin")]
+        first = interesting[0]
+        if first.index("fluffynuts"):
+            expectedUrl = "https://raw.githubusercontent.com/fluffynuts/homebrew-dotnet-sdk-versions/master/META.md"
+        else:
+            # try to make this work when it's finally merged...
+            expectedUrl = "https://raw.githubusercontent.com/isen-ng/homebrew-dotnet-sdk-versions/master/META.md"
+
+        self.create_caskfile("7-0-200")
+        expected_version = "7-0-400"
+        self.create_caskfile(expected_version)
+        expected_file = "dotnet-sdk7.rb"
+        sut = self.create()
+
+        sut.run()
+
+        lines = self.read_work_file(expected_file)
+        interesting = [l.strip() for l in lines if l.strip().startswith("url")]
+        self.assertEqual(1, len(interesting))
+        self.assertEqual(f"url \"{expectedUrl}\"", interesting[0])
 
     def _test_run_should_add_dotnet_dependency(self):
-        # TODO
-        pass
+        self.create_caskfile("7-0-200")
+        expected_version = "7-0-400"
+        self.create_caskfile(expected_version)
+        expected_file = "dotnet-sdk7.rb"
+        sut = self.create()
+
+        sut.run()
+
+        lines = self.read_work_file(expected_file)
+        interesting = [ l.strip() for l in lines if
+                        l.strip().startswith("depends_on") and
+                        l.find("cask") > -1]
+        self.assertEqual(1, len(interesting))
+        self.assertEqual(
+            "depends_on cask: \"dotnet-sdk7-0-400\"",
+            interesting[0]
+        )
 
     def create(self):
-        return MetaSelector(self._workdir)
+        sut = MetaSelector(self._workdir)
+        sut.quiet = True
+        return sut
 
-    def assertWorkFileExists(self, path: str):
-        full_path = os.path.join(self._workdir, path)
+    def work_file(self, relative_path: str):
+        return os.path.join(self._workdir, relative_path);
+
+    def read_work_file(self, relative_path: str) -> List[str]:
+        self.assertWorkFileExists(relative_path)
+        full_path = self.work_file(relative_path)
+        with open(full_path, "r") as fp:
+            return fp.readlines()
+
+    def assertWorkFileExists(self, name: str):
+        full_path = self.work_file(name)
         if os.path.exists(full_path):
             return
         self.fail(
-            "expected to find file\n{}\nin\n{}".format(path, self._workdir)
+            "expected to find file\n{}\nin\n{}".format(name, self._workdir)
         )
 
     def create_caskfile(self, version: str):
@@ -133,7 +190,6 @@ cask "dotnet-sdk6-0-100" do
 end
         """.strip(),
 
-
         "7-0-200": """
 cask "dotnet-sdk7-0-200" do
   arch arm: "arm64", intel: "x64"
@@ -183,7 +239,6 @@ cask "dotnet-sdk7-0-200" do
           "for the `dotnet` command to work again."
 end
         """.strip(),
-
 
         "7-0-400": """
 cask "dotnet-sdk7-0-200" do

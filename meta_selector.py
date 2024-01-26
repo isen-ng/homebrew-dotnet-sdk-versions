@@ -1,6 +1,7 @@
 import os
 import re
 from typing import List, Dict
+import subprocess
 
 
 class Sdk:
@@ -29,6 +30,12 @@ class MetaSelector:
         re.compile("^\\s*desc\\w"),
         re.compile("^\\s*depends_on\\w")
     ]
+    quiet = False
+    __url_vars = [
+        "url",
+        "url_x64",
+        "url_arm64"
+    ]
 
     def __init__(self, workdir):
         self.workdir = workdir
@@ -46,19 +53,63 @@ class MetaSelector:
         output: List[str] = [
             "cask \"{}\" do".format(sdk.name)
         ]
+        set_url = False
+        set_cask_dependency = False
+
         with open(source_path) as fp:
             lines = fp.readlines()
+            assignment_re = re.compile("\\s*(?P<variable>[^\\s]+)\\s*(?P<value>.*)")
             for line in lines:
+                line = line.rstrip()
+                match = assignment_re.match(line)
+                is_var_line = match is not None
+                if is_var_line:
+                    variable = match.group("variable")
+                    if variable in self.__url_vars and set_url is False:
+                        [user, repo] = self.parse_origin_remote()
+                        output.append(f"url \"https://raw.githubusercontent.com/{user}/{repo}/master/META.md\"")
+                        set_url = True
+                    elif variable == "depends on":
+                        output.append(line)
+                        if not set_cask_dependency:
+                            output.append(f"  depends_on ")
+                        # include the original line
+                        # include the dependency on the dotnet cask
+
                 if self.should_keep_line(line):
                     output.append(line)
                     continue
             # TODO: replace the url line to point at the META.md from this repo
             output.append("end")
 
-        print("creating meta-package: {}".format(source_path))
+        self.log("creating meta-package: {}".format(source_path))
         target_path = "{}.rb".format(os.path.join(self.workdir, sdk.name))
         with open(target_path, "w") as fp:
-            fp.writelines(output)
+            fp.writelines(f"{s}\n" for s in output)
+
+    def parse_origin_remote(self) -> List[str]:
+        # for now, hard-coded to return me and my repo
+        # so I can manually test, but this should be
+        # updated to read the info from git via the cli
+        # or use environment variables perhaps?
+        return [ "fluffynuts", "homebrew-dotnet-sdk-versions"]
+
+    def log(self, s: str) -> None:
+        if self.quiet:
+            return
+        print(s)
+
+    @staticmethod
+    def find_upstream_address():
+        stdout = [
+            l.rstrip() for l in subprocess.run(
+                ["git", "remote", "-v"],
+                stdout=subprocess.PIPE
+            ).stdout.decode("utf-8").splitlines()
+        ]
+        interesting = [ l for l in stdout if l.startswith("origin")][0]
+        parts = interesting.split()
+        git_re = re.compile("")
 
     @staticmethod
     def generate_version_lookup(files) -> Dict[str, Sdk]:
@@ -96,6 +147,7 @@ class MetaSelector:
             if matcher.match(line) is not None:
                 return True
         return False
+
 
 if __name__ == '__main__':
     workdir = os.path.dirname(__file__)
