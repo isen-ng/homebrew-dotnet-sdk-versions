@@ -11,6 +11,7 @@ class Sdk:
         self.major = major
         self.minor = minor
         self.patch = patch
+        self.fullname = filename.replace(".rb", "");
 
     def is_newer_than(self, other):
         if self.major > other.major:
@@ -24,11 +25,12 @@ class Sdk:
 
 class MetaSelector:
     __keep_line_matchers = [
-        re.compile("^\\s*arch"),
-        re.compile("^\\s*version\\w"),
-        re.compile("^\\s*name\\w"),
-        re.compile("^\\s*desc\\w"),
-        re.compile("^\\s*depends_on\\w")
+        re.compile("^\\s*arch\\b.*"),
+        re.compile("^\\s*version\\b.*"),
+        re.compile("^\\s*name\\b.*"),
+        re.compile("^\\s*desc\\b.*"),
+        re.compile("^\\s*homepage\\b.*"),
+        re.compile("^\\s*depends_on\\b.*")
     ]
     quiet = False
     __url_vars = [
@@ -67,12 +69,12 @@ class MetaSelector:
                     variable = match.group("variable")
                     if variable in self.__url_vars and set_url is False:
                         [user, repo] = self.parse_origin_remote()
-                        output.append(f"url \"https://raw.githubusercontent.com/{user}/{repo}/master/META.md\"")
+                        output.append(f"  url \"https://raw.githubusercontent.com/{user}/{repo}/master/META.md\"")
                         set_url = True
-                    elif variable == "depends on":
+                    elif variable == "depends_on":
                         output.append(line)
                         if not set_cask_dependency:
-                            output.append(f"  depends_on ")
+                            output.append(f"  depends_on cask: \"{sdk.fullname}\"")
                         # include the original line
                         # include the dependency on the dotnet cask
 
@@ -98,18 +100,6 @@ class MetaSelector:
         if self.quiet:
             return
         print(s)
-
-    @staticmethod
-    def find_upstream_address():
-        stdout = [
-            l.rstrip() for l in subprocess.run(
-                ["git", "remote", "-v"],
-                stdout=subprocess.PIPE
-            ).stdout.decode("utf-8").splitlines()
-        ]
-        interesting = [ l for l in stdout if l.startswith("origin")][0]
-        parts = interesting.split()
-        git_re = re.compile("")
 
     @staticmethod
     def generate_version_lookup(files) -> Dict[str, Sdk]:

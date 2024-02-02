@@ -65,7 +65,7 @@ class MetaSelectorTests(unittest.TestCase):
         self.assertEqual(1, len(interesting))
         self.assertEqual(f"url \"{expectedUrl}\"", interesting[0])
 
-    def _test_run_should_add_dotnet_dependency(self):
+    def test_run_should_add_dotnet_dependency(self):
         self.create_caskfile("7-0-200")
         expected_version = "7-0-400"
         self.create_caskfile(expected_version)
@@ -75,14 +75,31 @@ class MetaSelectorTests(unittest.TestCase):
         sut.run()
 
         lines = self.read_work_file(expected_file)
-        interesting = [ l.strip() for l in lines if
-                        l.strip().startswith("depends_on") and
-                        l.find("cask") > -1]
+        interesting = [l.strip() for l in lines if
+                       l.strip().startswith("depends_on") and
+                       l.find("cask") > -1]
         self.assertEqual(1, len(interesting))
         self.assertEqual(
             "depends_on cask: \"dotnet-sdk7-0-400\"",
             interesting[0]
         )
+
+    def test_run_should_append_non_variable_lines(self):
+        self.create_caskfile("7-0-200")
+        expected_version = "7-0-400"
+        self.create_caskfile(expected_version)
+        expected_file = "dotnet-sdk7.rb"
+        sut = self.create()
+
+        sut.run()
+
+        raw = self.read_work_file_raw(expected_file)
+        self.assertContains(raw, "name \".NET Core SDK #{version.csv.first}\"")
+        self.assertContains(raw, "desc \"This cask follows releases from https://github.com/dotnet/core/tree/master\"")
+        self.assertContains(raw, "homepage \"https://www.microsoft.com/net/core#macos\"")
+
+    def assertContains(self, actual, expected):
+        self.assertTrue(actual.find(expected) > -1)
 
     def create(self):
         sut = MetaSelector(self._workdir)
@@ -97,6 +114,12 @@ class MetaSelectorTests(unittest.TestCase):
         full_path = self.work_file(relative_path)
         with open(full_path, "r") as fp:
             return fp.readlines()
+
+    def read_work_file_raw(self, relative_path: str) -> str:
+        self.assertWorkFileExists(relative_path)
+        full_path = self.work_file(relative_path)
+        with open(full_path, "r") as fp:
+            return fp.read()
 
     def assertWorkFileExists(self, name: str):
         full_path = self.work_file(name)
