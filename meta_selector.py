@@ -88,12 +88,30 @@ class MetaSelector:
         with open(target_path, "w") as fp:
             fp.writelines(f"{s}\n" for s in output)
 
+    __web_url_regex = re.compile(".*://(?P<host>[a-zA-Z0-9_.-]+)/(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
+    __git_url_regex = re.compile(".*@(?P<host>[a-zA-Z0-9_.-]+):(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
+
     def parse_origin_remote(self) -> List[str]:
         # for now, hard-coded to return me and my repo
         # so I can manually test, but this should be
         # updated to read the info from git via the cli
         # or use environment variables perhaps?
-        return [ "fluffynuts", "homebrew-dotnet-sdk-versions"]
+        lines = [str(l) for l in subprocess.check_output("git remote -v").splitlines()]
+        origin_lines = [l for l in lines if l.find("origin") > -1]
+        if len(origin_lines) == 0:
+            raise Exception("Unable to determine url for remote: origin")
+        web_match = self.__web_url_regex.match(origin_lines[0])
+        if web_match is not None:
+            user = web_match.group("user")
+            repo = web_match.group("repo")
+            return [user, repo]
+        git_match = self.__git_url_regex.match(origin_lines[0])
+        if git_match is not None:
+            user = git_match.group("user")
+            repo = git_match.group("repo").replace(".git", "")
+            return [user, repo]
+
+        raise Exception("Unable to parse origin url: {}".format(origin_lines[0]))
 
     def log(self, s: str) -> None:
         if self.quiet:

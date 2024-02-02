@@ -46,7 +46,7 @@ class MetaSelectorTests(unittest.TestCase):
         ).stdout.decode("utf-8")).splitlines()
         interesting = [l for l in stdout if l.startswith("origin")]
         first = interesting[0]
-        if first.index("fluffynuts"):
+        if first.find("fluffynuts") > -1:
             expectedUrl = "https://raw.githubusercontent.com/fluffynuts/homebrew-dotnet-sdk-versions/master/META.md"
         else:
             # try to make this work when it's finally merged...
