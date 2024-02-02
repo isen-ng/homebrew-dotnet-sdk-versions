@@ -140,5 +140,5 @@ class MetaSelector:
 
 
 if __name__ == '__main__':
-    workdir = os.path.dirname(__file__)
+    workdir = os.path.join(os.path.dirname(__file__), "Casks")
     MetaSelector(workdir).run()
