@@ -1,0 +1,10 @@
+cask "dotnet-sdk2" do
+  version "2.2.402,2.2.7"
+  url "https://raw.githubusercontent.com/fluffynuts/homebrew-dotnet-sdk-versions/master/META.md"
+  name ".NET Core SDK #{version.csv.first}"
+  desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
+  homepage "https://www.microsoft.com/net/core#macos"
+  depends_on macos: ">= :sierra"
+  depends_on cask: "dotnet-sdk2-2-400"
+  depends_on macos: ">= :sierra"
+end
