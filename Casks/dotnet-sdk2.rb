@@ -4,7 +4,6 @@ cask "dotnet-sdk2" do
   name ".NET Core SDK #{version.csv.first}"
   desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
   homepage "https://www.microsoft.com/net/core#macos"
-  depends_on macos: ">= :sierra"
   depends_on cask: "dotnet-sdk2-2-400"
   depends_on macos: ">= :sierra"
 end

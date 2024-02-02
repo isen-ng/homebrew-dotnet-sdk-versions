@@ -98,6 +98,20 @@ class MetaSelectorTests(unittest.TestCase):
         self.assertContains(raw, "desc \"This cask follows releases from https://github.com/dotnet/core/tree/master\"")
         self.assertContains(raw, "homepage \"https://www.microsoft.com/net/core#macos\"")
 
+    def test_run_should_not_duplicate_depends_on(self):
+        self.create_caskfile("7-0-200")
+        expected_version = "7-0-400"
+        self.create_caskfile(expected_version)
+        expected_file = "dotnet-sdk7.rb"
+        sut = self.create()
+
+        sut.run()
+
+        lines = self.read_work_file(expected_file)
+        depends_on_lines = [ l for l in lines if l.find("depends_on") > -1 ]
+        macos_depends = [ l for l in depends_on_lines if l.find("macos") > -1]
+        self.assertEqual(1, len(macos_depends))
+
     def assertContains(self, actual, expected):
         self.assertTrue(actual.find(expected) > -1)
 

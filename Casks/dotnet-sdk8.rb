@@ -5,7 +5,6 @@ cask "dotnet-sdk8" do
   name ".NET Core SDK #{version.csv.first}"
   desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
   homepage "https://www.microsoft.com/net/core#macos"
-  depends_on macos: ">= :catalina"
   depends_on cask: "dotnet-sdk8-0-100"
   depends_on macos: ">= :catalina"
 end

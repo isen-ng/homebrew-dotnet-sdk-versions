@@ -72,7 +72,6 @@ class MetaSelector:
                         output.append(f"  url \"https://raw.githubusercontent.com/{user}/{repo}/master/META.md\"")
                         set_url = True
                     elif variable == "depends_on":
-                        output.append(line)
                         if not set_cask_dependency:
                             output.append(f"  depends_on cask: \"{sdk.fullname}\"")
                         # include the original line
@@ -108,7 +107,7 @@ class MetaSelector:
         for f in files:
             match = regex.match(f)
             if match is None:
-                print("No match for {}".format(f))
+                print("ignored {}: No version match match for filename".format(f))
                 continue
 
             major = match.group("major")
