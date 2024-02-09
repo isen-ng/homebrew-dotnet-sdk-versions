@@ -2,6 +2,8 @@ import os
 import re
 from typing import List, Dict
 import subprocess
+from urllib import request
+from hashlib import sha256
 
 
 class Sdk:
@@ -29,7 +31,6 @@ class MetaSelector:
         re.compile("^\\s*version\\b.*"),
         re.compile("^\\s*name\\b.*"),
         re.compile("^\\s*desc\\b.*"),
-        re.compile("^\\s*homepage\\b.*"),
         re.compile("^\\s*depends_on\\b.*")
     ]
     quiet = False
@@ -57,36 +58,59 @@ class MetaSelector:
         ]
         set_url = False
         set_cask_dependency = False
-
+        [user, repo] = self.parse_origin_remote()
+        github_repo = f"https://github.com/{user}/{repo}"
+        meta_artifact = f"{github_repo}/raw/master/META.md"
+        sha256 = self.hash(meta_artifact)
         with open(source_path) as fp:
             lines = fp.readlines()
-            assignment_re = re.compile("\\s*(?P<variable>[^\\s]+)\\s*(?P<value>.*)")
+            assignment_re = re.compile("\\s*(?P<variable>[^\\s]+)\\s*=?\\s*(?P<value>.*)")
+            last_var = ""
             for line in lines:
                 line = line.rstrip()
                 match = assignment_re.match(line)
                 is_var_line = match is not None
                 if is_var_line:
                     variable = match.group("variable")
+                    is_new_variable = variable != last_var
+                    have_prior_output = len(output) > 0
+                    last_line_is_blank = output[-1] == ""
+                    if is_new_variable and have_prior_output and not last_line_is_blank:
+                        output.append("")
+                    last_var = variable
+
                     if variable in self.__url_vars and set_url is False:
-                        [user, repo] = self.parse_origin_remote()
-                        output.append(f"  url \"https://raw.githubusercontent.com/{user}/{repo}/master/META.md\"")
+                        output.append(f"  url = \"{meta_artifact}\"")
+                        output.append(f"  sha256 = \"{sha256}\"")
                         set_url = True
                     elif variable == "depends_on":
                         if not set_cask_dependency:
                             output.append(f"  depends_on cask: \"{sdk.fullname}\"")
                         # include the original line
                         # include the dependency on the dotnet cask
+                    elif variable == "homepage":
+                        output.append(f"  homepage: \"{github_repo}\"")
 
                 if self.should_keep_line(line):
                     output.append(line)
                     continue
-            # TODO: replace the url line to point at the META.md from this repo
+            # the meta package contains no activatable artifacts
+            # -> according to https://github.com/krema/homebrew-cask-local/blob/master/doc/cask_language_reference/all_stanzas.md
+            #    we can set stage_only: true
+            #    otherwise the verification workflows will fail with "at least one activatable artifact stanza is required"
+            output.append("  stage_only: true")
             output.append("end")
 
         self.log("creating meta-package: {}".format(source_path))
         target_path = "{}.rb".format(os.path.join(self.workdir, sdk.name))
         with open(target_path, "w") as fp:
             fp.writelines(f"{s}\n" for s in output)
+
+    def hash(self, url: str) -> str:
+        req = request.urlopen(url)
+        raw_data = req.read()
+        result = sha256(raw_data)
+        return result.hexdigest()
 
     __web_url_regex = re.compile(".*://(?P<host>[a-zA-Z0-9_.-]+)/(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
     __git_url_regex = re.compile(".*@(?P<host>[a-zA-Z0-9_.-]+):(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
