@@ -1,12 +1,12 @@
 cask "dotnet-sdk7-0-400" do
   arch arm: "arm64", intel: "x64"
 
-  version "7.0.405,7.0.15"
+  version "7.0.406,7.0.16"
 
-  sha256_x64 = "0756db7bed489a37d9a62a5fed001034ca4fe44a6070e27787358305b6f3b5e5"
-  sha256_arm64 = "a0897b16a56af46633836506856c747c377fcbd347cd2e1788e837c991a4f0d7"
-  url_x64 = "https://download.visualstudio.microsoft.com/download/pr/f8586b3c-a8dc-46b7-9079-c04a5d39e446/9e31c12cea5d52ada35d0603943e9b36/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
-  url_arm64 = "https://download.visualstudio.microsoft.com/download/pr/efa1aae9-9574-4095-b220-900f3b6ee883/10838cb66603fa4cc0f02ae9d2317c56/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
+  sha256_x64 = "a02bb4dfcb160e81c687573158e2161ff1858728ad3d409d53c4fd3cd3bf3915"
+  sha256_arm64 = "d60a29b84ba0623d9297a571dd19606ccb15a5322dc21e51eec81f2fdcb4529c"
+  url_x64 = "https://download.visualstudio.microsoft.com/download/pr/43e9b2c8-f397-4170-8cc8-9f01de1b3356/62af9e5b39a50ce42d4c9118d26ce9dd/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
+  url_arm64 = "https://download.visualstudio.microsoft.com/download/pr/d4e19153-d851-434f-9c9a-c59ecbf58ea6/265b5d1f0ea6f1576b3688f063c1610b/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
 
   on_arm do
     sha256 sha256_arm64
@@ -33,13 +33,13 @@ cask "dotnet-sdk7-0-400" do
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.#{arch}"
 
-  zap trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"],
-      pkgutil: [
+  zap pkgutil: [
         "com.microsoft.dotnet.hostfxr.#{version.csv.second}.component.osx.#{arch}",
-        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.#{arch}",
         "com.microsoft.dotnet.pack.apphost.#{version.csv.second}.component.osx.#{arch}",
+        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.#{arch}",
         "com.microsoft.dotnet.sharedhost.component.osx.#{arch}",
-      ]
+      ],
+      trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"]
 
   caveats "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, " \
           "so you'll need to reinstall the particular version cask you want from this tap again " \

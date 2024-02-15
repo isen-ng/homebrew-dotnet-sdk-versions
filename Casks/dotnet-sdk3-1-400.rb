@@ -21,13 +21,13 @@ cask "dotnet-sdk3-1-400" do
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.x64"
 
-  zap trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"],
-      pkgutil: [
+  zap pkgutil: [
         "com.microsoft.dotnet.hostfxr.#{version.csv.second}.component.osx.x64",
-        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.x64",
         "com.microsoft.dotnet.pack.apphost.#{version.csv.second}.component.osx.x64",
+        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.x64",
         "com.microsoft.dotnet.sharedhost.component.osx.x64",
-      ]
+      ],
+      trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"]
 
   caveats "If you are installing this x64 binary on an Apple M1 (arm64) machine, the x64 version of `dotnet`" \
           "command will be symlinked as `dotnetx64`\n\n" \
