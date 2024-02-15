@@ -33,13 +33,13 @@ cask "dotnet-sdk7-0-100" do
 
   uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.#{arch}"
 
-  zap trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"],
-      pkgutil: [
+  zap pkgutil: [
         "com.microsoft.dotnet.hostfxr.#{version.csv.second}.component.osx.#{arch}",
         "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.#{arch}",
-        "com.microsoft.dotnet.pack.apphost.#{version.csv.second}.component.osx.#{arch}",
         "com.microsoft.dotnet.sharedhost.component.osx.#{arch}",
-      ]
+        "com.microsoft.dotnet.pack.apphost.#{version.csv.second}.component.osx.#{arch}",
+      ],
+      trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"]
 
   caveats "Uninstalling the offical dotnet-sdk casks will remove the shared runtime dependencies, " \
           "so you'll need to reinstall the particular version cask you want from this tap again " \
