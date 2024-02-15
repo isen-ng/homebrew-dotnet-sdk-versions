@@ -19,8 +19,8 @@ cask "dotnet-sdk3-0-100" do
 
   zap pkgutil: [
         "com.microsoft.dotnet.hostfxr.#{version.csv.second}.component.osx.x64",
-        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.x64",
         "com.microsoft.dotnet.pack.apphost.#{version.csv.second}.component.osx.x64",
+        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.x64",
         "com.microsoft.dotnet.sharedhost.component.osx.x64",
       ],
       trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"]
