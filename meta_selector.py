@@ -79,8 +79,7 @@ class MetaSelector:
                     have_prior_output = len(output) > 1  # should ignore the starting line too
                     last_line_is_blank = output[-1] == ""
                     if is_new_variable and have_prior_output and not last_line_is_blank:
-                        if last_var not in ["version", "desc", "name" ]:
-                            print(f"adding blank line - last var was '{last_var}'")
+                        if last_var not in ["version", "desc", "name"]:
                             output.append("")
 
                     if variable == "version":
@@ -125,6 +124,8 @@ class MetaSelector:
 
     __web_url_regex = re.compile(".*://(?P<host>[a-zA-Z0-9_.-]+)/(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
     __git_url_regex = re.compile(".*@(?P<host>[a-zA-Z0-9_.-]+):(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
+    __git_ssh_regex = re.compile(
+        ".*://.*@(?P<host>[a-zA-Z0-9_.-]+)/(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
 
     def read_origin_remote(self) -> List[str]:
         lines = [str(l) for l in subprocess.check_output("git remote -v", shell=True).decode("utf-8").splitlines()]
@@ -135,7 +136,8 @@ class MetaSelector:
             raise Exception("Unable to determine url for remote: origin")
         parts = origin_lines[0].split()
         if parts[0] != "origin":
-            raise Exception(f"Danger, Will Robinson: first non-whitespace part expected to be 'origin' for line {origin_lines[0]}")
+            raise Exception(
+                f"Danger, Will Robinson: first non-whitespace part expected to be 'origin' for line {origin_lines[0]}")
         return self.parse_origin_remote(parts[1])
 
     def parse_origin_remote(self, line: str) -> List[str]:
@@ -149,6 +151,12 @@ class MetaSelector:
         if git_match is not None:
             user = git_match.group("user")
             repo = git_match.group("repo").replace(".git", "")
+            return [user, repo]
+
+        ssh_match = self.__git_ssh_regex.match(line)
+        if ssh_match is not None:
+            user = ssh_match.group("user")
+            repo = ssh_match.group("repo").replace(".git", "")
             return [user, repo]
 
         raise Exception("Unable to parse origin url: {}".format(line))
