@@ -79,13 +79,10 @@ class MetaSelector:
                     have_prior_output = len(output) > 1  # should ignore the starting line too
                     last_line_is_blank = output[-1] == ""
                     if is_new_variable and have_prior_output and not last_line_is_blank:
-                        if last_var not in ["version", "desc", "name"]:
+                        if last_var not in ["version", "desc", "name"] and last_var not in self.__url_vars:
                             output.append("")
 
-                    if variable == "version":
-                        output.append(f"  sha256 :no_check")
-                        should_store_last_var = True
-                    elif variable in self.__url_vars and set_url is False:
+                    if variable in self.__url_vars and set_url is False:
                         output.append(f"  url \"{meta_artifact}\"")
                         set_url = True
                         should_store_last_var = True
@@ -100,6 +97,9 @@ class MetaSelector:
                 if self.should_keep_line(line):
                     output.append(line)
                     should_store_last_var = True
+                    if variable == "version":
+                        output.append(f"  sha256 :no_check")
+                        output.append("")
                 if should_store_last_var:
                     last_var = variable
                 elif variable in self.__url_vars:
