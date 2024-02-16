@@ -26,6 +26,8 @@ class Sdk:
 
 
 class MetaSelector:
+    quiet = False
+
     __keep_line_matchers = [
         re.compile("^\\s*arch\\b.*"),
         re.compile("^\\s*version\\b.*"),
@@ -33,7 +35,6 @@ class MetaSelector:
         re.compile("^\\s*desc\\b.*"),
         re.compile("^\\s*depends_on\\b.*")
     ]
-    quiet = False
     __url_vars = [
         "url",
         "url_x64",
