@@ -62,7 +62,6 @@ class MetaSelector:
         [user, repo] = self.parse_origin_remote()
         github_repo = f"https://github.com/{user}/{repo}"
         meta_artifact = f"{github_repo}/raw/master/META.md"
-        sha256 = self.hash(meta_artifact)
         with open(source_path) as fp:
             lines = fp.readlines()
             assignment_re = re.compile("\\s*(?P<variable>[^\\s]+)\\s*=?\\s*(?P<value>.*)")
@@ -82,7 +81,7 @@ class MetaSelector:
 
                     if variable in self.__url_vars and set_url is False:
                         output.append(f"  url \"{meta_artifact}\"")
-                        output.append(f"  sha256 \"{sha256}\"")
+                        output.append(f"  sha256 :no_check")
                         set_url = True
                     elif variable == "depends_on":
                         if not set_cask_dependency:

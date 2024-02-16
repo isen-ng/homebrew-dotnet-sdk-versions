@@ -4,8 +4,8 @@ cask "dotnet-sdk6" do
 
   version "6.0.419,6.0.27"
 
-  url = "https://github.com/fluffynuts/homebrew-dotnet-sdk-versions/raw/master/META.md"
-  sha256 = "93c1654aae5d0217e15ccd135433295b6840254e96db32324988f52f22ebb034"
+  url "https://github.com/fluffynuts/homebrew-dotnet-sdk-versions/raw/master/META.md"
+  sha256 :no_check
 
   name ".NET Core SDK #{version.csv.first}"
 
