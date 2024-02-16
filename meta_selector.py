@@ -81,8 +81,8 @@ class MetaSelector:
                     last_var = variable
 
                     if variable in self.__url_vars and set_url is False:
-                        output.append(f"  url = \"{meta_artifact}\"")
-                        output.append(f"  sha256 = \"{sha256}\"")
+                        output.append(f"  url \"{meta_artifact}\"")
+                        output.append(f"  sha256 \"{sha256}\"")
                         set_url = True
                     elif variable == "depends_on":
                         if not set_cask_dependency:
