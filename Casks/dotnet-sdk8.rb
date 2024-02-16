@@ -11,10 +11,10 @@ cask "dotnet-sdk8" do
 
   desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
 
-  homepage: "https://github.com/fluffynuts/homebrew-dotnet-sdk-versions"
+  homepage "https://github.com/fluffynuts/homebrew-dotnet-sdk-versions"
 
   depends_on cask: "dotnet-sdk8-0-100"
   depends_on macos: ">= :catalina"
 
-  stage_only: true
+  stage_only true
 end
