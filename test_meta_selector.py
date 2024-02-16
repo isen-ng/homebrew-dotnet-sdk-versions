@@ -112,6 +112,15 @@ class MetaSelectorTests(unittest.TestCase):
         macos_depends = [ l for l in depends_on_lines if l.find("macos") > -1]
         self.assertEqual(1, len(macos_depends))
 
+    def test_parse_origin_remote_ssh(self):
+        sut = self.create()
+        url = "ssh://git@github.com/owner/repo"
+
+        result = sut.parse_origin_remote(url)
+
+        self.assertEqual(result[0], "owner")
+        self.assertEqual(result[1], "repo")
+
     def assertContains(self, actual, expected):
         self.assertTrue(actual.find(expected) > -1)
 

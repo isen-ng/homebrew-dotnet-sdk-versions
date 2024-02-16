@@ -59,7 +59,7 @@ class MetaSelector:
         ]
         set_url = False
         set_cask_dependency = False
-        [user, repo] = self.parse_origin_remote()
+        [user, repo] = self.read_origin_remote()
         github_repo = f"https://github.com/{user}/{repo}"
         meta_artifact = f"{github_repo}/raw/master/META.md"
         with open(source_path) as fp:
@@ -76,10 +76,11 @@ class MetaSelector:
                 if is_var_line:
                     variable = match.group("variable")
                     is_new_variable = variable != last_var
-                    have_prior_output = len(output) > 1 # should ignore the starting line too
+                    have_prior_output = len(output) > 1  # should ignore the starting line too
                     last_line_is_blank = output[-1] == ""
                     if is_new_variable and have_prior_output and not last_line_is_blank:
-                        if last_var not in ["version", "name", "desc", "url"]:
+                        if last_var not in ["version", "desc", "name" ]:
+                            print(f"adding blank line - last var was '{last_var}'")
                             output.append("")
 
                     if variable == "version":
@@ -125,27 +126,32 @@ class MetaSelector:
     __web_url_regex = re.compile(".*://(?P<host>[a-zA-Z0-9_.-]+)/(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
     __git_url_regex = re.compile(".*@(?P<host>[a-zA-Z0-9_.-]+):(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
 
-    def parse_origin_remote(self) -> List[str]:
-        # for now, hard-coded to return me and my repo
-        # so I can manually test, but this should be
-        # updated to read the info from git via the cli
-        # or use environment variables perhaps?
-        lines = [str(l) for l in subprocess.check_output("git remote -v", shell=True).splitlines()]
-        origin_lines = [l for l in lines if l.find("origin") > -1]
+    def read_origin_remote(self) -> List[str]:
+        lines = [str(l) for l in subprocess.check_output("git remote -v", shell=True).decode("utf-8").splitlines()]
+        origin_lines = [l for l in lines if l.strip().startswith("origin")]
         if len(origin_lines) == 0:
+            print(lines)
+            print(origin_lines)
             raise Exception("Unable to determine url for remote: origin")
-        web_match = self.__web_url_regex.match(origin_lines[0])
+        parts = origin_lines[0].split()
+        if parts[0] != "origin":
+            raise Exception(f"Danger, Will Robinson: first non-whitespace part expected to be 'origin' for line {origin_lines[0]}")
+        return self.parse_origin_remote(parts[1])
+
+    def parse_origin_remote(self, line: str) -> List[str]:
+        web_match = self.__web_url_regex.match(line)
         if web_match is not None:
             user = web_match.group("user")
             repo = web_match.group("repo")
             return [user, repo]
-        git_match = self.__git_url_regex.match(origin_lines[0])
+
+        git_match = self.__git_url_regex.match(line)
         if git_match is not None:
             user = git_match.group("user")
             repo = git_match.group("repo").replace(".git", "")
             return [user, repo]
 
-        raise Exception("Unable to parse origin url: {}".format(origin_lines[0]))
+        raise Exception("Unable to parse origin url: {}".format(line))
 
     def log(self, s: str) -> None:
         if self.quiet:
