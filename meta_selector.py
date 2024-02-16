@@ -121,7 +121,7 @@ class MetaSelector:
         # so I can manually test, but this should be
         # updated to read the info from git via the cli
         # or use environment variables perhaps?
-        lines = [str(l) for l in subprocess.check_output("git remote -v").splitlines()]
+        lines = [str(l) for l in subprocess.check_output("git remote -v", shell=True).splitlines()]
         origin_lines = [l for l in lines if l.find("origin") > -1]
         if len(origin_lines) == 0:
             raise Exception("Unable to determine url for remote: origin")
