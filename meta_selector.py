@@ -68,32 +68,42 @@ class MetaSelector:
             last_var = ""
             for line in lines:
                 line = line.rstrip()
+                looks_like_cask_def_start = line.startswith("cask") and line.endswith("do")
                 match = assignment_re.match(line)
-                is_var_line = match is not None
+                is_var_line = not looks_like_cask_def_start and match is not None
+                should_store_last_var = False
+                variable = ""
                 if is_var_line:
                     variable = match.group("variable")
                     is_new_variable = variable != last_var
-                    have_prior_output = len(output) > 0
+                    have_prior_output = len(output) > 1 # should ignore the starting line too
                     last_line_is_blank = output[-1] == ""
                     if is_new_variable and have_prior_output and not last_line_is_blank:
-                        output.append("")
-                    last_var = variable
+                        if last_var not in ["version", "name", "desc", "url"]:
+                            output.append("")
 
-                    if variable in self.__url_vars and set_url is False:
-                        output.append(f"  url \"{meta_artifact}\"")
+                    if variable == "version":
                         output.append(f"  sha256 :no_check")
+                        should_store_last_var = True
+                    elif variable in self.__url_vars and set_url is False:
+                        output.append(f"  url \"{meta_artifact}\"")
                         set_url = True
+                        should_store_last_var = True
                     elif variable == "depends_on":
                         if not set_cask_dependency:
                             output.append(f"  depends_on cask: \"{sdk.fullname}\"")
-                        # include the original line
-                        # include the dependency on the dotnet cask
+                        should_store_last_var = True
                     elif variable == "homepage":
                         output.append(f"  homepage \"{github_repo}\"")
+                        should_store_last_var = True
 
                 if self.should_keep_line(line):
                     output.append(line)
-                    continue
+                    should_store_last_var = True
+                if should_store_last_var:
+                    last_var = variable
+                elif variable in self.__url_vars:
+                    last_var = "url"
             # the meta package contains no activatable artifacts
             # -> according to https://github.com/krema/homebrew-cask-local/blob/master/doc/cask_language_reference/all_stanzas.md
             #    we can set stage_only: true
