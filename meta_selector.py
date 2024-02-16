@@ -89,7 +89,7 @@ class MetaSelector:
                         # include the original line
                         # include the dependency on the dotnet cask
                     elif variable == "homepage":
-                        output.append(f"  homepage: \"{github_repo}\"")
+                        output.append(f"  homepage \"{github_repo}\"")
 
                 if self.should_keep_line(line):
                     output.append(line)
@@ -98,7 +98,7 @@ class MetaSelector:
             # -> according to https://github.com/krema/homebrew-cask-local/blob/master/doc/cask_language_reference/all_stanzas.md
             #    we can set stage_only: true
             #    otherwise the verification workflows will fail with "at least one activatable artifact stanza is required"
-            output.append("  stage_only: true")
+            output.append("  stage_only true")
             output.append("end")
 
         self.log("creating meta-package: {}".format(source_path))
