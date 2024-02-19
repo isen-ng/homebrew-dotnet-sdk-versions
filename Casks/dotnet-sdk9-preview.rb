@@ -26,7 +26,7 @@ cask "dotnet-sdk9-preview" do
     skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
   end
 
-  depends_on macos: ">= :mojave"
+  depends_on macos: ">= :monterey"
 
   pkg "dotnet-sdk-#{version.csv.first}-osx-#{arch}.pkg"
 
