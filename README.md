@@ -55,10 +55,11 @@ after installing/upgrading to .NET SDK 5.
 
 ### Preview versions
 
-| Version               | .NET SDK              | Arch        | Remarks |
-| --------------------- | --------------------- | ----------- | ------- |
-| `dotnet-sdk8-preview` | 8.0.101-rc.2.23502.2  | x64 & arm64 |         |
-| `dotnet-sdk7-preview` | 7.0.100-rc.2.22477.23 | x64 & arm64 |         |
+| Version               | .NET SDK                   | Arch        | Remarks |
+| --------------------- | -------------------------- | ----------- | ------- |
+| `dotnet-sdk9-preview` | 9.0.100-preview.1.24101.2  | x64 & arm64 |         |
+| `dotnet-sdk8-preview` | 8.0.101-rc.2.23502.2       | x64 & arm64 |         |
+| `dotnet-sdk7-preview` | 7.0.100-rc.2.22477.23      | x64 & arm64 |         |
 
 **Note**: Preview versions is a newly supported feature (as of September 2022). Please send feedback/create issues
 if there are problems with the compatibility of the preview versions.
