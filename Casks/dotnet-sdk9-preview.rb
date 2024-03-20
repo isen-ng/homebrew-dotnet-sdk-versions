@@ -2,6 +2,7 @@ cask "dotnet-sdk9-preview" do
   arch arm: "arm64", intel: "x64"
 
   version "9.0.100-preview.2.24157.14,9.0.0-preview.2.24128.5"
+
   sha256_x64 = "fe9de313fd017bf9caf5c8edf90b4837b3c3e6e8e968ef31d2e9fa0e1b97f5cb"
   sha256_arm64 = "2d2d5e2ae9ff425aa7a51b078e762711058b57bc449ca22aa0aaa48542e6ba1e"
   url_x64 = "https://download.visualstudio.microsoft.com/download/pr/077d24e5-df1c-40fa-8204-cd601e0b3465/44de36d04f570e120f4f47debe33b839/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
