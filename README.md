@@ -30,7 +30,7 @@ dotnet --list-sdks
 | `dotnet-sdk7-0-300` | 7.0.306  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-200` | 7.0.203  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-100` | 7.0.102  | x64 & arm64 |                                          |
-| `dotnet-sdk6-0-400` | 6.0.420  | x64 & arm64 |                                          |
+| `dotnet-sdk6-0-400` | 6.0.421  | x64 & arm64 |                                          |
 | `dotnet-sdk6-0-300` | 6.0.303  | x64 & arm64 |                                          |
 | `dotnet-sdk6-0-200` | 6.0.202  | x64 & arm64 |                                          |
 | `dotnet-sdk6-0-100` | 6.0.108  | x64 & arm64 |                                          |
