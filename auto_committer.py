@@ -4,6 +4,7 @@ import argparse
 import json
 import subprocess
 import sys
+import time
 
 class PullRequestProcessor:
     def __init__(self, git_service):
