@@ -11,7 +11,15 @@ env:
   HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
+  python-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run python tests
+        id: python-tests
+        run: python -m unittest
+
   generate-matrix:
+    needs: python-tests
     outputs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
     runs-on: ubuntu-latest

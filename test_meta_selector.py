@@ -45,12 +45,7 @@ class MetaSelectorTests(unittest.TestCase):
             stdout=subprocess.PIPE
         ).stdout.decode("utf-8")).splitlines()
         interesting = [l for l in stdout if l.startswith("origin")]
-        first = interesting[0]
-        if first.find("fluffynuts") > -1:
-            expectedUrl = "https://raw.githubusercontent.com/fluffynuts/homebrew-dotnet-sdk-versions/master/META.md"
-        else:
-            # try to make this work when it's finally merged...
-            expectedUrl = "https://raw.githubusercontent.com/isen-ng/homebrew-dotnet-sdk-versions/master/META.md"
+        expectedUrl = "https://github.com/isen-ng/homebrew-dotnet-sdk-versions/raw/master/META.md"
 
         self.create_caskfile("7-0-200")
         expected_version = "7-0-400"
@@ -96,7 +91,7 @@ class MetaSelectorTests(unittest.TestCase):
         raw = self.read_work_file_raw(expected_file)
         self.assertContains(raw, "name \".NET Core SDK #{version.csv.first}\"")
         self.assertContains(raw, "desc \"This cask follows releases from https://github.com/dotnet/core/tree/master\"")
-        self.assertContains(raw, "homepage \"https://www.microsoft.com/net/core#macos\"")
+        self.assertContains(raw, "homepage \"https://github.com/isen-ng/homebrew-dotnet-sdk-versions\"")
 
     def test_run_should_not_duplicate_depends_on(self):
         self.create_caskfile("7-0-200")
