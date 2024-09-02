@@ -35,11 +35,16 @@ class MetaSelector:
         re.compile("^\\s*desc\\b.*"),
         re.compile("^\\s*depends_on\\b.*")
     ]
+
     __url_vars = [
         "url",
         "url_x64",
         "url_arm64"
     ]
+
+    __web_url_regex = re.compile(".*://(?P<host>[a-zA-Z0-9_.-]+)/(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
+    __git_url_regex = re.compile(".*@(?P<host>[a-zA-Z0-9_.-]+):(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
+    __git_ssh_regex = re.compile(".*://.*@(?P<host>[a-zA-Z0-9_.-]+)/(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
 
     def __init__(self, workdir):
         self.workdir = workdir
@@ -121,11 +126,6 @@ class MetaSelector:
         raw_data = req.read()
         result = sha256(raw_data)
         return result.hexdigest()
-
-    __web_url_regex = re.compile(".*://(?P<host>[a-zA-Z0-9_.-]+)/(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
-    __git_url_regex = re.compile(".*@(?P<host>[a-zA-Z0-9_.-]+):(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
-    __git_ssh_regex = re.compile(
-        ".*://.*@(?P<host>[a-zA-Z0-9_.-]+)/(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
 
     def read_origin_remote(self) -> List[str]:
         lines = [str(l) for l in subprocess.check_output("git remote -v", shell=True).decode("utf-8").splitlines()]
