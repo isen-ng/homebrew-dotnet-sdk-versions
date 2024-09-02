@@ -45,6 +45,7 @@ class MetaSelector:
     __web_url_regex = re.compile(".*://(?P<host>[a-zA-Z0-9_.-]+)/(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
     __git_url_regex = re.compile(".*@(?P<host>[a-zA-Z0-9_.-]+):(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
     __git_ssh_regex = re.compile(".*://.*@(?P<host>[a-zA-Z0-9_.-]+)/(?P<user>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)")
+    __version_regex = re.compile("(?P<name>dotnet-sdk)(?P<major>\\d+)-(?P<minor>\\d+)-(?P<patch>\\d+)")
 
     def __init__(self, workdir):
         self.workdir = workdir
@@ -166,12 +167,10 @@ class MetaSelector:
             return
         print(s)
 
-    @staticmethod
-    def generate_version_lookup(files) -> Dict[str, Sdk]:
-        regex = re.compile("(?P<name>dotnet-sdk)(?P<major>\\d+)-(?P<minor>\\d+)-(?P<patch>\\d+)")
+    def generate_version_lookup(self, files) -> Dict[str, Sdk]:
         lookup = {}
         for f in files:
-            match = regex.match(f)
+            match = self.__version_regex.match(f)
             if match is None:
                 print("ignored {}: No version match match for filename".format(f))
                 continue
