@@ -46,7 +46,7 @@ class MetaSelector:
         pass
 
     def run(self):
-        files = self.list_work_files()
+        files = self.list_work_files(self.workdir)
         lookup = self.generate_version_lookup(files)
         for key in lookup:
             sdk = lookup[key]
@@ -191,10 +191,11 @@ class MetaSelector:
                 lookup[name] = current
         return lookup
 
-    def list_work_files(self):
+    @staticmethod
+    def list_work_files(workdir):
         return [
-            f for f in os.listdir(self.workdir)
-            if os.path.isfile(os.path.join(self.workdir, f))
+            f for f in os.listdir(workdir)
+            if os.path.isfile(os.path.join(workdir, f))
         ]
 
     def should_keep_line(self, line: str):
