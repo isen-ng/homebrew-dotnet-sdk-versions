@@ -27,8 +27,8 @@ dotnet --list-sdks
 | `dotnet-sdk7` | 7.0.410  |
 | `dotnet-sdk6` | 6.0.425  |
 | `dotnet-sdk5` | 5.0.408  |
-| `dotnet-sdk4` | 3.1.426  |
-| `dotnet-sdk3` | 2.2.402  |
+| `dotnet-sdk3` | 3.1.426  |
+| `dotnet-sdk2` | 2.2.402  |
 
 **Note**: These meta-packages installs the latest MINOR and PATCH versions from the existing versions list below.
 

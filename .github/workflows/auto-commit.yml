@@ -2,8 +2,8 @@ name: auto-committer
 
 on:
   schedule:
-    # run at 1900UTC (3am +8GMT) everyday, 2 hours after auto updater
-    - cron: "0 19 * * *"
+    # run at 1800UTC (2am +8GMT) and 2000UTC (4am +8GMT) everyday, 1 hour after both auto updaters
+    - cron: "0 18,20 * * *"
   workflow_dispatch:
   
 

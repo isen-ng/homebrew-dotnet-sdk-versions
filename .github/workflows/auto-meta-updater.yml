@@ -1,0 +1,28 @@
+name: auto-updater
+
+on:
+  schedule:
+    # run at 1900UTC (3am +8GMT) everyday, 2 hours after regular updater, 1 hour after first commiter
+    - cron: "0 19 * * *"
+  workflow_dispatch:
+  
+
+jobs:
+  update:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set git username and email, so we can commit and push
+        run: |
+          git config --global user.email "3904043+isen-ng@users.noreply.github.com"
+          git config --global user.name "Isen Ng"
+
+      - name: Run auto_meta_updater.py
+        env:
+          GITHUB_USER: ${{ secrets.GITHUB_USER }}
+          GITHUB_TOKEN: ${{ secrets.UPDATER_PUSH_TOKEN }}
+        run: ./auto_meta_updater.py --really_commit --really_push
