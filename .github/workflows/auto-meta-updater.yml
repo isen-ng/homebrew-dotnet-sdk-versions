@@ -1,4 +1,4 @@
-name: auto-updater
+name: auto-meta-updater
 
 on:
   schedule:
