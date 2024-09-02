@@ -19,6 +19,20 @@ brew install --cask <version>
 dotnet --list-sdks
 ```
 
+### Meta versions
+
+| Version       | .NET SDK |
+| ------------- | -------- |
+| `dotnet-sdk8` | 8.0.401  |
+| `dotnet-sdk7` | 7.0.410  |
+| `dotnet-sdk6` | 6.0.425  |
+| `dotnet-sdk5` | 5.0.408  |
+| `dotnet-sdk3` | 3.1.426  |
+| `dotnet-sdk2` | 2.2.402  |
+
+**Note**: These meta-packages installs the latest MINOR and PATCH versions from the existing versions list below.
+
+**Note 2**: See each corresponding version below for `arch` and `remarks`.
 
 ### Versions
 
@@ -60,12 +74,9 @@ after installing/upgrading to .NET SDK 5.
 
 | Version               | .NET SDK                   | Arch        | Remarks |
 | --------------------- | -------------------------- | ----------- | ------- |
-| `dotnet-sdk9-preview` | 9.0.100-preview.7.24407.12  | x64 & arm64 |         |
+| `dotnet-sdk9-preview` | 9.0.100-preview.7.24407.12 | x64 & arm64 |         |
 | `dotnet-sdk8-preview` | 8.0.101-rc.2.23502.2       | x64 & arm64 |         |
 | `dotnet-sdk7-preview` | 7.0.100-rc.2.22477.23      | x64 & arm64 |         |
-
-**Note**: Preview versions is a newly supported feature (as of September 2022). Please send feedback/create issues
-if there are problems with the compatibility of the preview versions.
 
 
 ## Uninstalling

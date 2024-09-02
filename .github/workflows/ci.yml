@@ -101,34 +101,38 @@ jobs:
             require 'cask/installer'
 
             cask = Cask::CaskLoader.load('${{ matrix.cask.path }}')
-            
+
             was_installed = cask.installed?
-            manual_installer = cask.artifacts.any? { |artifact|
-              artifact.is_a?(Cask::Artifact::Installer::ManualInstaller)
-            }
-            
+            manual_installer = cask.artifacts.any? do |artifact|
+              if defined?(artifact.manual_install)
+                artifact.manual_install
+              end
+            end
+
             macos_requirement_satisfied = if macos_requirement = cask.depends_on.macos
               macos_requirement.satisfied?
             else
               true
             end
-            
+
             cask_conflicts = cask.conflicts_with&.dig(:cask).to_a.select { |c| Cask::CaskLoader.load(c).installed? }
             formula_conflicts = cask.conflicts_with&.dig(:formula).to_a.select { |f| Formula[f].any_version_installed? }
-            
+
             installer = Cask::Installer.new(cask)
             cask_and_formula_dependencies = installer.missing_cask_and_formula_dependencies
-            
+
             cask_dependencies = cask_and_formula_dependencies.select { |d| d.is_a?(Cask::Cask) }.map(&:full_name)
             formula_dependencies = cask_and_formula_dependencies.select { |d| d.is_a?(Formula) }.map(&:full_name)
-            
-            puts "::set-output name=was_installed::#{JSON.generate(was_installed)}"
-            puts "::set-output name=manual_installer::#{JSON.generate(manual_installer)}"
-            puts "::set-output name=macos_requirement_satisfied::#{JSON.generate(macos_requirement_satisfied)}"
-            puts "::set-output name=cask_conflicts::#{JSON.generate(cask_conflicts)}"
-            puts "::set-output name=cask_dependencies::#{JSON.generate(cask_dependencies)}"
-            puts "::set-output name=formula_conflicts::#{JSON.generate(formula_conflicts)}"
-            puts "::set-output name=formula_dependencies::#{JSON.generate(formula_dependencies)}"
+
+            File.open(ENV.fetch("GITHUB_OUTPUT"), "a") do |f|
+              f.puts "was_installed=#{JSON.generate(was_installed)}"
+              f.puts "manual_installer=#{JSON.generate(manual_installer)}"
+              f.puts "macos_requirement_satisfied=#{JSON.generate(macos_requirement_satisfied)}"
+              f.puts "cask_conflicts=#{JSON.generate(cask_conflicts)}"
+              f.puts "cask_dependencies=#{JSON.generate(cask_dependencies)}"
+              f.puts "formula_conflicts=#{JSON.generate(formula_conflicts)}"
+              f.puts "formula_dependencies=#{JSON.generate(formula_dependencies)}"
+            end
           EOF
         if: always() && steps.gems.outcome == 'success' && matrix.cask
 

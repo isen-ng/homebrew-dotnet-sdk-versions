@@ -21,7 +21,7 @@ class PullRequestProcessor:
 
         for pull_request in pull_requests:
             git_service.merge_pull_request(pull_request)
-            time.sleep(10)
+            time.sleep(20)
 
 
 class GitService:
