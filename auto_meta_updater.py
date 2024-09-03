@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import os
 import re
 from typing import List, Dict
@@ -113,7 +114,7 @@ class MetaLookupService:
                 continue
 
             # major meta cask only contains 1 dash. eg `dotnet-sdk8`
-            if file.count('-') is 1:
+            if file.count('-') == 1:
                 continue
 
             result.append(file)
