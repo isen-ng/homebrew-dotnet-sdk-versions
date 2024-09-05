@@ -179,6 +179,11 @@ class ReadMeUpdater:
 
 class GitService:
     def push(self, really_commit, really_push):
+        ## check if there's anything to commit, otherwise just quit
+        process = subprocess.run(['git', 'status', '--porcelain'], check = True, capture_output = True, text = True)
+        if not process.stdout:
+            pass
+
         branch_name = 'update-meta-casks'
         commit_message = '[Auto] Update meta casks'
 
