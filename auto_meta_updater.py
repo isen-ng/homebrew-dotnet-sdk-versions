@@ -182,13 +182,14 @@ class GitService:
         ## check if there's anything to commit, otherwise just quit
         process = subprocess.run(['git', 'status', '--porcelain'], check = True, capture_output = True, text = True)
         if not process.stdout:
-            pass
+            return
 
         branch_name = 'update-meta-casks'
         commit_message = '[Auto] Update meta casks'
 
         if really_commit:
-            subprocess.run(['git', 'checkout', '-b', branch_name, 'master'], check = False)
+            subprocess.run(['git', 'branch', '-f', branch_name, 'master'], check = False)
+            subprocess.run(['git', 'checkout', branch_name], check = False)
             subprocess.run(['git', 'add', '-A'], check = True)
             subprocess.run(['git', 'commit', '-m', commit_message], check = True)
 
