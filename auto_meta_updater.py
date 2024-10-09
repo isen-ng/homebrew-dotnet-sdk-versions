@@ -36,6 +36,9 @@ class MetaCask:
     def __str__(self):
         return f'{self.major}.{self.minor}.{self.patch}'
 
+    def __repr__(self):
+        return self.__str__()
+
 
 class DependsOnCask:
     def __init__(self, cask_name: str, sdk_version: str, runtime_version: str, depends_on_cask: str, depends_on_macos: str, is_arm_supported: bool):
@@ -45,6 +48,16 @@ class DependsOnCask:
         self.depends_on_cask = depends_on_cask
         self.depends_on_macos = depends_on_macos
         self.is_arm_supported = is_arm_supported
+
+
+class Logger:
+    @staticmethod
+    def log(name, value = ''):
+        print('{0}: {1}'.format(name, str(value)))
+
+    @staticmethod
+    def output(message):
+        print(message)
 
 
 class TemplateService:
@@ -69,13 +82,13 @@ class TemplateService:
         return content
 
 
-class MetaLookupService:
+class MetaCaskGenerator:
     __cask_version_regex = re.compile(r"(?P<name>dotnet-sdk)(?P<major>\d+)-(?P<minor>\d+)-(?P<patch>\d+)")
 
     def __init__(self, cask_directory):
         self.cask_directory = cask_directory
 
-    def generate_version_lookup(self) -> Dict[str, MetaCask]:
+    def generate_meta_casks(self) -> Dict[str, MetaCask]:
         result = {}
         casks = self.__list_work_files();
         for cask_filename in casks:
@@ -200,20 +213,23 @@ class GitService:
 
 class MetaUpdater:
     def __init__(self, cask_directory: str, 
-        meta_lookup_service: MetaLookupService, 
+        meta_cask_generator: MetaCaskGenerator, 
         depends_on_cask_parser: DependsOnCaskParser, 
         template_service: TemplateService, 
         read_me_updater: ReadMeUpdater):
         self.cask_directory = cask_directory
-        self.meta_lookup_service = meta_lookup_service
+        self.meta_cask_generator = meta_cask_generator
         self.depends_on_cask_parser = depends_on_cask_parser
         self.template_service = template_service
         self.read_me_updater = read_me_updater
 
     def run(self):
-        meta_casks = self.meta_lookup_service.generate_version_lookup()
+        meta_casks = self.meta_cask_generator.generate_meta_casks()
 
         for meta_cask in meta_casks:
+            Logger.log('Updating meta cask', meta_cask.meta_cask_name)
+            Logger.log('Which depends on', meta_cask.depends_on_filename)
+
             depends_on_cask = depends_on_cask_parser.parse(meta_cask)
             meta_file_content = template_service.generate(meta_cask, depends_on_cask)
             self.write_meta_cask(meta_cask, meta_file_content)
@@ -228,12 +244,12 @@ class MetaUpdater:
 if __name__ == '__main__':
     cask_directory = os.path.join(os.path.dirname(__file__), "Casks")
 
-    meta_lookup_service = MetaLookupService(cask_directory)
+    meta_cask_generator = MetaCaskGenerator(cask_directory)
     depends_on_cask_parser = DependsOnCaskParser(cask_directory)
     template_service = TemplateService()
     read_me_updater = ReadMeUpdater()
 
-    meta_updater = MetaUpdater(cask_directory, meta_lookup_service, depends_on_cask_parser, template_service, read_me_updater)
+    meta_updater = MetaUpdater(cask_directory, meta_cask_generator, depends_on_cask_parser, template_service, read_me_updater)
     meta_updater.run()
 
     parser = argparse.ArgumentParser()
