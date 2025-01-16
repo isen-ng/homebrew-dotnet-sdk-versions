@@ -32,8 +32,15 @@ jobs:
 
       - name: Generate CI matrix
         id: generate-matrix
+        env:
+          PULL_REQUEST_URL: ${{ github.event.pull_request.url }}
         run: |
-          brew ruby -- "$(brew --repository homebrew/cask)/cmd/lib/generate-matrix.rb" --url="${{ github.event.pull_request.url }}"
+          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]
+          then
+            brew generate-cask-ci-matrix --syntax-only
+          else
+            brew generate-cask-ci-matrix --url "$PULL_REQUEST_URL"
+          fi
 
   test:
     name: ${{ matrix.name }}
