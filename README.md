@@ -97,6 +97,26 @@ brew uninstall --zap --cask <version>
 particular version you want to use again.
 
 
+## Known issues
+
+#### Uninstalling dotnet-sdk without using homebrew
+
+If your `dotnet-sdk` was installed using homebrew but uninstalled manually outside of homebrew, homebrew will still think that 
+your `dotnet-sdk` is still installed. This is unavoidable. Homebrew might stil think there is "nothing to do" even if the cask is
+reinstalled, eg `brew reinstall dotnet-sdk-8-400`.
+
+In this case, `zap` your installation, `brew uninstall --zap dotnet-sdk-8-400` before installing it again.
+
+#### Upgrading your official `dotnet-sdk` causes some issues
+
+When upgrading the official `dotnet-sdk` cask, especially on major version updates, may cause incompatible issues with casks in 
+this tap. This is because the official cask assumes that it is the only dotnet installation and when upgrading, uninstalls 
+shared dependencies required by other versions of `dotnet-sdk` installed by this tap.
+
+To recover from this, reinstall all affected `dotnet-sdk` versions, eg `brew reinstall dotnet-sdk-8-400`. If this doesn't work, 
+all casks may need to be zapped before reinstalling, eg `brew uninstall --zap dotnet-sdk-8-400`.
+
+
 ## Using a particular version
 
 The `dotnet` command will automatically use the latest appropriate version unless specified by a
