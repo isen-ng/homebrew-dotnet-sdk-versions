@@ -1,12 +1,12 @@
 cask "dotnet-sdk10-preview" do
   arch arm: "arm64", intel: "x64"
 
-  version "10.0.100-preview.2.25164.34,10.0.0-preview.2.25163.2"
+  version "10.0.100-preview.3.25201.16,10.0.0-preview.3.25171.5"
 
-  sha256_x64 = "88b359654b9b6ec99760a9eaf65031c5007847ffa589642113614e37ea8fb340"
-  sha256_arm64 = "45b765830e28c14b4e4a230b34f02f4918d2d5ac0d2063e95c57b964aeb10da1"
-  url_x64 = "https://download.visualstudio.microsoft.com/download/pr/b4939084-2f13-4db2-a1f9-e0bb92fa6444/f7ddf601828529880e744e9f1665a8c6/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
-  url_arm64 = "https://download.visualstudio.microsoft.com/download/pr/682dfc93-051e-4e97-9fdd-04bc94c60128/f8564986e2a2ce732dacdee33fb9be5a/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
+  sha256_x64 = "8dd5bf7df1499fffdcd4c3d4e67adda2dfb2a706c1eb6649a6d9ca64c2ef7d10"
+  sha256_arm64 = "8acb18e62c0a4ac86f8e9ae19c57d5921d8c49fcce75478e38e78e4a0e4d6954"
+  url_x64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
+  url_arm64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
 
   on_arm do
     sha256 sha256_arm64
