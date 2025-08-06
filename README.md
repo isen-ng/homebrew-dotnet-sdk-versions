@@ -23,7 +23,7 @@ dotnet --list-sdks
 
 | Version       | .NET SDK |
 | ------------- | -------- |
-| `dotnet-sdk9` | 9.0.304  |
+| `dotnet-sdk9` | 9.0.303  |
 | `dotnet-sdk8` | 8.0.412  |
 | `dotnet-sdk7` | 7.0.410  |
 | `dotnet-sdk6` | 6.0.428  |
