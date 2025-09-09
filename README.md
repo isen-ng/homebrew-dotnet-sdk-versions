@@ -78,7 +78,7 @@ after installing/upgrading to .NET SDK 5.
 
 | Version                | .NET SDK                    | Arch        | Remarks |
 | ---------------------- | --------------------------- | ----------- | ------- |
-| `dotnet-sdk10-preview` | 10.0.100-preview.7.25380.108 | x64 & arm64 |         |
+| `dotnet-sdk10-preview` | 10.0.100-rc.1.25451.107 | x64 & arm64 |         |
 | `dotnet-sdk9-preview`  | 9.0.102-rc.2.24474.11       | x64 & arm64 |         |
 | `dotnet-sdk8-preview`  | 8.0.101-rc.2.23502.2        | x64 & arm64 |         |
 | `dotnet-sdk7-preview`  | 7.0.100-rc.2.22477.23       | x64 & arm64 |         |
