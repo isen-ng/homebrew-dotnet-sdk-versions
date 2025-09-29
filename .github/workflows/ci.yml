@@ -22,7 +22,6 @@ jobs:
         with:
           core: false
           cask: true
-          test-bot: false
 
       - name: Check out Pull Request
         uses: actions/checkout@v3
@@ -57,7 +56,6 @@ jobs:
         with:
           core: false
           cask: true
-          test-bot: false
 
       - name: Tap isen-ng/dotnet-sdk-versions
         run: brew tap isen-ng/dotnet-sdk-versions
