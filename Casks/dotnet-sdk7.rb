@@ -10,7 +10,7 @@ cask "dotnet-sdk7" do
   homepage "https://github.com/isen-ng/homebrew-dotnet-sdk-versions"
 
   depends_on cask: "dotnet-sdk7-0-400"
-  depends_on macos: ">= :mojave"
+  depends_on macos: ">= :sonoma"
 
   stage_only true
 end

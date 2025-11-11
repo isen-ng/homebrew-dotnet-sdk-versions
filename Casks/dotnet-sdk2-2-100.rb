@@ -11,7 +11,7 @@ cask "dotnet-sdk2-2-100" do
     skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
   end
 
-  depends_on macos: ">= :sierra"
+  depends_on macos: ">= :sonoma"
 
   pkg "dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
 

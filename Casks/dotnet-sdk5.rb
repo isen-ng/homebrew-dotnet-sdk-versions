@@ -8,7 +8,7 @@ cask "dotnet-sdk5" do
   homepage "https://github.com/isen-ng/homebrew-dotnet-sdk-versions"
 
   depends_on cask: "dotnet-sdk5-0-400"
-  depends_on macos: ">= :high_sierra"
+  depends_on macos: ">= :sonoma"
 
   stage_only true
 end
