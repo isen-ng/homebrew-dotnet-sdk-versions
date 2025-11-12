@@ -27,7 +27,7 @@ cask "dotnet-sdk7-0-100" do
     skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
   end
 
-  depends_on macos: ">= :mojave"
+  depends_on macos: ">= :sonoma"
 
   pkg "dotnet-sdk-#{version.csv.first}-osx-#{arch}.pkg"
 
