@@ -1,7 +1,7 @@
-cask "dotnet-sdk7" do
+cask "dotnet-sdk10" do
   arch arm: "arm64", intel: "x64"
 
-  version "7.0.410,7.0.20"
+  version "10.0.100,10.0.10"
   sha256 :no_check
 
   url "https://github.com/isen-ng/homebrew-dotnet-sdk-versions/raw/master/META.md"
@@ -9,7 +9,7 @@ cask "dotnet-sdk7" do
   desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
   homepage "https://github.com/isen-ng/homebrew-dotnet-sdk-versions"
 
-  depends_on cask: "dotnet-sdk7-0-400"
+  depends_on cask: "dotnet-sdk10-0-100"
   depends_on macos: ">= :sonoma"
 
   stage_only true
