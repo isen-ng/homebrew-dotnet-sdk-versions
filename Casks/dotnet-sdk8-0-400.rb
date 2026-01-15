@@ -27,7 +27,7 @@ cask "dotnet-sdk8-0-400" do
     skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
   end
 
-  depends_on macos: ">= :catalina"
+  depends_on macos: ">= :big_sur"
 
   pkg "dotnet-sdk-#{version.csv.first}-osx-#{arch}.pkg"
 
