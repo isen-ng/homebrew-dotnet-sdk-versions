@@ -1,7 +1,7 @@
 cask "dotnet-sdk11-preview" do
   arch arm: "arm64", intel: "x64"
 
-  version "11.0.100-preview.2.26159.112,11.0.100-preview.2.26159.112"
+  version "11.0.100-preview.2.26159.112,11.0.0-preview.2.26159.112"
 
   sha256_x64 = "7a03a5d3c210b9f567433b350834965ac8e81365f3069e7a8d888fe189e77e3c"
   sha256_arm64 = "7a03a5d3c210b9f567433b350834965ac8e81365f3069e7a8d888fe189e77e3c"
