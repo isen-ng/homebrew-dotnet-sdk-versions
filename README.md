@@ -7,7 +7,7 @@
 This tap contains different versions that you can install in parallel to the latest version provided by the
 [official cask](https://github.com/Homebrew/homebrew-cask/blob/master/Casks/d/dotnet-sdk.rb).
 
-Install one of the previous versions by tapping this repository and running the install command.
+Install one of the previous versions by tapping this repository and running the `install` command.
 
 
 ## Installing one of the versions here
@@ -32,7 +32,7 @@ dotnet --list-sdks
 | `dotnet-sdk3` | 3.1.426  |
 | `dotnet-sdk2` | 2.2.402  |
 
-**Note**: These meta-packages installs the latest MINOR and PATCH versions from the existing versions list below.
+**Note**: These meta-packages install the latest MINOR and PATCH versions from the existing versions list below.
 
 **Note 2**: See each corresponding version below for `arch` and `remarks`.
 
@@ -90,8 +90,8 @@ after installing/upgrading to .NET SDK 5.
 
 ## Uninstalling
 
-Because the .NET SDK packages uses shared dependencies between different versions, it is unwise to delete these
-dependencies when uninstalling a particular version as it will cause other versions not to work.
+Because the .NET SDK packages use shared dependencies between different versions, it is unwise to delete these
+dependencies when uninstalling a particular version as it will cause other versions not to work anymore.
 
 If there is a need to purge these dependencies, use the `zap` flag:
 
@@ -107,9 +107,9 @@ particular version you want to use again.
 
 #### Uninstalling dotnet-sdk without using homebrew
 
-If your `dotnet-sdk` was installed using homebrew but uninstalled manually outside of homebrew, homebrew will still think that 
-your `dotnet-sdk` is still installed. This is unavoidable. Homebrew might stil think there is "nothing to do" even if the cask is
-reinstalled, eg `brew reinstall dotnet-sdk-8-400`.
+If your `dotnet-sdk` was installed using homebrew but uninstalled manually outside of homebrew, homebrew will think that 
+your `dotnet-sdk` is still installed. This is unavoidable. Homebrew might think there is still "nothing to do" even if the cask is
+reinstalled, e.g. `brew reinstall dotnet-sdk-8-400`.
 
 In this case, `zap` your installation, `brew uninstall --zap dotnet-sdk-8-400` before installing it again.
 
@@ -119,8 +119,8 @@ When upgrading the official `dotnet-sdk` cask, especially on major version updat
 this tap. This is because the official cask assumes that it is the only dotnet installation and when upgrading, uninstalls 
 shared dependencies required by other versions of `dotnet-sdk` installed by this tap.
 
-To recover from this, reinstall all affected `dotnet-sdk` versions, eg `brew reinstall dotnet-sdk-8-400`. If this doesn't work, 
-all casks may need to be zapped before reinstalling, eg `brew uninstall --zap dotnet-sdk-8-400`.
+To recover from this, reinstall all affected `dotnet-sdk` versions, e.g. `brew reinstall dotnet-sdk-8-400`. If this doesn't work, 
+all casks may need to be zapped before reinstalling, e.g. `brew uninstall --zap dotnet-sdk-8-400`.
 
 
 ## Using a particular version
