@@ -2,15 +2,12 @@
 
 ## Offical cask
 
-If there is a need to refer to the official cask, it can be found here:
+If there is a need to refer to the official cask, [it can be found here](https://github.com/Homebrew/homebrew-cask/blob/main/Casks/d/dotnet-sdk.rb).
 
-https://github.com/Homebrew/homebrew-cask/blob/master/Casks/dotnet-sdk.rb
+## Continuous Integration reference
 
-
-## Continuous integration reference
-
-`.github/workflows/ci.yml` is referenced from the official cask ci: https://github.com/Homebrew/homebrew-cask/blob/master/.github/workflows/ci.yml.
-If ci is broken, there is a good chance that we can find updates from the official cask ci that fixes our ci.
+`.github/workflows/ci.yml` is referenced from the [official cask CI](https://github.com/Homebrew/homebrew-cask/blob/master/.github/workflows/ci.yml).
+If CI is broken, there is a good chance that we can find updates from the official cask CI that fixes our CI.
 
 ## Automatic updates
 
@@ -20,7 +17,7 @@ Github Actions scheduled workflow.
 The script will enumerate over each cask, search through the releases in their respective 
 `releases.json` and author a pull request if there is a newer version released.
 
-All the releases and their notes are published [here](https://github.com/dotnet/core/tree/master/release-notes).
+All the releases and their notes are published [here](https://github.com/dotnet/core/tree/main/release-notes).
 
 ## Automatic commits
 
@@ -33,7 +30,7 @@ manual intervention from the author. In this case, the author will be notified v
 
 ## Adding a new cask
 
-Install the necessary tools if you already haven't
+Install the necessary tools if you already haven't:
 
 ```shell
 ./brew_install_necessary.sh
@@ -56,7 +53,7 @@ cask 'dotnet-sdk-2.99.400' do
 end
 ```
 
-Then run `auto_updater.py` in dry run mode.
+Then run `auto_updater.py` in dry run mode:
 
 ```shell
 # passing in no arguments defaults to dry run mode
@@ -66,7 +63,7 @@ Then run `auto_updater.py` in dry run mode.
 The dry run mode will update all casks, including the cask you've just added without committing and publishing pull
 requests.
 
-Branch out, add the file you want to commit, commit, and push.
+Branch out, add the file you want to commit, commit, and push:
 
 ```shell
 git checkout -b new-cask/dotnet-sdk-2.99.400
