@@ -24,12 +24,8 @@ dotnet --list-sdks
 | Version       | .NET SDK |
 | ------------- | -------- |
 | `dotnet-sdk10`| 10.0.202 |
-<<<<<<< update-Casks/dotnet-sdk10.rb-to-10.0.202
-| `dotnet-sdk9` | 9.0.312  |
-=======
 | `dotnet-sdk9` | 9.0.313  |
->>>>>>> master
-| `dotnet-sdk8` | 8.0.419  |
+| `dotnet-sdk8` | 8.0.420  |
 | `dotnet-sdk7` | 7.0.410  |
 | `dotnet-sdk6` | 6.0.428  |
 | `dotnet-sdk5` | 5.0.408  |
@@ -49,7 +45,7 @@ dotnet --list-sdks
 | `dotnet-sdk9-0-300` | 9.0.313  | x64 & arm64 |                                          |
 | `dotnet-sdk9-0-200` | 9.0.203  | x64 & arm64 |                                          |
 | `dotnet-sdk9-0-100` | 9.0.102  | x64 & arm64 |                                          |
-| `dotnet-sdk8-0-400` | 8.0.419  | x64 & arm64 |                                          |
+| `dotnet-sdk8-0-400` | 8.0.420  | x64 & arm64 |                                          |
 | `dotnet-sdk8-0-300` | 8.0.303  | x64 & arm64 |                                          |
 | `dotnet-sdk8-0-200` | 8.0.204  | x64 & arm64 |                                          |
 | `dotnet-sdk8-0-100` | 8.0.101  | x64 & arm64 |                                          |
