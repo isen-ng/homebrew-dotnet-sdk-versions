@@ -24,7 +24,11 @@ dotnet --list-sdks
 | Version       | .NET SDK |
 | ------------- | -------- |
 | `dotnet-sdk10`| 10.0.202 |
+<<<<<<< update-Casks/dotnet-sdk10.rb-to-10.0.202
+| `dotnet-sdk9` | 9.0.312  |
+=======
 | `dotnet-sdk9` | 9.0.313  |
+>>>>>>> master
 | `dotnet-sdk8` | 8.0.419  |
 | `dotnet-sdk7` | 7.0.410  |
 | `dotnet-sdk6` | 6.0.428  |
