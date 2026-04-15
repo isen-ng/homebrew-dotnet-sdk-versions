@@ -29,6 +29,9 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Run brew config
+        run: brew config
+
       - name: Generate CI matrix
         id: generate-matrix
         env:
