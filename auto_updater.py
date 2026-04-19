@@ -49,10 +49,7 @@ class SdkVersion:
         return not other < self
 
     def __lt__(self, other):
-        return self.major < other.major \
-            or self.minor < other.minor \
-            or self.feature < other.feature \
-            or self.patch < other.patch
+        return (self.major, self.minor, self.feature, self.patch) < (other.major, other.minor, other.feature, other.patch)
 
 
 class RuntimeVersion:
@@ -91,9 +88,7 @@ class RuntimeVersion:
         return not other < self
 
     def __lt__(self, other):
-        return self.major < other.major \
-            or self.minor < other.minor \
-            or self.patch < other.patch
+        return (self.major, self.minor, self.patch) < (other.major, other.minor, other.patch)
 
 
 class PreviewSdkVersion:
