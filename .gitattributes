@@ -1,0 +1,4 @@
+# Use union merge for README.md to avoid conflicts when multiple auto-updater
+# PRs modify different rows of the version tables at the same time.
+# Union merge keeps all changed lines from both sides rather than conflicting.
+README.md merge=union
