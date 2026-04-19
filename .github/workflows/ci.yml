@@ -11,6 +11,21 @@ env:
   HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
+  ensure-aiskills-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Run Sync Script
+        run: |
+          ./sym-link-aiskill.sh
+      - name: Check for Changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "❌ It seems like you've made changes in .aiskills! Run ./sym-link-aiskill.sh to sync them to various agent specific folders"
+            git diff
+            exit 1
+          fi
+
   generate-matrix:
     outputs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
