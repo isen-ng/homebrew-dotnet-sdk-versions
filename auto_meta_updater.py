@@ -11,9 +11,9 @@ class MetaCask:
     def __init__(self, meta_cask_name: str, depends_on_filename: str, major: str, minor: str, patch: str):
         self.meta_cask_name = meta_cask_name
         self.depends_on_filename = depends_on_filename
-        self.major = major
-        self.minor = minor
-        self.patch = patch
+        self.major = int(major)
+        self.minor = int(minor)
+        self.patch = int(patch)
 
     def is_newer_than(self, other):
         if self.major > other.major:
@@ -230,10 +230,10 @@ class MetaUpdater:
             Logger.log('Updating meta cask', meta_cask.meta_cask_name)
             Logger.log('Which depends on', meta_cask.depends_on_filename)
 
-            depends_on_cask = depends_on_cask_parser.parse(meta_cask)
-            meta_file_content = template_service.generate(meta_cask, depends_on_cask)
+            depends_on_cask = self.depends_on_cask_parser.parse(meta_cask)
+            meta_file_content = self.template_service.generate(meta_cask, depends_on_cask)
             self.write_meta_cask(meta_cask, meta_file_content)
-            read_me_updater.update(meta_cask, depends_on_cask)
+            self.read_me_updater.update(meta_cask, depends_on_cask)
 
     def write_meta_cask(self, meta_cask: MetaCask, content: str):
         target_path = "{}.rb".format(os.path.join(self.cask_directory, meta_cask.meta_cask_name))
