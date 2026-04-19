@@ -17,11 +17,11 @@ jobs:
       - uses: actions/checkout@v6
       - name: Run Sync Script
         run: |
-          ./sym-link-aiskill.sh
+          ./sym-link-aiskills.sh
       - name: Check for Changes
         run: |
           if [ -n "$(git status --porcelain)" ]; then
-            echo "❌ It seems like you've made changes in .aiskills! Run ./sym-link-aiskill.sh to sync them to various agent specific folders"
+            echo "❌ It seems like you've made changes in .aiskills! Run ./sym-link-aiskills.sh to sync them to various agent specific folders"
             git diff
             exit 1
           fi
