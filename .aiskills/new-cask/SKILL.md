@@ -1,3 +1,8 @@
+---
+name: new-cask
+description: Add a new cask to homebrew-dotnet-sdk-versions. Use this skill whenever asked to support a new .NET SDK version or feature band that doesn't have a cask yet, create a stub cask, add a new major/minor/preview release, or add support for a new dotnet-sdk version (e.g. "add dotnet-sdk12-0-100" or "support .NET 11 preview").
+---
+
 # SKILL: Adding a New Cask to homebrew-dotnet-sdk-versions
 
 ## When to use this skill
@@ -193,6 +198,15 @@ brew audit --cask dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}
 
 ### 6. Open the PR
 
+**If you are the repo owner** (pushing directly to origin):
+```bash
+git checkout -b new-cask/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}
+git add Casks/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}.rb
+git commit -m "Add support for dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}"
+git push origin new-cask/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}
+```
+
+**If you are an external contributor** (pushing to your fork):
 ```bash
 git checkout -b new-cask/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}
 git add Casks/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}.rb

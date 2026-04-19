@@ -1,3 +1,8 @@
+---
+name: fix-ci
+description: Fix or update the CI workflow for homebrew-dotnet-sdk-versions. Use this skill whenever asked to fix a broken CI, investigate a CI failure, update .github/workflows/ci.yml, or sync CI changes from the official Homebrew cask. Always consult the official Homebrew cask CI as the reference before making any changes.
+---
+
 # SKILL: Fixing CI for homebrew-dotnet-sdk-versions
 
 ## When to use this skill

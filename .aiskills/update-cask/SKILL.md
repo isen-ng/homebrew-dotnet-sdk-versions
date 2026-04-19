@@ -1,3 +1,8 @@
+---
+name: update-cask
+description: Create an update PR for an existing cask in homebrew-dotnet-sdk-versions. Use this skill whenever asked to manually bump a cask to a newer version, update sha256/url/version fields, force-update a cask the auto-updater missed, or open a PR to update a specific dotnet-sdk cask version.
+---
+
 # SKILL: Creating an Update PR for an Existing Cask
 
 ## When to use this skill
