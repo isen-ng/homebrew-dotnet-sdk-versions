@@ -1,7 +1,7 @@
 cask "dotnet-sdk10" do
   arch arm: "arm64", intel: "x64"
 
-  version "10.0.202,10.0.6"
+  version "10.0.203,10.0.7"
   sha256 :no_check
 
   url "https://github.com/isen-ng/homebrew-dotnet-sdk-versions/raw/master/META.md"
@@ -10,7 +10,7 @@ cask "dotnet-sdk10" do
   homepage "https://github.com/isen-ng/homebrew-dotnet-sdk-versions"
 
   depends_on cask: "dotnet-sdk10-0-200"
-  depends_on macos: ">= :monterey"
+  depends_on macos: :any
 
   stage_only true
 end
