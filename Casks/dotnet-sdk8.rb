@@ -10,7 +10,7 @@ cask "dotnet-sdk8" do
   homepage "https://github.com/isen-ng/homebrew-dotnet-sdk-versions"
 
   depends_on cask: "dotnet-sdk8-0-400"
-  depends_on macos: ">= :big_sur"
+  depends_on macos: :any
 
   stage_only true
 end

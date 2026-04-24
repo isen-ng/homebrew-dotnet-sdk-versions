@@ -8,7 +8,7 @@ cask "{cask_name}" do
   homepage "https://github.com/isen-ng/homebrew-dotnet-sdk-versions"
 
   depends_on cask: "{depends_on_cask}"
-  depends_on macos: "{depends_on_macos}"
+  depends_on macos: :any
 
   stage_only true
 end

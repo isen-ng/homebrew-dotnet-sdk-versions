@@ -41,12 +41,11 @@ class MetaCask:
 
 
 class DependsOnCask:
-    def __init__(self, cask_name: str, sdk_version: str, runtime_version: str, depends_on_cask: str, depends_on_macos: str, is_arm_supported: bool):
+    def __init__(self, cask_name: str, sdk_version: str, runtime_version: str, depends_on_cask: str, is_arm_supported: bool):
         self.cask_name = cask_name
         self.sdk_version = sdk_version
         self.runtime_version = runtime_version
         self.depends_on_cask = depends_on_cask
-        self.depends_on_macos = depends_on_macos
         self.is_arm_supported = is_arm_supported
 
 
@@ -77,7 +76,6 @@ class TemplateService:
         content = content.replace('{sdk_version}', depends_on_cask.sdk_version)
         content = content.replace('{runtime_version}', depends_on_cask.runtime_version)
         content = content.replace('{depends_on_cask}', depends_on_cask.depends_on_cask)
-        content = content.replace('{depends_on_macos}', depends_on_cask.depends_on_macos)
 
         return content
 
@@ -138,7 +136,6 @@ class MetaCaskGenerator:
 class DependsOnCaskParser:
     __cask_name_pattern = re.compile(r'cask "(?P<cask_name>[a-z0-9-]+)" do')
     __version_pattern = re.compile(r'version "(?P<sdk_version>\d+.\d+.\d+),(?P<runtime_version>\d+.\d+.\d+)"')
-    __macos_pattern = re.compile(r'depends_on macos: "(?P<depends_on_macos>[>= :a-z_]+)"')
     __arm_pattern = re.compile(r'arch arm: "arm64", intel: "x64"')
 
     def __init__(self, cask_directory):
@@ -157,10 +154,6 @@ class DependsOnCaskParser:
         if version_match is None:
             return
 
-        macos_match = self.__macos_pattern.search(content)
-        if macos_match is None:
-            return
-
         arm_match = self.__arm_pattern.search(content)
         if arm_match is None:
             is_arm_supported = False
@@ -173,7 +166,6 @@ class DependsOnCaskParser:
             version_match.group("sdk_version"),
             version_match.group("runtime_version"),
             cask_name_match.group("cask_name"),
-            macos_match.group("depends_on_macos"),
             is_arm_supported)
 
 
