@@ -287,13 +287,18 @@ class CaskService:
         return True
 
     @staticmethod
-    def update_read_me(sdk_release, latest_sdk_release):
+    def update_read_me(file_path, sdk_release, latest_sdk_release):
+        # converts from "Casks/dotnet-sdk10-0-200.rb" to "dotnet-sdk10-0-200"
+        cask_name = file_path.replace('Casks/', '').replace('.rb', '')
         file_path = 'README.md'
 
         with open(file_path, 'r') as file:
             content = file.read()
 
-        content = content.replace(str(sdk_release), latest_sdk_release['sdk']['version'])
+        old_line_pattern = re.compile(rf'(\|\s*`{re.escape(cask_name)}`\s*\|\s*){re.escape(str(sdk_release))}(\s*\|)')
+
+        new_sdk_version = latest_sdk_release['sdk']['version']
+        content = old_line_pattern.sub(rf'\g<1>{new_sdk_version}\g<2>', content)
 
         with open(file_path, 'w') as file:
             file.write(content)
@@ -416,7 +421,7 @@ class PreviewUpdater:
                 is_cask_updated = self.cask_service.update_intel_only_cask(file_path, latest_sdk_release)  
 
             if is_cask_updated:
-                self.cask_service.update_read_me(sdk_version, latest_sdk_release)
+                self.cask_service.update_read_me(file_path, sdk_version, latest_sdk_release)
                 self.git_service.push_git_branch(file_path, sdk_version, latest_sdk_release, git_branch_name)
 
     def _find_preview_versions(self, file_path):
@@ -507,7 +512,7 @@ class Updater:
                 is_cask_updated = self.cask_service.update_intel_only_cask(file_path, latest_sdk_release)  
 
             if is_cask_updated:
-                self.cask_service.update_read_me(sdk_version, latest_sdk_release)
+                self.cask_service.update_read_me(file_path, sdk_version, latest_sdk_release)
                 self.git_service.push_git_branch(file_path, sdk_version, latest_sdk_release, git_branch_name)
 
     @staticmethod
