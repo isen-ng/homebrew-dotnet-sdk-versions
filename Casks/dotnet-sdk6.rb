@@ -10,7 +10,7 @@ cask "dotnet-sdk6" do
   homepage "https://github.com/isen-ng/homebrew-dotnet-sdk-versions"
 
   depends_on cask: "dotnet-sdk6-0-400"
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :any
 
   stage_only true
 end
