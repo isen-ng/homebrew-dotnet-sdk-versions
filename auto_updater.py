@@ -216,6 +216,14 @@ class CaskService:
         with urllib.request.urlopen(url) as f:
             return json.loads(f.read().decode('utf-8'))
 
+    @staticmethod
+    def cask_is_meta(file_path):
+        with open(file_path, 'r') as file:
+            for line in file:
+                if 'stage_only true' in line.strip():
+                    return True
+        return False
+
     def update_intel_only_cask(self, file_path, latest_sdk_release):
         sdk_url, sha_256 = self._find_download_and_verify_sdk_url(latest_sdk_release, 'x64')
         if sdk_url is None:
@@ -375,6 +383,9 @@ class PreviewUpdater:
 
     def run(self):
         for file_path in glob.glob('Casks/*-preview.rb'):
+            if self.cask_service.cask_is_meta(file_path):
+                continue
+
             Logger.output("------------------------------------")
             Logger.output("{0}: Checking for updates  ...".format(file_path))
 
@@ -462,6 +473,8 @@ class Updater:
     def run(self):
         for file_path in glob.glob('Casks/*.rb'):
             if 'preview' in file_path:
+                continue
+            if self.cask_service.cask_is_meta(file_path):
                 continue
 
             Logger.output("------------------------------------")
