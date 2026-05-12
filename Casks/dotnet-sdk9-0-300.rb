@@ -1,10 +1,10 @@
 cask "dotnet-sdk9-0-300" do
   arch arm: "arm64", intel: "x64"
 
-  version "9.0.313,9.0.15"
+  version "9.0.314,9.0.16"
 
-  sha256_x64 = "29d8e9574273356c0ae2b7370988cf88db80472d78bb8ba41b2ab83ae89bab5a"
-  sha256_arm64 = "9775cd2defea8b422b72f22b1d051fcc68580ae824d1ed50624f0277952f03e6"
+  sha256_x64 = "cf00dac87379a9b55dc3b466b6ac352e3f6283b10a35c9501a5b165f85273723"
+  sha256_arm64 = "0aa9b030b78a08a990f20e7d5faf8a9243a4211b2e9a4fc50103fd9a27bbe21d"
   url_x64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
   url_arm64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
 
