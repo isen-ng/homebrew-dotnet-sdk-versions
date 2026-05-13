@@ -3,7 +3,7 @@ cask "dotnet-sdk5-0-400" do
   sha256 "ba10d0eb89480b8db37da6945766b167353fa342289c9a92eb102e12b4a25701"
 
   on_arm do
-    FileUtils.ln_sf("/usr/local/share/dotnet/x64/dotnet", "#{HOMEBREW_PREFIX}/bin/dotnetx64") \
+    FileUtils.ln_sf("/usr/local/share/dotnet/x64/dotnet", "#{HOMEBREW_PREFIX}/bin/dotnetx64")
   end
 
   url "https://download.visualstudio.microsoft.com/download/pr/7ed34a57-4da0-4fb3-bd14-614996036744/22215f1d06b49f861f94d760881d6626/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
@@ -15,7 +15,7 @@ cask "dotnet-sdk5-0-400" do
     skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
   end
 
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   pkg "dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
 
