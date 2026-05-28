@@ -30,44 +30,51 @@ Use this skill whenever a user asks to:
 ### Universal (x64 + arm64) cask — used for .NET 6+ stable
 
 ```ruby
-cask "dotnet-sdk8-0-400" do
+cask "dotnet-sdk10-0-200" do
   arch arm: "arm64", intel: "x64"
 
-  version "8.0.100,8.0.0"
-  sha256_x64    = "????????????????????????????????????????????????????????????????"
-  sha256_arm64  = "????????????????????????????????????????????????????????????????"
+  version "10.0.200,10.0.0"
 
-  url_x64   = "https://download.visualstudio.microsoft.com/download/pr/<guid>/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
-  url_arm64 = "https://download.visualstudio.microsoft.com/download/pr/<guid>/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
+  sha256_x64 = "????????????????????????????????????????????????????????????????"
+  sha256_arm64 = "????????????????????????????????????????????????????????????????"
+  url_x64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
+  url_arm64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
+  on_arm do
+    sha256 sha256_arm64
 
-  url (on_arch arm: url_arm64, intel: url_x64),
-      verified: "download.visualstudio.microsoft.com/"
+    url url_arm64
+  end
+  on_intel do
+    sha256 sha256_x64
 
-  sha256 on_arch(arm: sha256_arm64, intel: sha256_x64)
+    url url_x64
+  end
 
   name ".NET Core SDK #{version.csv.first}"
   desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
-  homepage "https://github.com/dotnet/core"
+  homepage "https://www.microsoft.com/net/core#macos"
 
   livecheck do
-    skip "Managed by auto_updater"
+    skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
   end
 
-  depends_on macos: ">= :ventura"
+  depends_on macos: :monterey
 
   pkg "dotnet-sdk-#{version.csv.first}-osx-#{arch}.pkg"
 
-  uninstall pkgutil: [
-    "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.#{arch}",
-  ]
+  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.#{arch}"
 
   zap pkgutil: [
-    "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.#{arch}",
-    "com.microsoft.dotnet.hostfxr.#{version.csv.second}.component.osx.#{arch}",
-    "com.microsoft.dotnet.pack.apphost.#{version.csv.second}.component.osx.#{arch}",
-    "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.#{arch}",
-    "com.microsoft.dotnet.sharedhost.component.osx.#{arch}",
-  ]
+        "com.microsoft.dotnet.hostfxr.#{version.csv.second}.component.osx.#{arch}",
+        "com.microsoft.dotnet.pack.apphost.#{version.csv.second}.component.osx.#{arch}",
+        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.#{arch}",
+        "com.microsoft.dotnet.sharedhost.component.osx.#{arch}",
+      ],
+      trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"]
+
+  caveats "Uninstalling the official dotnet-sdk casks will remove the shared runtime dependencies, " \
+          "so you'll need to reinstall the particular version cask you want from this tap again " \
+          "for the `dotnet` command to work again."
 end
 ```
 
@@ -78,31 +85,38 @@ cask "dotnet-sdk5-0-400" do
   version "5.0.408,5.0.17"
   sha256 "????????????????????????????????????????????????????????????????"
 
-  url "https://download.visualstudio.microsoft.com/download/pr/<guid>/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
-
-  name ".NET Core SDK #{version.csv.first}"
-  desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
-  homepage "https://github.com/dotnet/core"
-
-  livecheck do
-    skip "Managed by auto_updater"
+  on_arm do
+    FileUtils.ln_sf("/usr/local/share/dotnet/x64/dotnet", "#{HOMEBREW_PREFIX}/bin/dotnetx64")
   end
 
-  depends_on macos: ">= :ventura"
+  url "https://download.visualstudio.microsoft.com/download/pr/<guid>/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
+  name ".NET Core SDK #{version.csv.first}"
+  desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
+  homepage "https://www.microsoft.com/net/core#macos"
+
+  livecheck do
+    skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
+  end
+
+  depends_on macos: :sonoma
 
   pkg "dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
 
-  uninstall pkgutil: [
-    "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.x64",
-  ]
+  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.x64"
 
   zap pkgutil: [
-    "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.x64",
-    "com.microsoft.dotnet.hostfxr.#{version.csv.second}.component.osx.x64",
-    "com.microsoft.dotnet.pack.apphost.#{version.csv.second}.component.osx.x64",
-    "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.x64",
-    "com.microsoft.dotnet.sharedhost.component.osx.x64",
-  ]
+        "com.microsoft.dotnet.hostfxr.#{version.csv.second}.component.osx.x64",
+        "com.microsoft.dotnet.pack.apphost.#{version.csv.second}.component.osx.x64",
+        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.x64",
+        "com.microsoft.dotnet.sharedhost.component.osx.x64",
+      ],
+      trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"]
+
+  caveats "If you are installing this x64 binary on an Apple M1 (arm64) machine, the x64 version of `dotnet`" \
+          "command will be symlinked as `dotnetx64`\n\n" \
+          "Uninstalling the official dotnet-sdk casks will remove the shared runtime dependencies, " \
+          "so you'll need to reinstall the particular version cask you want from this tap again " \
+          "for the `dotnet` command to work again."
 end
 ```
 
@@ -113,40 +127,48 @@ cask "dotnet-sdk11-preview" do
   arch arm: "arm64", intel: "x64"
 
   version "11.0.100-preview.1.25101.1,11.0.0-preview.1.25103.1"
-  sha256_x64    = "????????????????????????????????????????????????????????????????"
-  sha256_arm64  = "????????????????????????????????????????????????????????????????"
 
-  url_x64   = "https://download.visualstudio.microsoft.com/download/pr/<guid>/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
-  url_arm64 = "https://download.visualstudio.microsoft.com/download/pr/<guid>/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
+  sha256_x64 = "????????????????????????????????????????????????????????????????"
+  sha256_arm64 = "????????????????????????????????????????????????????????????????"
+  url_x64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
+  url_arm64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
 
-  url (on_arch arm: url_arm64, intel: url_x64),
-      verified: "download.visualstudio.microsoft.com/"
+  on_arm do
+    sha256 sha256_arm64
 
-  sha256 on_arch(arm: sha256_arm64, intel: sha256_x64)
+    url url_arm64
+  end
+  on_intel do
+    sha256 sha256_x64
 
-  name ".NET Core SDK #{version.csv.first}"
-  desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
-  homepage "https://github.com/dotnet/core"
-
-  livecheck do
-    skip "Managed by auto_updater"
+    url url_x64
   end
 
-  depends_on macos: ">= :ventura"
+  name ".NET SDK #{version.csv.first}"
+  desc "This cask follows releases from https://github.com/dotnet/core/tree/master"
+  homepage "https://www.microsoft.com/net/core#macos"
+
+  livecheck do
+    skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
+  end
+
+  depends_on macos: :monterey
 
   pkg "dotnet-sdk-#{version.csv.first}-osx-#{arch}.pkg"
 
-  uninstall pkgutil: [
-    "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.#{arch}",
-  ]
+  uninstall pkgutil: "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.#{arch}"
 
   zap pkgutil: [
-    "com.microsoft.dotnet.dev.#{version.csv.first}.component.osx.#{arch}",
-    "com.microsoft.dotnet.hostfxr.#{version.csv.second}.component.osx.#{arch}",
-    "com.microsoft.dotnet.pack.apphost.#{version.csv.second}.component.osx.#{arch}",
-    "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.#{arch}",
-    "com.microsoft.dotnet.sharedhost.component.osx.#{arch}",
-  ]
+        "com.microsoft.dotnet.hostfxr.#{version.csv.second}.component.osx.#{arch}",
+        "com.microsoft.dotnet.pack.apphost.#{version.csv.second}.component.osx.#{arch}",
+        "com.microsoft.dotnet.sharedframework.Microsoft.NETCore.App.#{version.csv.second}.component.osx.#{arch}",
+        "com.microsoft.dotnet.sharedhost.component.osx.#{arch}",
+      ],
+      trash:   ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"]
+
+  caveats "Uninstalling the official dotnet-sdk casks will remove the shared runtime dependencies, " \
+          "so you'll need to reinstall the particular version cask you want from this tap again " \
+          "for the `dotnet` command to work again."
 end
 ```
 
@@ -166,16 +188,24 @@ Use the naming convention `dotnet-sdk{MAJOR}-{MINOR}-{FEATURE_HUNDREDS}`:
 - .NET 6+ → use the **universal** cask template (both x64 and arm64)
 - .NET 5 and earlier → use the **Intel-only** cask template
 
-### 3. Create the stub file
+### 3. Determine the `depends_on macos:` value
+
+Copy from an adjacent existing cask for the same .NET generation:
+- .NET 8: `:big_sur`
+- .NET 9, 10, 11+: `:monterey`
+
+### 4. Create the stub file
 
 Create `Casks/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}.rb` with:
 - Correct cask name matching the filename
-- A placeholder version like `"{MAJOR}.{MINOR}.{FEATURE}00,{MAJOR}.0.0"` (placeholder — auto_updater will fix it)
-- Placeholder sha256 values (`"????????????????..."` or a dummy string)
-- Placeholder urls (follow the URL pattern from existing casks — auto_updater will replace them)
+- A placeholder version like `"{MAJOR}.{MINOR}.{FEATURE}00,{MAJOR}.0.0"` (auto_updater will fill the real value)
+- Placeholder sha256 values (`"????????????????..."` — auto_updater is forced to compute real values)
+- For .NET 6+: use `builds.dotnet.microsoft.com` URL pattern (no GUID needed — the URL is predictable)
+- For .NET 5 and earlier: use `download.visualstudio.microsoft.com/download/pr/<guid>/...` URL pattern with a placeholder GUID
 - Correct `uninstall` and `zap` pkgutil patterns using `version.csv.first` and `version.csv.second`
+- Include `caveats` block
 
-### 4. Run auto_updater.py in dry-run mode
+### 5. Run auto_updater.py in dry-run mode
 
 ```bash
 # dry-run (no --really_push) — updates all casks including the new one
@@ -188,7 +218,7 @@ This will:
 - Download the `.pkg`, verify SHA-512, compute SHA-256
 - Rewrite the cask file with correct version, sha256, and url
 
-### 5. Validate the cask locally
+### 6. Validate the cask locally
 
 ```bash
 brew tap isen-ng/dotnet-sdk-versions $PWD
@@ -196,7 +226,7 @@ brew style Casks/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}.rb
 brew audit --cask dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}
 ```
 
-### 6. Open the PR
+### 7. Open the PR
 
 **If you are the repo owner** (pushing directly to origin):
 ```bash
@@ -223,7 +253,11 @@ Then open a PR from that branch into `master`.
 - **Never use placeholder sha256 that passes validation** — use `"????????????????..."` so `auto_updater.py` is forced to compute the real value.
 - **The `version` field has two CSV parts**: `"SDK_VERSION,RUNTIME_VERSION"`. auto_updater.py fills both.
 - **URL must contain `#{version.csv.first}`** interpolation to satisfy `brew audit`.
+- **For .NET 6+, the URL uses `builds.dotnet.microsoft.com`** with no GUID: `https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-{arch}.pkg`. Do NOT use the old `download.visualstudio.microsoft.com/download/pr/<guid>/...` format.
 - **Meta casks** (`dotnet-sdk8.rb`) are auto-generated — never create or edit them manually. Run `auto_meta_updater.py` after merging the new versioned cask.
 - **`depends_on macos`** — copy from an adjacent existing cask for the same .NET generation to match the minimum macOS requirement.
+- **`uninstall pkgutil:`** takes a single string, not an array.
+- **`zap`** must include both `pkgutil:` array and `trash:` array.
 - **`pkgutil` identifiers** follow the pattern `com.microsoft.dotnet.dev.{sdk_version}.component.osx.{arch}` — double-check against the actual `.pkg` installer if unsure.
 - For **preview casks**, the version string includes pre-release labels: `"11.0.100-preview.1.25101.1,11.0.0-preview.1.25103.1"`. The `PreviewSdkVersion` class in `auto_updater.py` handles this format.
+- **`name` field**: use `".NET SDK"` for .NET 11+ preview casks; use `".NET Core SDK"` for stable/older casks.

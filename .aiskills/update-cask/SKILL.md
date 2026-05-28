@@ -68,7 +68,7 @@ Use this when the auto-updater is broken, the version has jumped a feature band,
 ### Step 1: Find the correct release data
 
 ```bash
-curl -s https://raw.githubusercontent.com/dotnet/core/master/release-notes/8.0/releases.json \
+curl -s https://raw.githubusercontent.com/dotnet/core/master/release-notes/10.0/releases.json \
   | python3 -c "
 import json,sys
 data = json.load(sys.stdin)
@@ -81,22 +81,32 @@ for r in data['releases']:
 
 Or browse: `https://github.com/dotnet/core/tree/main/release-notes`
 
-### Step 2: Identify the correct download URLs and hashes
+### Step 2: Get the download URLs and hashes
 
-In `releases.json`, each release has an `sdk.files` array. Look for:
-- `"name": "dotnet-sdk-osx-x64.pkg"` → get `url` and `hash` (SHA-512)
-- `"name": "dotnet-sdk-osx-arm64.pkg"` → get `url` and `hash` (SHA-512)
+**For .NET 6+ (universal casks):** The URL follows a predictable pattern — no GUID needed:
+```
+https://builds.dotnet.microsoft.com/dotnet/Sdk/{SDK_VERSION}/dotnet-sdk-{SDK_VERSION}-osx-x64.pkg
+https://builds.dotnet.microsoft.com/dotnet/Sdk/{SDK_VERSION}/dotnet-sdk-{SDK_VERSION}-osx-arm64.pkg
+```
+
+In `releases.json`, the `sdk.files` array contains the SHA-512 hashes for verification. Look for:
+- `"name": "dotnet-sdk-osx-x64.pkg"` → get `hash` (SHA-512)
+- `"name": "dotnet-sdk-osx-arm64.pkg"` → get `hash` (SHA-512)
+
+**For .NET 5 and earlier (Intel-only casks):** The URL contains a GUID that must be fetched from `releases.json`:
+- `"name": "dotnet-sdk-osx-x64.pkg"` → get both `url` and `hash` (SHA-512)
 
 ### Step 3: Download and compute SHA-256
 
 ```bash
-# For x64:
-curl -L -o /tmp/sdk-x64.pkg "<x64_url>"
+# For .NET 6+ x64:
+SDK_VERSION="10.0.204"
+curl -L -o /tmp/sdk-x64.pkg "https://builds.dotnet.microsoft.com/dotnet/Sdk/${SDK_VERSION}/dotnet-sdk-${SDK_VERSION}-osx-x64.pkg"
 shasum -a 256 /tmp/sdk-x64.pkg   # → sha256
 shasum -a 512 /tmp/sdk-x64.pkg   # → verify against releases.json hash
 
-# For arm64:
-curl -L -o /tmp/sdk-arm64.pkg "<arm64_url>"
+# For .NET 6+ arm64:
+curl -L -o /tmp/sdk-arm64.pkg "https://builds.dotnet.microsoft.com/dotnet/Sdk/${SDK_VERSION}/dotnet-sdk-${SDK_VERSION}-osx-arm64.pkg"
 shasum -a 256 /tmp/sdk-arm64.pkg
 shasum -a 512 /tmp/sdk-arm64.pkg
 ```
@@ -105,18 +115,28 @@ shasum -a 512 /tmp/sdk-arm64.pkg
 
 ### Step 4: Update the cask file
 
-For a **universal** (x64 + arm64) cask, update these fields:
+For a **universal** (.NET 6+) cask, update these fields:
 
 ```ruby
-version "8.0.420,8.0.12"
-sha256_x64    = "<new_x64_sha256>"
-sha256_arm64  = "<new_arm64_sha256>"
+version "10.0.204,10.0.8"
 
-url_x64   = "https://download.visualstudio.microsoft.com/download/pr/<new_guid>/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
-url_arm64 = "https://download.visualstudio.microsoft.com/download/pr/<new_guid>/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
+sha256_x64 = "<new_x64_sha256>"
+sha256_arm64 = "<new_arm64_sha256>"
+url_x64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
+url_arm64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
+on_arm do
+  sha256 sha256_arm64
+
+  url url_arm64
+end
+on_intel do
+  sha256 sha256_x64
+
+  url url_x64
+end
 ```
 
-For an **Intel-only** cask, update:
+For an **Intel-only** (.NET 5 and earlier) cask, update:
 
 ```ruby
 version "5.0.408,5.0.17"
@@ -125,38 +145,38 @@ sha256 "<new_x64_sha256>"
 url "https://download.visualstudio.microsoft.com/download/pr/<new_guid>/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
 ```
 
-**Important**: The URL must still contain `#{version.csv.first}` interpolation — replace only the GUID and keep the interpolation.
+**Important**: The URL must still contain `#{version.csv.first}` interpolation — replace only the GUID portion, not the version substring.
 
 ### Step 5: Update README.md
 
 In `README.md`, find the version table row for this cask and update the SDK version number. Example:
 
 ```
-| `dotnet-sdk8-0-400` | 8.0.419 | x64 & arm64 |  |
+| `dotnet-sdk10-0-200` | 10.0.203 | x64 & arm64 |  |
 ```
 →
 ```
-| `dotnet-sdk8-0-400` | 8.0.420 | x64 & arm64 |  |
+| `dotnet-sdk10-0-200` | 10.0.204 | x64 & arm64 |  |
 ```
 
 ### Step 6: Validate locally
 
 ```bash
 brew tap isen-ng/dotnet-sdk-versions $PWD
-brew style Casks/dotnet-sdk8-0-400.rb
-brew audit --cask dotnet-sdk8-0-400
+brew style Casks/dotnet-sdk10-0-200.rb
+brew audit --cask dotnet-sdk10-0-200
 ```
 
 ### Step 7: Open the PR
 
 ```bash
-git checkout -b update-Casks/dotnet-sdk8-0-400.rb-to-8.0.420
-git add Casks/dotnet-sdk8-0-400.rb README.md
-git commit -m "[Auto] update Casks/dotnet-sdk8-0-400.rb from 8.0.419 to 8.0.420"
-git push origin update-Casks/dotnet-sdk8-0-400.rb-to-8.0.420
+git checkout -b update-Casks/dotnet-sdk10-0-200.rb-to-10.0.204
+git add Casks/dotnet-sdk10-0-200.rb README.md
+git commit -m "[Auto] update Casks/dotnet-sdk10-0-200.rb from 10.0.203 to 10.0.204"
+git push origin update-Casks/dotnet-sdk10-0-200.rb-to-10.0.204
 gh pr create --base master \
-  --head update-Casks/dotnet-sdk8-0-400.rb-to-8.0.420 \
-  --title "[Auto] update Casks/dotnet-sdk8-0-400.rb from 8.0.419 to 8.0.420" \
+  --head update-Casks/dotnet-sdk10-0-200.rb-to-10.0.204 \
+  --title "[Auto] update Casks/dotnet-sdk10-0-200.rb from 10.0.203 to 10.0.204" \
   --body ""
 ```
 
@@ -179,7 +199,10 @@ This regenerates `Casks/dotnet-sdk{MAJOR}.rb` and updates the meta version table
 
 - **Feature band lock**: `auto_updater.py` will NOT cross feature bands. `dotnet-sdk8-0-400` only tracks `8.0.4xx` — it will never be updated to `8.0.500`. A new cask `dotnet-sdk8-0-500` must be created for that.
 - **SHA-512 verification is mandatory**: Always verify the downloaded SHA-512 matches `releases.json` before trusting the SHA-256. This guards against MITM attacks.
-- **URL interpolation**: The URL in the cask must contain `#{version.csv.first}` — replace only the GUID portion, not the version substring.
+- **URL format for .NET 6+**: Use `https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-{arch}.pkg`. There is no GUID. Do NOT use the old `download.visualstudio.microsoft.com/download/pr/<guid>/...` format for modern casks.
+- **URL interpolation**: The URL in the cask must contain `#{version.csv.first}` interpolation.
+- **`uninstall pkgutil:`** takes a single string, not an array.
+- **`zap`** must include both `pkgutil:` array and `trash: ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"]`.
 - **Branch naming convention**: `update-{file_path}-to-{new_version}` (matches what auto_updater uses, important for auto_committer to pick up).
 - **Commit message convention**: `[Auto] update {file_path} from {old_version} to {new_version}` — auto_committer.py uses this pattern to find and merge PRs.
 - **README must be updated** in the same commit as the cask file — auto_committer expects both in one commit.
