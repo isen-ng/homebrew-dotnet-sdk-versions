@@ -54,8 +54,8 @@ dotnet --list-sdks
 | `dotnet-sdk7-0-200` | 7.0.203  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-100` | 7.0.120  | x64 & arm64 |                                          |
 | `dotnet-sdk6-0-400` | 6.0.428  | x64 & arm64 |                                          |
-| `dotnet-sdk6-0-300` | 6.0.321  | x64 & arm64 |                                          |
-| `dotnet-sdk6-0-200` | 6.0.202  | x64 & arm64 |                                          |
+| `dotnet-sdk6-0-300` | 6.0.303  | x64 & arm64 |                                          |
+| `dotnet-sdk6-0-200` | 6.0.203  | x64 & arm64 |                                          |
 | `dotnet-sdk6-0-100` | 6.0.136  | x64 & arm64 |                                          |
 | `dotnet-sdk5-0-400` | 5.0.408  | x64         | When installed on arm64, use `dotnetx64` |
 | `dotnet-sdk5-0-200` | 5.0.214  | x64         | When installed on arm64, use `dotnetx64` |
