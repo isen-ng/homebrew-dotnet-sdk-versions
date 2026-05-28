@@ -540,18 +540,23 @@ class Updater:
         releases = releases_json['releases']
 
         for release in releases:
-            match = re.search(sdk_major_minor_feature_version_regex, release['sdk']['version'])
-            if not match:
-                continue
+            # 'sdks' (plural) contains all SDK feature bands shipped with this runtime release.
+            # Fall back to [release['sdk']] for older releases that don't have the 'sdks' key.
+            sdk_candidates = release.get('sdks') or [release['sdk']]
 
-            if latest_sdk_release == None:
-                latest_sdk_release = release
-                latest_sdk_release_version = SdkVersion(release['sdk']['version'])
-            else:
-                release_version = SdkVersion(release['sdk']['version'])
-                if release_version > latest_sdk_release_version:
-                    latest_sdk_release = release
-                    latest_sdk_release_version = release_version
+            for sdk_candidate in sdk_candidates:
+                match = re.search(sdk_major_minor_feature_version_regex, sdk_candidate['version'])
+                if not match:
+                    continue
+
+                if latest_sdk_release is None:
+                    latest_sdk_release = {'sdk': sdk_candidate, 'runtime': release['runtime']}
+                    latest_sdk_release_version = SdkVersion(sdk_candidate['version'])
+                else:
+                    release_version = SdkVersion(sdk_candidate['version'])
+                    if release_version > latest_sdk_release_version:
+                        latest_sdk_release = {'sdk': sdk_candidate, 'runtime': release['runtime']}
+                        latest_sdk_release_version = release_version
 
         return latest_sdk_release, latest_sdk_release_version
 
