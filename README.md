@@ -49,7 +49,7 @@ dotnet --list-sdks
 | `dotnet-sdk8-0-400` | 8.0.422  | x64 & arm64 |                                          |
 | `dotnet-sdk8-0-300` | 8.0.303  | x64 & arm64 |                                          |
 | `dotnet-sdk8-0-200` | 8.0.206  | x64 & arm64 |                                          |
-| `dotnet-sdk8-0-100` | 8.0.127  | x64 & arm64 |                                          |
+| `dotnet-sdk8-0-100` | 8.0.128  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-400` | 7.0.410  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-300` | 7.0.317  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-200` | 7.0.203  | x64 & arm64 |                                          |
