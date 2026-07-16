@@ -25,7 +25,7 @@ dotnet --list-sdks
 | ------------- | -------- |
 | `dotnet-sdk10`| 10.0.203 |
 | `dotnet-sdk9` | 9.0.315  |
-| `dotnet-sdk8` | 8.0.422  |
+| `dotnet-sdk8` | 8.0.423  |
 | `dotnet-sdk7` | 7.0.410  |
 | `dotnet-sdk6` | 6.0.428  |
 | `dotnet-sdk5` | 5.0.408  |
@@ -40,18 +40,18 @@ dotnet --list-sdks
 
 | Version             | .NET SDK | Arch        | Remarks                                  |
 | ------------------- | -------- | ----------- | ---------------------------------------- |
-| `dotnet-sdk10-0-300`| 10.0.301 | x64 & arm64 |                                          |
+| `dotnet-sdk10-0-300`| 10.0.302 | x64 & arm64 |                                          |
 | `dotnet-sdk10-0-200`| 10.0.204 | x64 & arm64 |                                          |
 | `dotnet-sdk10-0-100`| 10.0.109 | x64 & arm64 |                                          |
-| `dotnet-sdk9-0-300` | 9.0.315  | x64 & arm64 |                                          |
+| `dotnet-sdk9-0-300` | 9.0.316  | x64 & arm64 |                                          |
 | `dotnet-sdk9-0-200` | 9.0.205  | x64 & arm64 |                                          |
 | `dotnet-sdk9-0-100` | 9.0.119  | x64 & arm64 |                                          |
-| `dotnet-sdk8-0-400` | 8.0.422  | x64 & arm64 |                                          |
+| `dotnet-sdk8-0-400` | 8.0.423  | x64 & arm64 |                                          |
 | `dotnet-sdk9-0-100` | 9.0.117  | x64 & arm64 |                                          |
-| `dotnet-sdk8-0-400` | 8.0.422  | x64 & arm64 |                                          |
+| `dotnet-sdk8-0-400` | 8.0.423  | x64 & arm64 |                                          |
 | `dotnet-sdk8-0-300` | 8.0.303  | x64 & arm64 |                                          |
 | `dotnet-sdk8-0-200` | 8.0.206  | x64 & arm64 |                                          |
-| `dotnet-sdk8-0-100` | 8.0.128  | x64 & arm64 |                                          |
+| `dotnet-sdk8-0-100` | 8.0.129  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-400` | 7.0.410  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-300` | 7.0.317  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-200` | 7.0.203  | x64 & arm64 |                                          |
@@ -84,7 +84,7 @@ after installing/upgrading to .NET SDK 5.
 
 | Version                | .NET SDK                     | Arch        | Remarks |
 | ---------------------- | ---------------------------- | ----------- | ------- |
-| `dotnet-sdk11-preview` | 11.0.100-preview.5.26302.115 | x64 & arm64 |         |
+| `dotnet-sdk11-preview` | 11.0.100-preview.6.26359.118 | x64 & arm64 |         |
 | `dotnet-sdk10-preview` | 10.0.103-rc.2.25502.107      | x64 & arm64 |         |
 | `dotnet-sdk9-preview`  | 9.0.102-rc.2.24474.11        | x64 & arm64 |         |
 | `dotnet-sdk8-preview`  | 8.0.101-rc.2.23502.2         | x64 & arm64 |         |
