@@ -1,10 +1,10 @@
 cask "dotnet-sdk11-preview" do
   arch arm: "arm64", intel: "x64"
 
-  version "11.0.100-preview.6.26359.118,11.0.0-preview.6.26359.118"
+  version "11.0.100-preview.7.26381.103,11.0.0-preview.7.26381.103"
 
-  sha256_x64 = "17cf7d22554a04f4fd0d71c0d15188d0ec1a81d145d1bd54b507bc5cac02b325"
-  sha256_arm64 = "58afc7ec2791e6e11f2f527fbee375fccfb6778b5862c8aa924022e4e4fc60c7"
+  sha256_x64 = "1306c0758625ed38b4ab4a83b81f7b7bd075389de8b2d76dd773e20c4ead8ea7"
+  sha256_arm64 = "df7704195094f778abd9d862288ac61d141ee0bd47b4ff66add4bb9078bd0201"
   url_x64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
   url_arm64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
 
