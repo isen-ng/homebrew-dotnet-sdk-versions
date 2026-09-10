@@ -40,13 +40,13 @@ dotnet --list-sdks
 
 | Version             | .NET SDK | Arch        | Remarks                                  |
 | ------------------- | -------- | ----------- | ---------------------------------------- |
-| `dotnet-sdk10-0-400`| 10.0.400 | x64 & arm64 |                                          |
+| `dotnet-sdk10-0-400`| 10.0.401 | x64 & arm64 |                                          |
 | `dotnet-sdk10-0-300`| 10.0.303 | x64 & arm64 |                                          |
 | `dotnet-sdk10-0-200`| 10.0.204 | x64 & arm64 |                                          |
-| `dotnet-sdk10-0-100`| 10.0.111 | x64 & arm64 |                                          |
+| `dotnet-sdk10-0-100`| 10.0.112 | x64 & arm64 |                                          |
 | `dotnet-sdk9-0-300` | 9.0.317  | x64 & arm64 |                                          |
 | `dotnet-sdk9-0-200` | 9.0.205  | x64 & arm64 |                                          |
-| `dotnet-sdk9-0-100` | 9.0.120  | x64 & arm64 |                                          |
+| `dotnet-sdk9-0-100` | 9.0.121  | x64 & arm64 |                                          |
 | `dotnet-sdk8-0-400` | 8.0.425  | x64 & arm64 |                                          |
 | `dotnet-sdk9-0-100` | 9.0.117  | x64 & arm64 |                                          |
 | `dotnet-sdk8-0-400` | 8.0.425  | x64 & arm64 |                                          |
@@ -85,7 +85,7 @@ after installing/upgrading to .NET SDK 5.
 
 | Version                | .NET SDK                     | Arch        | Remarks |
 | ---------------------- | ---------------------------- | ----------- | ------- |
-| `dotnet-sdk11-preview` | 11.0.100-preview.7.26381.103 | x64 & arm64 |         |
+| `dotnet-sdk11-preview` | 11.0.100-rc.1.26425.128 | x64 & arm64 |         |
 | `dotnet-sdk10-preview` | 10.0.103-rc.2.25502.107      | x64 & arm64 |         |
 | `dotnet-sdk9-preview`  | 9.0.102-rc.2.24474.11        | x64 & arm64 |         |
 | `dotnet-sdk8-preview`  | 8.0.101-rc.2.23502.2         | x64 & arm64 |         |
