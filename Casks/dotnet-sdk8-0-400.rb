@@ -1,10 +1,10 @@
 cask "dotnet-sdk8-0-400" do
   arch arm: "arm64", intel: "x64"
 
-  version "8.0.425,8.0.31"
+  version "8.0.426,8.0.32"
 
-  sha256_x64 = "7e7db21bc30db238ae102324ea642354e6461bda25c9c4afb1ee1e1a078536cf"
-  sha256_arm64 = "fcf2e9d9f48107303cf18adb9092331f1efa54627d635f9f8de56aa028d3340f"
+  sha256_x64 = "72941a3a9a235eb4d66c4bb631a8082e50888e830135931e7bcd43c025d57a75"
+  sha256_arm64 = "ccd3f8c218d573c8564b3184f748990e1e86a78efc8bd2b59733b12fe8cb213b"
   url_x64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"
   url_arm64 = "https://builds.dotnet.microsoft.com/dotnet/Sdk/#{version.csv.first}/dotnet-sdk-#{version.csv.first}-osx-arm64.pkg"
 
@@ -27,7 +27,7 @@ cask "dotnet-sdk8-0-400" do
     skip "See https://github.com/isen-ng/homebrew-dotnet-sdk-versions/blob/master/CONTRIBUTING.md#automatic-updates"
   end
 
-  depends_on macos: :big_sur
+  depends_on :macos
 
   pkg "dotnet-sdk-#{version.csv.first}-osx-#{arch}.pkg"
 
