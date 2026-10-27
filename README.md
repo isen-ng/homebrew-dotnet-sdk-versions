@@ -25,7 +25,7 @@ dotnet --list-sdks
 | ------------- | -------- |
 | `dotnet-sdk10`| 10.0.203 |
 | `dotnet-sdk9` | 9.0.320  |
-| `dotnet-sdk8` | 8.0.426  |
+| `dotnet-sdk8` | 8.0.427  |
 | `dotnet-sdk7` | 7.0.410  |
 | `dotnet-sdk6` | 6.0.428  |
 | `dotnet-sdk5` | 5.0.408  |
