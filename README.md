@@ -23,7 +23,8 @@ dotnet --list-sdks
 
 | Version       | .NET SDK |
 | ------------- | -------- |
-| `dotnet-sdk10`| 10.0.203 |
+| `dotnet-sdk11`| 11.0.100 |
+| `dotnet-sdk10`| 10.0.403 |
 | `dotnet-sdk9` | 9.0.320  |
 | `dotnet-sdk8` | 8.0.427  |
 | `dotnet-sdk7` | 7.0.410  |
@@ -40,6 +41,7 @@ dotnet --list-sdks
 
 | Version             | .NET SDK | Arch        | Remarks                                  |
 | ------------------- | -------- | ----------- | ---------------------------------------- |
+| `dotnet-sdk11-0-100`| 11.0.100 | x64 & arm64 |                                          |
 | `dotnet-sdk10-0-400`| 10.0.404 | x64 & arm64 |                                          |
 | `dotnet-sdk10-0-300`| 10.0.303 | x64 & arm64 |                                          |
 | `dotnet-sdk10-0-200`| 10.0.204 | x64 & arm64 |                                          |
