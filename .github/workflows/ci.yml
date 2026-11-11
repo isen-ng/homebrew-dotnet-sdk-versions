@@ -38,9 +38,6 @@ jobs:
           core: false
           cask: true
 
-      - name: Disable API installs
-        run: echo 'HOMEBREW_NO_INSTALL_FROM_API=1' >> "${GITHUB_ENV}"
-
       - name: Check out Pull Request
         uses: actions/checkout@v6
         with:
@@ -77,6 +74,9 @@ jobs:
         with:
           core: false
           cask: true
+
+      - name: Disable API installs
+        run: echo 'HOMEBREW_NO_INSTALL_FROM_API=1' >> "${GITHUB_ENV}"
 
       - name: Tap isen-ng/dotnet-sdk-versions
         run: brew tap isen-ng/dotnet-sdk-versions
