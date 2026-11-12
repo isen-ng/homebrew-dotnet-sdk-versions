@@ -48,7 +48,8 @@ jobs:
 - Has no conflicting formula/cask uninstall steps, because no cask in this tap declares `conflicts_with`
 - Only triggers on `pull_request` to `master` (not on push or `workflow_dispatch`)
 - Does not use `concurrency` group cancellation
-- Uses `brew cask-ci snapshot` / `brew cask-ci check` like the official CI, but does not run `brew cask-ci zap-check`
+- Uses `brew cask-ci snapshot` / `brew cask-ci check` like the official CI, but the check step has `continue-on-error: true`: casks intentionally leave shared .NET runtime packages (sharedhost, hostfxr, shared framework, packs) on `uninstall` so side-by-side SDK casks keep working, and the check always reports them. Do not make it blocking or add those packages to `uninstall pkgutil:`
+- Does not run `brew cask-ci zap-check`
 - Does not use pinned SHA hashes on `actions/checkout` and `actions/cache`
 - Uses `actions/checkout@v6` and `actions/cache@v5` (unpinned)
 
