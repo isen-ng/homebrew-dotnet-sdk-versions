@@ -1,5 +1,4 @@
-## AI Skills Symlink Architecture
-- This project uses a master `.aiskills/` directory.
-- All AI agents (.claude, .windsurf, .cursor, .agents, .factory) MUST have symlinks to these skills.
-- If a PR adds a new skill to `.aiskills/`, the contributor MUST run `./sym-link-aiskills.sh`.
-- **Reviewer Task**: If you see new files in `.aiskills/` but no corresponding symlink updates in the agent folders, flag this as a required change.
+## AI Skills Layout
+- AI skills live in `.agents/skills/<skill-name>/SKILL.md` (the Agent Skills standard folder).
+- `.claude/skills` is a committed symlink to `../.agents/skills`; do not replace it with a real folder or per-skill copies.
+- **Reviewer Task**: Flag PRs that add skills anywhere other than `.agents/skills/`, or that add per-agent copies of skills (e.g. `.cursor/skills/`, `.factory/skills/`, `.windsurf/skills/`).
