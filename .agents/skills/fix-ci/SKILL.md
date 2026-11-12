@@ -43,10 +43,12 @@ jobs:
 
 **Key differences from the official CI:**
 - `generate-matrix` runs on `ubuntu-latest` (official uses `macos-latest`)
-- Adds a `brew tap isen-ng/dotnet-sdk-versions` step so the tap is registered before checkout
+- Has no separate `brew tap` step: `setup-homebrew` already taps, trusts and links this repository when it runs in its own CI
+- Loads casks by tap-qualified name (`isen-ng/dotnet-sdk-versions/<token>`) or, for `brew cask-ci`, by the path inside the tapped repository; Homebrew no longer loads casks from `./Casks/*.rb` paths
+- Has no conflicting formula/cask uninstall steps, because no cask in this tap declares `conflicts_with`
 - Only triggers on `pull_request` to `master` (not on push or `workflow_dispatch`)
 - Does not use `concurrency` group cancellation
-- Does not have the snapshot/comparison of installed apps step (the official CI added this later)
+- Uses `brew cask-ci snapshot` / `brew cask-ci check` like the official CI, but does not run `brew cask-ci zap-check`
 - Does not use pinned SHA hashes on `actions/checkout` and `actions/cache`
 - Uses `actions/checkout@v6` and `actions/cache@v5` (unpinned)
 
@@ -66,7 +68,6 @@ jobs:
 - `brew test-bot --cleanup --only-cleanup-before` step
 - `brew fetch --cask` step before audit
 - Style cache (`~/Library/Caches/Homebrew/style`)
-- Snapshot of installed/running apps before and after install, with a diff comparison
 - Pinned action SHA hashes (security best practice)
 - `ubuntu-slim` for `conclusion` job (saves cost)
 
@@ -171,6 +172,7 @@ The official CI moved `generate-matrix` to `macos-latest` because `brew generate
 ## Rules for editing ci.yml
 
 - **Always compare with the official CI before making changes** — do not try to fix CI in isolation without checking the upstream reference
-- Keep the `brew tap isen-ng/dotnet-sdk-versions` step that appears after `setup-homebrew` in the `test` job — this is unique to this tap and must not be removed
+- Do not pass `./Casks/*.rb` paths to `brew fetch`, `audit`, `install` or `uninstall`; use `${{ matrix.tap }}/${{ matrix.cask.token }}` (only `brew style` takes the file path)
+- If you add `conflicts_with` to a cask, restore the official CI's "Uninstall conflicting formulae/casks" steps
 - Do not add `workflow_dispatch` without also checking whether `generate-matrix` needs to run on macOS for it to work
 - Keep `HOMEBREW_NO_INSTALL_FROM_API: 1` — removing it may cause `brew` to skip local tap files and fetch from the API instead, breaking tap-local cask testing
