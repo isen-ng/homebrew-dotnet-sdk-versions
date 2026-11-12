@@ -44,20 +44,11 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Run brew config
-        run: brew config
-
       - name: Generate CI matrix
         id: generate-matrix
         env:
           PULL_REQUEST_URL: ${{ github.event.pull_request.url }}
-        run: |
-          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]
-          then
-            brew generate-cask-ci-matrix --syntax-only
-          else
-            brew generate-cask-ci-matrix --url "$PULL_REQUEST_URL"
-          fi
+        run: brew generate-cask-ci-matrix --url "$PULL_REQUEST_URL"
 
   test:
     name: ${{ matrix.name }}
@@ -78,8 +69,6 @@ jobs:
       - name: Disable API installs
         run: echo 'HOMEBREW_NO_INSTALL_FROM_API=1' >> "${GITHUB_ENV}"
 
-      - name: Tap isen-ng/dotnet-sdk-versions
-        run: brew tap isen-ng/dotnet-sdk-versions
 
       - name: Checkout pull request
         uses: actions/checkout@v6
@@ -138,19 +127,6 @@ jobs:
           brew cask-ci info "$tap_cask_path"
         if: always() && steps.fetch.outcome == 'success' && matrix.cask
 
-      - name: Uninstall conflicting formulae
-        run: |
-          read -r -a formula_conflicts_array <<< "$FORMULA_CONFLICTS"
-          brew uninstall --formula "${formula_conflicts_array[@]}"
-        if: ${{ always() && steps.info.outcome == 'success' && env.FORMULA_CONFLICTS != '' }}
-        timeout-minutes: 30
-
-      - name: Uninstall conflicting casks
-        run: |
-          read -r -a cask_conflicts_array <<< "$CASK_CONFLICTS"
-          brew uninstall --cask "${cask_conflicts_array[@]}"
-        if: ${{ always() && steps.info.outcome == 'success' && env.CASK_CONFLICTS != '' }}
-        timeout-minutes: 30
 
       - name: Run brew uninstall --cask --force --zap ${{ matrix.cask.token }}
         run: |
@@ -158,15 +134,10 @@ jobs:
         if: always() && steps.info.outcome == 'success'
         timeout-minutes: 30
 
-      - name: Run pkgutil before installation
-        id: packages-before-installation
-        run: |
-          PACKAGES=$(pkgutil --pkgs)
-          echo "PACKAGES_BEFORE_INSTALL<<EOF" >> $GITHUB_ENV
-          echo "$PACKAGES" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-        if: always() && steps.info.outcome == 'success' && !matrix.skip_install
-        timeout-minutes: 1
+      - name: Take snapshot of installed and running apps and services
+        id: snapshot
+        run: brew cask-ci snapshot
+        if: always() && steps.info.outcome == 'success' && runner.os == 'macOS'
 
       - name: Run brew cask-ci install ${{ matrix.cask.token }}
         id: install
@@ -177,16 +148,6 @@ jobs:
           !matrix.skip_install
         timeout-minutes: 30
 
-      - name: List installed packages
-        id: packages-after-installation
-        run: |
-          PACKAGES=$(pkgutil --pkgs) >> $GITHUB_ENV
-          echo "PACKAGES_AFTER_INSTALL<<EOF" >> $GITHUB_ENV
-          echo "$PACKAGES" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-          diff <(echo "${{ env.PACKAGES_BEFORE_INSTALL }}") <(echo "$PACKAGES") || true
-        if: always() && steps.info.outcome == 'success' && !matrix.skip_install
-        timeout-minutes: 1
 
       - name: Run brew uninstall --cask ${{ matrix.cask.token }}
         run: brew uninstall --cask '${{ matrix.tap }}/${{ matrix.cask.token }}'
@@ -200,10 +161,9 @@ jobs:
         if: ${{ always() && steps.install.outcome == 'success' && env.CASK_DEPENDENCIES != '' }}
         timeout-minutes: 30
 
-      - name: List uninstalled packages
-        run: diff <(echo "${{ env.PACKAGES_AFTER_INSTALL }}") <(pkgutil --pkgs) || true
-        if: always() && steps.info.outcome == 'success' && !matrix.skip_install
-        timeout-minutes: 1
+      - name: Compare installed and running apps and services with snapshot
+        run: brew cask-ci check "$TAP_CASK_PATH"
+        if: always() && steps.snapshot.outcome == 'success' && steps.install.outcome == 'success' && runner.os == 'macOS'
 
   conclusion:
     name: conclusion
