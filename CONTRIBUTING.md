@@ -122,8 +122,10 @@ brew tap isen-ng/dotnet-sdk-versions $PWD
 
 ## AI skills
 
-This repo uses a set of AI skills stored in `.aiskills/` that are symlinked into the agent-specific
-folders (`.claude/skills/`, `.windsurf/rules/`, `.cursor/rules/`, `.agents/skills/`, `.factory/skills/`).
+This repo's AI skills live in `.agents/skills/`, the shared folder from the
+[Agent Skills](https://agentskills.io) standard. Factory Droid, Cursor, Windsurf (Devin Local), Codex,
+GitHub Copilot and Gemini CLI all read it directly. Claude Code only reads `.claude/skills/`, so
+`.claude/skills` is a committed symlink to `../.agents/skills`.
 
 The skills currently available are:
 
@@ -135,10 +137,10 @@ The skills currently available are:
 
 ### Adding a new skill
 
-1. Create a new folder under `.aiskills/` containing a `SKILL.md` file with YAML frontmatter:
+Create a new folder under `.agents/skills/` containing a `SKILL.md` file with YAML frontmatter:
 
 ```
-.aiskills/
+.agents/skills/
 └── my-new-skill/
     └── SKILL.md
 ```
@@ -152,41 +154,18 @@ description: What this skill does and when to use it.
 ---
 ```
 
-2. Run the sync script to propagate the new skill to all agent folders:
-
-```
-./sym-link-aiskills.sh
-```
-
-3. Commit both the new skill and the updated symlink folders:
-
-```
-git add .aiskills/my-new-skill
-git add .claude/skills .windsurf/rules .cursor/rules .agents/skills .factory/skills
-git commit -m "Add my-new-skill AI skill"
-```
+No other step is needed: every supported agent, including Claude Code through the symlink, picks it up.
 
 ### Adding support for a new AI agent
 
-If a new AI coding agent needs to be supported, add its skills folder path to the `TARGETS` array
-in `sym-link-aiskills.sh`, then run the script and commit the results:
-
-```bash
-# In sym-link-aiskills.sh, add to the TARGETS array:
-TARGETS=(
-  ".claude/skills"
-  ".windsurf/rules"
-  ".cursor/rules"
-  ".agents/skills"
-  ".factory/skills"
-  ".newagent/skills"   # ← add the new agent's folder here
-)
-```
-
-Then:
+Most agents read `.agents/skills/` already. If one only reads its own folder, add a single directory
+symlink for it, the same way `.claude/skills` is set up:
 
 ```
-./sym-link-aiskills.sh
+mkdir -p .newagent
+ln -s ../.agents/skills .newagent/skills
 git add .newagent/skills
-git commit -m "Add AI skill support for newagent"
 ```
+
+Windows contributors need `git config core.symlinks true` (and symlink permission) for the symlink to
+be checked out as a link.
