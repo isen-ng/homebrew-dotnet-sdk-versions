@@ -2,9 +2,9 @@ name: auto-meta-updater
 
 on:
   schedule:
-    # 00:17 UTC (08:17 GMT+8) daily, 30 minutes after the first auto-committer run merged the cask updates.
-    # Order: auto-updater 22:17 -> auto-committer 23:47 -> auto-meta-updater 00:17 -> auto-committer 01:47
-    #        -> auto-readme-updater 02:17 -> auto-committer 03:47
+    # 00:17 UTC (08:17 GMT+8) daily, 2 hours after auto-updater, so its cask pull requests have auto-merged.
+    # Order: auto-updater 22:17 -> auto-meta-updater 00:17 -> auto-readme-updater 02:17 -> auto-pr-checker 03:47
+    # Each updater's pull requests auto-merge once CI passes, well before the next updater runs.
     - cron: "17 0 * * *"
   workflow_dispatch:
 

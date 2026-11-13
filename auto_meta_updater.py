@@ -202,11 +202,27 @@ class GitService:
             capture_output = True,
             text = True,
             check = True)
-        if json.loads(output.stdout):
+        open_pull_requests = json.loads(output.stdout)
+        if open_pull_requests:
             Logger.output("An open pull request for branch[{0}] already exists".format(branch_name))
+            self.enable_auto_merge(open_pull_requests[0]['number'], required = False)
             return
 
-        subprocess.run(['gh', 'pr', 'create', '--base', 'master', '--head', branch_name, '--title', commit_message, '--body', ''], check = True)
+        output = subprocess.run(
+            ['gh', 'pr', 'create', '--base', 'master', '--head', branch_name, '--title', commit_message, '--body', ''],
+            capture_output = True,
+            text = True,
+            check = True)
+        pull_request_url = output.stdout.strip()
+        Logger.log('created pull request', pull_request_url)
+        self.enable_auto_merge(pull_request_url)
+
+    @staticmethod
+    def enable_auto_merge(pull_request, required = True):
+        # GitHub merges the pull request once the required `conclusion` check passes
+        result = subprocess.run(['gh', 'pr', 'merge', str(pull_request), '--auto', '--squash'], check = required)
+        if result.returncode != 0:
+            Logger.output("Could not enable auto-merge for pull request[{0}]".format(pull_request))
 
 
 class MetaUpdater:
