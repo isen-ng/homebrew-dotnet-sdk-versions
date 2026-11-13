@@ -11,22 +11,33 @@ If CI is broken, there is a good chance that we can find updates from the offici
 
 ## Automatic updates
 
-Each working cask will be updated weekly automatically by running `auto_updater.py` through a
-Github Actions scheduled workflow.
+Three scheduled Github Actions workflows keep the casks up to date. They run daily in this order
+(times in UTC):
 
-The script will enumerate over each cask, search through the releases in their respective
-`releases.json` and author a pull request if there is a newer version released.
+| Time  | Workflow            | Script                 |
+|-------|---------------------|------------------------|
+| 22:17 | `auto-updater`      | `auto_updater.py`      |
+| 23:47 | `auto-committer`    | `auto_committer.py`    |
+| 00:17 | `auto-meta-updater` | `auto_meta_updater.py` |
+| 01:47 | `auto-committer`    | `auto_committer.py`    |
+
+`auto_updater.py` enumerates over each cask, searches through the releases in their respective
+`releases.json` and authors a pull request if there is a newer version released. A cask that already
+has an open pull request for that version is skipped. When a newer version supersedes an open pull
+request, the old pull request is closed. If one cask fails, the others are still processed and the
+run fails at the end so the author is notified.
 
 All the releases and their notes are published [here](https://github.com/dotnet/core/tree/main/release-notes).
 
+`auto_meta_updater.py` points each meta cask (e.g. `dotnet-sdk8`) at its newest feature band cask
+and opens or refreshes the `update-meta-casks` pull request.
+
 ## Automatic commits
 
-Each day of the week, except the day that the auto updater is running, the `auto_committer.sh` script is ran
-through a Github Actions scheduled workflow.
-
-This script will comb through existing pull requests created by `auto-updater.sh`, check their status, and if
-they are mergeable, (squash and) merge the commit. Only those with conflicts, or merge issues will require
-manual intervention from the author. In this case, the author will be notified via a failed run.
+`auto_committer.py` combs through the open `[Auto]` pull requests, checks their status, and if
+they are mergeable and the `conclusion` check passed, (squash and) merges them. Pull requests with
+conflicts, failed checks or merge errors require manual intervention from the author. In this case,
+the author will be notified via a failed run.
 
 ## Adding a new cask
 

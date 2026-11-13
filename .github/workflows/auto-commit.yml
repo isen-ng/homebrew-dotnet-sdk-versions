@@ -2,22 +2,36 @@ name: auto-committer
 
 on:
   schedule:
-    # run at 1800UTC (2am +8GMT) and 2000UTC (4am +8GMT) everyday, 1 hour after both auto updaters
-    - cron: "0 18,20 * * *"
+    # 23:47 UTC (07:47 GMT+8): merges cask update PRs, ~1.5 hours after auto-updater so CI has finished.
+    # 01:47 UTC (09:47 GMT+8): merges the meta cask PR, ~1.5 hours after auto-meta-updater.
+    # Order: auto-updater 22:17 -> auto-committer 23:47 -> auto-meta-updater 00:17 -> auto-committer 01:47
+    - cron: "47 23,1 * * *"
   workflow_dispatch:
-  
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 
 jobs:
   commit:
 
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
       - name: Run auto_committer.py
         env:
-          GITHUB_USER: ${{ secrets.GITHUB_USER }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./auto_committer.py --really_merge

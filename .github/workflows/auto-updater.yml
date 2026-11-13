@@ -2,19 +2,35 @@ name: auto-updater
 
 on:
   schedule:
-    # run at 20:00UTC (4am +8GMT) everyday
-    - cron: "0 22 * * *"
+    # 22:17 UTC (06:17 GMT+8) daily. Off the hour because GitHub delays or drops top-of-hour schedules.
+    # Order: auto-updater 22:17 -> auto-committer 23:47 -> auto-meta-updater 00:17 -> auto-committer 01:47
+    - cron: "17 22 * * *"
   workflow_dispatch:
-  
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 
 jobs:
   update:
 
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
+      # Push with the PAT, not GITHUB_TOKEN: pushes made with GITHUB_TOKEN don't trigger CI on the PR.
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.UPDATER_PUSH_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
 
       - name: Set git username and email, so we can commit and push
         run: |
@@ -23,6 +39,5 @@ jobs:
 
       - name: Run auto_updater.py
         env:
-          GITHUB_USER: ${{ secrets.GITHUB_USER }}
           GITHUB_TOKEN: ${{ secrets.UPDATER_PUSH_TOKEN }}
         run: ./auto_updater.py --really_push

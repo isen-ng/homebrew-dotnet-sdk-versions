@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import argparse
+import json
 import os
 import re
-from typing import List, Dict
+from typing import List, Dict, Optional
 import subprocess
 
 
@@ -141,7 +142,7 @@ class DependsOnCaskParser:
     def __init__(self, cask_directory):
         self.cask_directory = cask_directory
 
-    def parse(self, meta_cask: MetaCask) -> DependsOnCask:
+    def parse(self, meta_cask: MetaCask) -> Optional[DependsOnCask]:
         path = os.path.join(self.cask_directory, meta_cask.depends_on_filename)
         with open(path, 'r') as file:
             content = file.read()
@@ -176,7 +177,8 @@ class ReadMeUpdater:
         with open(file_path, 'r') as file:
             content = file.read()
 
-        content = re.sub(rf'`{meta_cask.meta_cask_name}` \| [\d+.\d+.\d+]+', f'`{meta_cask.meta_cask_name}` | {depends_on_cask.sdk_version}', content)
+        pattern = re.compile(rf'(\|\s*`{re.escape(meta_cask.meta_cask_name)}`\s*\|\s*)[0-9.]+')
+        content = pattern.sub(lambda match: match.group(1) + depends_on_cask.sdk_version, content)
 
         with open(file_path, 'w') as file:
             file.write(content)
@@ -192,15 +194,33 @@ class GitService:
         branch_name = 'update-meta-casks'
         commit_message = '[Auto] Update meta casks'
 
-        if really_commit:
-            subprocess.run(['git', 'branch', '-f', branch_name, 'master'], check = False)
-            subprocess.run(['git', 'checkout', branch_name], check = False)
-            subprocess.run(['git', 'add', '-A'], check = True)
-            subprocess.run(['git', 'commit', '-m', commit_message], check = True)
+        if not really_commit:
+            return
 
-            if really_push:
-                subprocess.run(['git', 'push', 'origin', '--force', branch_name], check = True)
-                subprocess.run(['gh', 'pr', 'create', '--base', 'master', '--head', branch_name, '--title', commit_message, '--body', ''], check = True)
+        subprocess.run(['git', 'checkout', '-B', branch_name], check = True)
+        subprocess.run(['git', 'add', '-A'], check = True)
+        subprocess.run(['git', 'commit', '-m', commit_message], check = True)
+
+        if not really_push:
+            return
+
+        # Re-pushing identical content would only restart CI on the open pull request.
+        remote_branch_exists = subprocess.run(['git', 'fetch', 'origin', branch_name], check = False).returncode == 0
+        if remote_branch_exists and subprocess.run(['git', 'diff', '--quiet', 'FETCH_HEAD', 'HEAD'], check = False).returncode == 0:
+            Logger.output("Remote branch[{0}] already has these changes. Skipping push".format(branch_name))
+        else:
+            subprocess.run(['git', 'push', 'origin', '--force', branch_name], check = True)
+
+        output = subprocess.run(
+            ['gh', 'pr', 'list', '--base', 'master', '--head', branch_name, '--state', 'open', '--json', 'number'],
+            capture_output = True,
+            text = True,
+            check = True)
+        if json.loads(output.stdout):
+            Logger.output("An open pull request for branch[{0}] already exists".format(branch_name))
+            return
+
+        subprocess.run(['gh', 'pr', 'create', '--base', 'master', '--head', branch_name, '--title', commit_message, '--body', ''], check = True)
 
 
 class MetaUpdater:
@@ -223,6 +243,10 @@ class MetaUpdater:
             Logger.log('Which depends on', meta_cask.depends_on_filename)
 
             depends_on_cask = self.depends_on_cask_parser.parse(meta_cask)
+            if depends_on_cask is None:
+                Logger.output("Could not parse cask name or version from {0}. Skipping".format(meta_cask.depends_on_filename))
+                continue
+
             meta_file_content = self.template_service.generate(meta_cask, depends_on_cask)
             self.write_meta_cask(meta_cask, meta_file_content)
             self.read_me_updater.update(meta_cask, depends_on_cask)
@@ -234,6 +258,12 @@ class MetaUpdater:
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--really_commit", action='store_true', default=False, help='Indicates whether we really commit to git or not')
+    parser.add_argument("--really_push", action='store_true', default=False, help='Indicates whether we really push to remote or not')
+
+    args = parser.parse_args()
+
     cask_directory = os.path.join(os.path.dirname(__file__), "Casks")
 
     meta_cask_generator = MetaCaskGenerator(cask_directory)
@@ -243,12 +273,6 @@ if __name__ == '__main__':
 
     meta_updater = MetaUpdater(cask_directory, meta_cask_generator, depends_on_cask_parser, template_service, read_me_updater)
     meta_updater.run()
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--really_commit", action='store_true', default=False, help='Indicates whether we really commit to git or not')
-    parser.add_argument("--really_push", action='store_true', default=False, help='Indicates whether we really push to remote or not')
-
-    args = parser.parse_args()
 
     git_service = GitService()
     git_service.push(args.really_commit, args.really_push)

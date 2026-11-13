@@ -6,6 +6,7 @@ import hashlib
 import json
 import re
 import subprocess
+import sys
 import urllib.request
 
 
@@ -189,12 +190,12 @@ class CaskService:
     sha_256_pattern = re.compile('sha256 "([0-9a-z]+)"')
 
     # `url "https://download.visualstudio.microsoft.com/download/pr/38102737-cb48-46c2-8f52-fb7102b50ae7/d81958d71c3c2679796e1ecfbd9cc903/dotnet-sdk-#{version.csv.first}-osx-x64.pkg"`
-    url_pattern = re.compile('url "([^\s]+)"')
+    url_pattern = re.compile(r'url "([^\s]+)"')
 
     sha_256_x64_pattern = re.compile('sha256_x64 = "([0-9a-z]+)"')
     sha_256_arm64_pattern = re.compile('sha256_arm64 = "([0-9a-z]+)"')
-    url_x64_pattern = re.compile('url_x64 = "([^\s]+)"')
-    url_arm64_pattern = re.compile('url_arm64 = "([^\s]+)"')
+    url_x64_pattern = re.compile(r'url_x64 = "([^\s]+)"')
+    url_arm64_pattern = re.compile(r'url_arm64 = "([^\s]+)"')
 
     def __init__(self, version_pattern):
         self.version_pattern = version_pattern
@@ -213,7 +214,7 @@ class CaskService:
         sdk_major_minor_version = sdk_version.getMajorMinor()
 
         url = 'https://raw.githubusercontent.com/dotnet/core/master/release-notes/{}/releases.json'.format(sdk_major_minor_version)
-        with urllib.request.urlopen(url) as f:
+        with urllib.request.urlopen(url, timeout = 60) as f:
             return json.loads(f.read().decode('utf-8'))
 
     @staticmethod
@@ -324,14 +325,14 @@ class CaskService:
             if file['name'] == name:
                 return file['url'], file['hash']
 
-        return None
+        return None, None
 
     @staticmethod
     def _download_and_calculate_sha256(url):
         sha256 = hashlib.sha256()
         sha512 = hashlib.sha512()
 
-        with urllib.request.urlopen(url) as r:
+        with urllib.request.urlopen(url, timeout = 120) as r:
             while True:
                 chunk = r.read(8192)
                 if chunk:
@@ -356,26 +357,85 @@ class Logger:
 class GitService:
     def __init__(self, really_push):
         self.really_push = really_push
+        self.open_pull_requests = self._list_open_pull_requests() if really_push else []
 
-    def prepare_git_branch(self, file_path, latest_sdk_release):
-        branch_name = "update-{0}-to-{1}".format(file_path, latest_sdk_release['sdk']['version'])
+    @staticmethod
+    def _list_open_pull_requests():
+        output = subprocess.run(
+            ['gh', 'pr', 'list', '--base', 'master', '--state', 'open', '--limit', '200', '--json', 'number,headRefName'],
+            capture_output = True,
+            text = True,
+            check = True)
+        return json.loads(output.stdout)
 
+    @staticmethod
+    def branch_name(file_path, latest_sdk_release):
+        return "update-{0}-to-{1}".format(file_path, latest_sdk_release['sdk']['version'])
+
+    @staticmethod
+    def _branch_prefix(file_path):
+        return "update-{0}-to-".format(file_path)
+
+    def has_open_pull_request(self, branch_name):
+        return any(pr['headRefName'] == branch_name for pr in self.open_pull_requests)
+
+    def prepare_git_branch(self, branch_name):
         if self.really_push:
-            subprocess.run(['git', 'checkout', '-b', branch_name], check = False)
-            subprocess.run(['git', 'checkout', branch_name], check = True)
-            subprocess.run(['git', 'reset', '--hard', 'origin/master'], check = True)
-
-        return branch_name
+            subprocess.run(['git', 'checkout', '--force', '-B', branch_name, 'origin/master'], check = True)
 
     def push_git_branch(self, file_path, sdk_version, latest_sdk_release, branch_name):
         commit_message = '[Auto] update {0} from {1} to {2}'.format(file_path, str(sdk_version), latest_sdk_release['sdk']['version'])
 
-        if self.really_push:
-            subprocess.run(['git', 'add', file_path], check = True)
-            subprocess.run(['git', 'add', 'README.md'], check = True)
-            subprocess.run(['git', 'commit', '-m', commit_message], check = True)
-            subprocess.run(['git', 'push', 'origin', '--force', branch_name], check = True)
-            subprocess.run(['gh', 'pr', 'create', '--base', 'master', '--head', branch_name, '--title', commit_message, '--body', ''], check = True)
+        if not self.really_push:
+            return None
+
+        subprocess.run(['git', 'add', file_path], check = True)
+        subprocess.run(['git', 'add', 'README.md'], check = True)
+        subprocess.run(['git', 'commit', '-m', commit_message], check = True)
+        subprocess.run(['git', 'push', 'origin', '--force', branch_name], check = True)
+        output = subprocess.run(
+            ['gh', 'pr', 'create', '--base', 'master', '--head', branch_name, '--title', commit_message, '--body', ''],
+            capture_output = True,
+            text = True,
+            check = True)
+        pull_request_url = output.stdout.strip()
+        Logger.log('created pull request', pull_request_url)
+        return pull_request_url
+
+    def close_superseded_pull_requests(self, file_path, branch_name, pull_request_url):
+        prefix = self._branch_prefix(file_path)
+        for pull_request in self.open_pull_requests:
+            head = pull_request['headRefName']
+            if not head.startswith(prefix) or head == branch_name:
+                continue
+
+            Logger.output("Closing superseded pull request #{0} ({1})".format(pull_request['number'], head))
+            if self.really_push:
+                subprocess.run(
+                    ['gh', 'pr', 'close', str(pull_request['number']), '--delete-branch',
+                     '--comment', 'Superseded by {0}'.format(pull_request_url)],
+                    check = True)
+
+
+def update_cask(file_path, sdk_version, latest_sdk_release, is_arm_supported, cask_service, git_service):
+    branch_name = git_service.branch_name(file_path, latest_sdk_release)
+    if git_service.has_open_pull_request(branch_name):
+        Logger.output("An open pull request for branch[{0}] already exists. Skipping".format(branch_name))
+        return
+
+    git_service.prepare_git_branch(branch_name)
+
+    if is_arm_supported:
+        is_cask_updated = cask_service.update_intel_arm_cask(file_path, latest_sdk_release)
+    else:
+        is_cask_updated = cask_service.update_intel_only_cask(file_path, latest_sdk_release)
+
+    if not is_cask_updated:
+        return
+
+    cask_service.update_read_me(file_path, sdk_version, latest_sdk_release)
+    pull_request_url = git_service.push_git_branch(file_path, sdk_version, latest_sdk_release, branch_name)
+    git_service.close_superseded_pull_requests(file_path, branch_name, pull_request_url)
 
 
 class PreviewUpdater:
@@ -387,42 +447,42 @@ class PreviewUpdater:
         self.cask_service = CaskService(self.version_pattern)
 
     def run(self):
-        for file_path in glob.glob('Casks/*-preview.rb'):
+        failed_casks = []
+        for file_path in sorted(glob.glob('Casks/*-preview.rb')):
             if self.cask_service.cask_is_meta(file_path):
                 continue
 
-            Logger.output("------------------------------------")
-            Logger.output("{0}: Checking for updates  ...".format(file_path))
+            try:
+                self._run_cask(file_path)
+            except Exception as e:
+                Logger.output("{0}: Failed to update: {1!r}".format(file_path, e))
+                failed_casks.append(file_path)
 
-            (sdk_version, runtime_version) = self._find_preview_versions(file_path)
-            Logger.log('sdk_version', sdk_version)
-            Logger.log('runtime_version', runtime_version)
+        return failed_casks
 
-            is_arm_supported = self.cask_service.cask_supports_arm(file_path)
-            Logger.log('is_arm_supported', is_arm_supported)
+    def _run_cask(self, file_path):
+        Logger.output("------------------------------------")
+        Logger.output("{0}: Checking for updates  ...".format(file_path))
 
-            releases_json = self.cask_service.download_release_json(sdk_version)
-            (latest_sdk_release, latest_sdk_release_version) = self._find_latest_sdk_preview_release(sdk_version, releases_json)
+        (sdk_version, runtime_version) = self._find_preview_versions(file_path)
+        Logger.log('sdk_version', sdk_version)
+        Logger.log('runtime_version', runtime_version)
 
-            if latest_sdk_release is None:
-                Logger.output("No latest version found for {0}. Skipping.".format(file_path))
-                continue
+        is_arm_supported = self.cask_service.cask_supports_arm(file_path)
+        Logger.log('is_arm_supported', is_arm_supported)
 
-            if latest_sdk_release_version <= sdk_version:
-                Logger.output("Latest version[{0}] is not greater than current version[{1}]. Skipping".format(latest_sdk_release_version, sdk_version))
-                continue
+        releases_json = self.cask_service.download_release_json(sdk_version)
+        (latest_sdk_release, latest_sdk_release_version) = self._find_latest_sdk_preview_release(sdk_version, releases_json)
 
-            git_branch_name = self.git_service.prepare_git_branch(file_path, latest_sdk_release)
+        if latest_sdk_release is None:
+            Logger.output("No latest version found for {0}. Skipping.".format(file_path))
+            return
 
-            is_cask_updated = False
-            if is_arm_supported:
-                is_cask_updated = self.cask_service.update_intel_arm_cask(file_path, latest_sdk_release)
-            else:
-                is_cask_updated = self.cask_service.update_intel_only_cask(file_path, latest_sdk_release)  
+        if latest_sdk_release_version <= sdk_version:
+            Logger.output("Latest version[{0}] is not greater than current version[{1}]. Skipping".format(latest_sdk_release_version, sdk_version))
+            return
 
-            if is_cask_updated:
-                self.cask_service.update_read_me(file_path, sdk_version, latest_sdk_release)
-                self.git_service.push_git_branch(file_path, sdk_version, latest_sdk_release, git_branch_name)
+        update_cask(file_path, sdk_version, latest_sdk_release, is_arm_supported, self.cask_service, self.git_service)
 
     def _find_preview_versions(self, file_path):
         with open(file_path, 'r') as file:
@@ -476,44 +536,44 @@ class Updater:
         self.cask_service = CaskService(self.version_pattern)
 
     def run(self):
-        for file_path in glob.glob('Casks/*.rb'):
+        failed_casks = []
+        for file_path in sorted(glob.glob('Casks/*.rb')):
             if 'preview' in file_path:
                 continue
             if self.cask_service.cask_is_meta(file_path):
                 continue
 
-            Logger.output("------------------------------------")
-            Logger.output("{0}: Checking for updates  ...".format(file_path))
+            try:
+                self._run_cask(file_path)
+            except Exception as e:
+                Logger.output("{0}: Failed to update: {1!r}".format(file_path, e))
+                failed_casks.append(file_path)
 
-            (sdk_version, runtime_version) = self._find_versions(file_path)
-            Logger.log('sdk_version', sdk_version)
-            Logger.log('runtime_version', runtime_version)
+        return failed_casks
 
-            is_arm_supported = self.cask_service.cask_supports_arm(file_path)
-            Logger.log('is_arm_supported', is_arm_supported)
+    def _run_cask(self, file_path):
+        Logger.output("------------------------------------")
+        Logger.output("{0}: Checking for updates  ...".format(file_path))
 
-            releases_json = self.cask_service.download_release_json(sdk_version)
-            (latest_sdk_release, latest_sdk_release_version) = self._find_latest_sdk_release(sdk_version, releases_json)
+        (sdk_version, runtime_version) = self._find_versions(file_path)
+        Logger.log('sdk_version', sdk_version)
+        Logger.log('runtime_version', runtime_version)
 
-            if latest_sdk_release is None:
-                Logger.output("No latest version found for {0}. Skipping.".format(file_path))
-                continue
+        is_arm_supported = self.cask_service.cask_supports_arm(file_path)
+        Logger.log('is_arm_supported', is_arm_supported)
 
-            if latest_sdk_release_version <= sdk_version:
-                Logger.output("Latest version[{0}] is not greater than current version[{1}]. Skipping".format(latest_sdk_release_version, sdk_version))
-                continue
+        releases_json = self.cask_service.download_release_json(sdk_version)
+        (latest_sdk_release, latest_sdk_release_version) = self._find_latest_sdk_release(sdk_version, releases_json)
 
-            git_branch_name = self.git_service.prepare_git_branch(file_path, latest_sdk_release)
+        if latest_sdk_release is None:
+            Logger.output("No latest version found for {0}. Skipping.".format(file_path))
+            return
 
-            is_cask_updated = False
-            if is_arm_supported:
-                is_cask_updated = self.cask_service.update_intel_arm_cask(file_path, latest_sdk_release)
-            else:
-                is_cask_updated = self.cask_service.update_intel_only_cask(file_path, latest_sdk_release)  
+        if latest_sdk_release_version <= sdk_version:
+            Logger.output("Latest version[{0}] is not greater than current version[{1}]. Skipping".format(latest_sdk_release_version, sdk_version))
+            return
 
-            if is_cask_updated:
-                self.cask_service.update_read_me(file_path, sdk_version, latest_sdk_release)
-                self.git_service.push_git_branch(file_path, sdk_version, latest_sdk_release, git_branch_name)
+        update_cask(file_path, sdk_version, latest_sdk_release, is_arm_supported, self.cask_service, self.git_service)
 
     @staticmethod
     def _find_versions(file_path):
@@ -568,5 +628,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     git_service = GitService(args.really_push)
 
-    Updater(git_service).run()
-    PreviewUpdater(git_service).run()
+    failed_casks = Updater(git_service).run() + PreviewUpdater(git_service).run()
+
+    if failed_casks:
+        Logger.output("------------------------------------")
+        Logger.output("Failed to update these casks:")
+        for file_path in failed_casks:
+            Logger.output(" - {0}".format(file_path))
+        sys.exit(1)
