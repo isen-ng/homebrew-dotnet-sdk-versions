@@ -1,0 +1,44 @@
+name: auto-readme-updater
+
+on:
+  schedule:
+    # 02:17 UTC (10:17 GMT+8) daily, 30 minutes after the last auto-committer run merged the cask and meta cask updates.
+    # Order: auto-updater 22:17 -> auto-committer 23:47 -> auto-meta-updater 00:17 -> auto-committer 01:47
+    #        -> auto-readme-updater 02:17 -> auto-committer 03:47
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # Push with the PAT, not GITHUB_TOKEN: pushes made with GITHUB_TOKEN don't trigger CI on the PR.
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.UPDATER_PUSH_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Set git username and email, so we can commit and push
+        run: |
+          git config --global user.email "3904043+isen-ng@users.noreply.github.com"
+          git config --global user.name "Isen Ng"
+
+      - name: Run auto_readme_updater.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.UPDATER_PUSH_TOKEN }}
+        run: ./auto_readme_updater.py --really_commit --really_push

@@ -226,12 +226,17 @@ brew style Casks/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}.rb
 brew audit --cask dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}
 ```
 
-### 7. Open the PR
+### 7. Add a README row
+
+Add a row for the new cask to the matching table in `README.md` (versions or preview), with its arch and
+remarks. `auto_readme_updater.py` keeps the version cell up to date afterwards, but it never adds rows.
+
+### 8. Open the PR
 
 **If you are the repo owner** (pushing directly to origin):
 ```bash
 git checkout -b new-cask/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}
-git add Casks/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}.rb
+git add Casks/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}.rb README.md
 git commit -m "Add support for dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}"
 git push origin new-cask/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}
 ```
@@ -239,7 +244,7 @@ git push origin new-cask/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}
 **If you are an external contributor** (pushing to your fork):
 ```bash
 git checkout -b new-cask/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}
-git add Casks/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}.rb
+git add Casks/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}.rb README.md
 git commit -m "Add support for dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}"
 git push fork new-cask/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}
 ```

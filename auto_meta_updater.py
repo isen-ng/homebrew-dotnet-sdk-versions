@@ -170,20 +170,6 @@ class DependsOnCaskParser:
             is_arm_supported)
 
 
-class ReadMeUpdater:
-    def update(self, meta_cask: MetaCask, depends_on_cask: DependsOnCask):
-        file_path = 'README.md'
-
-        with open(file_path, 'r') as file:
-            content = file.read()
-
-        pattern = re.compile(rf'(\|\s*`{re.escape(meta_cask.meta_cask_name)}`\s*\|\s*)[0-9.]+')
-        content = pattern.sub(lambda match: match.group(1) + depends_on_cask.sdk_version, content)
-
-        with open(file_path, 'w') as file:
-            file.write(content)
-
-
 class GitService:
     def push(self, really_commit, really_push):
         ## check if there's anything to commit, otherwise just quit
@@ -227,13 +213,11 @@ class MetaUpdater:
     def __init__(self, cask_directory: str, 
         meta_cask_generator: MetaCaskGenerator, 
         depends_on_cask_parser: DependsOnCaskParser, 
-        template_service: TemplateService, 
-        read_me_updater: ReadMeUpdater):
+        template_service: TemplateService):
         self.cask_directory = cask_directory
         self.meta_cask_generator = meta_cask_generator
         self.depends_on_cask_parser = depends_on_cask_parser
         self.template_service = template_service
-        self.read_me_updater = read_me_updater
 
     def run(self):
         meta_casks = self.meta_cask_generator.generate_meta_casks()
@@ -249,7 +233,6 @@ class MetaUpdater:
 
             meta_file_content = self.template_service.generate(meta_cask, depends_on_cask)
             self.write_meta_cask(meta_cask, meta_file_content)
-            self.read_me_updater.update(meta_cask, depends_on_cask)
 
     def write_meta_cask(self, meta_cask: MetaCask, content: str):
         target_path = "{}.rb".format(os.path.join(self.cask_directory, meta_cask.meta_cask_name))
@@ -269,9 +252,8 @@ if __name__ == '__main__':
     meta_cask_generator = MetaCaskGenerator(cask_directory)
     depends_on_cask_parser = DependsOnCaskParser(cask_directory)
     template_service = TemplateService()
-    read_me_updater = ReadMeUpdater()
 
-    meta_updater = MetaUpdater(cask_directory, meta_cask_generator, depends_on_cask_parser, template_service, read_me_updater)
+    meta_updater = MetaUpdater(cask_directory, meta_cask_generator, depends_on_cask_parser, template_service)
     meta_updater.run()
 
     git_service = GitService()
