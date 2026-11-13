@@ -1,7 +1,7 @@
 cask "dotnet-sdk9" do
   arch arm: "arm64", intel: "x64"
 
-  version "9.0.320,9.0.22"
+  version "9.0.321,9.0.23"
   sha256 :no_check
 
   url "https://github.com/isen-ng/homebrew-dotnet-sdk-versions/raw/master/META.md"
