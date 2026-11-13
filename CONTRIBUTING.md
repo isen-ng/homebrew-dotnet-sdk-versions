@@ -11,28 +11,35 @@ If CI is broken, there is a good chance that we can find updates from the offici
 
 ## Automatic updates
 
-Three scheduled Github Actions workflows keep the casks up to date. They run daily in this order
-(times in UTC):
+Four scheduled Github Actions workflows keep the casks and `README.md` up to date. They run daily in
+this order (times in UTC):
 
-| Time  | Workflow            | Script                 |
-|-------|---------------------|------------------------|
-| 22:17 | `auto-updater`      | `auto_updater.py`      |
-| 23:47 | `auto-committer`    | `auto_committer.py`    |
-| 00:17 | `auto-meta-updater` | `auto_meta_updater.py` |
-| 01:47 | `auto-committer`    | `auto_committer.py`    |
+| Time  | Workflow              | Script                   |
+|-------|-----------------------|--------------------------|
+| 22:17 | `auto-updater`        | `auto_updater.py`        |
+| 23:47 | `auto-committer`      | `auto_committer.py`      |
+| 00:17 | `auto-meta-updater`   | `auto_meta_updater.py`   |
+| 01:47 | `auto-committer`      | `auto_committer.py`      |
+| 02:17 | `auto-readme-updater` | `auto_readme_updater.py` |
+| 03:47 | `auto-committer`      | `auto_committer.py`      |
 
 `auto_updater.py` enumerates over each cask, searches through the releases in their respective
 `releases.json` and authors a pull request if there is a newer version released. A cask that already
 has an open pull request for that version is skipped. When a newer version supersedes an open pull
 request, the old pull request is closed. If one cask fails, the others are still processed and the
 run fails at the end so the author is notified. Each `releases.json` is downloaded once per run from
-`https://builds.dotnet.microsoft.com/dotnet/release-metadata/<major>.<minor>/releases.json`. The cask's row
-in `README.md` is set to the new version, whatever version it showed before.
+`https://builds.dotnet.microsoft.com/dotnet/release-metadata/<major>.<minor>/releases.json`. Update pull
+requests only change their cask file, so they never conflict with each other.
 
 All the releases and their notes are published [here](https://github.com/dotnet/core/tree/main/release-notes).
 
 `auto_meta_updater.py` points each meta cask (e.g. `dotnet-sdk8`) at its newest feature band cask
 and opens or refreshes the `update-meta-casks` pull request.
+
+`auto_readme_updater.py` sets the .NET SDK version of every row in `README.md` (meta, versions and
+preview tables) to the version in its cask, and opens or refreshes the `update-readme` pull request. It is
+the only script that edits `README.md`, which keeps the version tables free of merge conflicts. A cask
+without a README row is reported in the log; add its row by hand.
 
 ## Automatic commits
 

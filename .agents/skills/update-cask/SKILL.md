@@ -50,7 +50,7 @@ This will:
 2. For each cask, parse the current version, download `releases.json`
 3. Find the highest patch in the same feature band
 4. If newer: download the `.pkg`, verify SHA-512, compute SHA-256
-5. Rewrite the cask file and `README.md`
+5. Rewrite the cask file (`README.md` is updated later by `auto_readme_updater.py`)
 6. Create a git branch `update-{file_path}-to-{new_version}` and open a PR
 
 For **preview** casks only:
@@ -147,17 +147,11 @@ url "https://download.visualstudio.microsoft.com/download/pr/<new_guid>/dotnet-s
 
 **Important**: The URL must still contain `#{version.csv.first}` interpolation — replace only the GUID portion, not the version substring.
 
-### Step 5: Update README.md
+### Step 5: Leave README.md alone
 
-In `README.md`, find the version table row for this cask and update the SDK version number. Example:
-
-```
-| `dotnet-sdk10-0-200` | 10.0.203 | x64 & arm64 |  |
-```
-→
-```
-| `dotnet-sdk10-0-200` | 10.0.204 | x64 & arm64 |  |
-```
+Do not edit the version in `README.md`. The scheduled `auto_readme_updater.py` sets every README row to the
+version in its cask after the cask PR is merged. Editing README rows in cask PRs is what caused merge conflicts
+between update PRs.
 
 ### Step 6: Validate locally
 
@@ -171,7 +165,7 @@ brew audit --cask dotnet-sdk10-0-200
 
 ```bash
 git checkout -b update-Casks/dotnet-sdk10-0-200.rb-to-10.0.204
-git add Casks/dotnet-sdk10-0-200.rb README.md
+git add Casks/dotnet-sdk10-0-200.rb
 git commit -m "[Auto] update Casks/dotnet-sdk10-0-200.rb from 10.0.203 to 10.0.204"
 git push origin update-Casks/dotnet-sdk10-0-200.rb-to-10.0.204
 gh pr create --base master \
@@ -191,7 +185,8 @@ Meta casks (`dotnet-sdk8.rb` etc.) are auto-generated from the latest versioned 
 ./auto_meta_updater.py --really_commit --really_push
 ```
 
-This regenerates `Casks/dotnet-sdk{MAJOR}.rb` and updates the meta version table in `README.md`.
+This regenerates `Casks/dotnet-sdk{MAJOR}.rb`. To refresh `README.md` without waiting for the schedule, run
+`./auto_readme_updater.py` (dry run, edits the file only) or `./auto_readme_updater.py --really_commit --really_push`.
 
 ---
 
@@ -205,6 +200,6 @@ This regenerates `Casks/dotnet-sdk{MAJOR}.rb` and updates the meta version table
 - **`zap`** must include both `pkgutil:` array and `trash: ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"]`.
 - **Branch naming convention**: `update-{file_path}-to-{new_version}` (matches what auto_updater uses, important for auto_committer to pick up).
 - **Commit message convention**: `[Auto] update {file_path} from {old_version} to {new_version}` — auto_committer.py uses this pattern to find and merge PRs.
-- **README must be updated** in the same commit as the cask file — auto_committer expects both in one commit.
+- **Never edit README versions in a cask PR** — `auto_readme_updater.py` owns the README version cells.
 - **Meta casks are never manually updated** — always use `auto_meta_updater.py`.
 - **Do not cross-update multiple casks in one PR** — each cask gets its own branch and PR so CI can test them independently.

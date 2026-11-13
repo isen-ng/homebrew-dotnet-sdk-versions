@@ -298,32 +298,6 @@ class CaskService:
         return True
 
     @staticmethod
-    def update_read_me(file_path, latest_sdk_release):
-        # converts from "Casks/dotnet-sdk10-0-200.rb" to "dotnet-sdk10-0-200"
-        cask_name = file_path.replace('Casks/', '').replace('.rb', '')
-        file_path = 'README.md'
-
-        with open(file_path, 'r') as file:
-            content = file.read()
-
-        # Replace whatever version the row currently shows, so a README that drifted from the cask heals itself.
-        row_pattern = re.compile(rf'^(\|\s*`{re.escape(cask_name)}`\s*\|)([^|\n]*)(\|)', re.MULTILINE)
-        new_sdk_version = latest_sdk_release['sdk']['version']
-
-        def replace_cell(match):
-            old_cell = match.group(2)
-            # keep the column width when the new version fits, so the table stays aligned
-            new_cell = ' {0} '.format(new_sdk_version).ljust(len(old_cell))
-            return match.group(1) + new_cell + match.group(3)
-
-        content, count = row_pattern.subn(replace_cell, content)
-        if count == 0:
-            Logger.output("Could not find README row for {0}".format(cask_name))
-
-        with open(file_path, 'w') as file:
-            file.write(content)
-
-    @staticmethod
     def _find_download_and_verify_sdk_url(sdk_release, arch):
         sdk_url, sdk_sha_512 = CaskService._find_sdk_url(sdk_release, arch)
         if sdk_url is None:
@@ -409,7 +383,6 @@ class GitService:
             return None
 
         subprocess.run(['git', 'add', file_path], check = True)
-        subprocess.run(['git', 'add', 'README.md'], check = True)
         subprocess.run(['git', 'commit', '-m', commit_message], check = True)
         subprocess.run(['git', 'push', 'origin', '--force', branch_name], check = True)
         output = subprocess.run(
@@ -452,7 +425,6 @@ def update_cask(file_path, sdk_version, latest_sdk_release, is_arm_supported, ca
     if not is_cask_updated:
         return
 
-    cask_service.update_read_me(file_path, latest_sdk_release)
     pull_request_url = git_service.push_git_branch(file_path, sdk_version, latest_sdk_release, branch_name)
     git_service.close_superseded_pull_requests(file_path, branch_name, pull_request_url)
 

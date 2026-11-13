@@ -4,6 +4,7 @@ on:
   schedule:
     # 00:17 UTC (08:17 GMT+8) daily, 30 minutes after the first auto-committer run merged the cask updates.
     # Order: auto-updater 22:17 -> auto-committer 23:47 -> auto-meta-updater 00:17 -> auto-committer 01:47
+    #        -> auto-readme-updater 02:17 -> auto-committer 03:47
     - cron: "17 0 * * *"
   workflow_dispatch:
 
