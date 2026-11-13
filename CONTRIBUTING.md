@@ -17,11 +17,14 @@ this order (times in UTC):
 | Time  | Workflow              | Script                   |
 |-------|-----------------------|--------------------------|
 | 22:17 | `auto-updater`        | `auto_updater.py`        |
-| 23:47 | `auto-committer`      | `auto_committer.py`      |
 | 00:17 | `auto-meta-updater`   | `auto_meta_updater.py`   |
-| 01:47 | `auto-committer`      | `auto_committer.py`      |
 | 02:17 | `auto-readme-updater` | `auto_readme_updater.py` |
-| 03:47 | `auto-committer`      | `auto_committer.py`      |
+| 03:47 | `auto-pr-checker`     | `auto_pr_checker.py`     |
+
+Every pull request the updaters open has GitHub auto-merge enabled (squash). GitHub merges it as soon as
+the required `conclusion` check passes, so each updater sees the previous one's changes on `master`.
+This relies on these repository settings: "Allow auto-merge" enabled, and branch protection on `master`
+requiring the `conclusion` check with no required approvals.
 
 `auto_updater.py` enumerates over each cask, searches through the releases in their respective
 `releases.json` and authors a pull request if there is a newer version released. A cask that already
@@ -41,12 +44,11 @@ preview tables) to the version in its cask, and opens or refreshes the `update-r
 the only script that edits `README.md`, which keeps the version tables free of merge conflicts. A cask
 without a README row is reported in the log; add its row by hand.
 
-## Automatic commits
+## Pull request checks
 
-`auto_committer.py` combs through the open `[Auto]` pull requests, checks their status, and if
-they are mergeable and the `conclusion` check passed, (squash and) merges them. Pull requests with
-conflicts, failed checks or merge errors require manual intervention from the author. In this case,
-the author will be notified via a failed run.
+`auto_pr_checker.py` does not merge anything. It looks at the open `[Auto]` pull requests and fails its
+run, which notifies the author, when any of them has failed checks, has conflicts, or passed its checks
+but was not merged (for example because auto-merge is not enabled on it). These need manual intervention.
 
 ## Adding a new cask
 

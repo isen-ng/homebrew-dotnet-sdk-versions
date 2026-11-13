@@ -172,6 +172,8 @@ gh pr create --base master \
   --head update-Casks/dotnet-sdk10-0-200.rb-to-10.0.204 \
   --title "[Auto] update Casks/dotnet-sdk10-0-200.rb from 10.0.203 to 10.0.204" \
   --body ""
+# merge automatically once the required `conclusion` check passes
+gh pr merge update-Casks/dotnet-sdk10-0-200.rb-to-10.0.204 --auto --squash
 ```
 
 ---
@@ -198,8 +200,8 @@ This regenerates `Casks/dotnet-sdk{MAJOR}.rb`. To refresh `README.md` without wa
 - **URL interpolation**: The URL in the cask must contain `#{version.csv.first}` interpolation.
 - **`uninstall pkgutil:`** takes a single string, not an array.
 - **`zap`** must include both `pkgutil:` array and `trash: ["~/.dotnet", "~/.nuget", "/etc/paths.d/dotnet", "/etc/paths.d/dotnet-cli-tools"]`.
-- **Branch naming convention**: `update-{file_path}-to-{new_version}` (matches what auto_updater uses, important for auto_committer to pick up).
-- **Commit message convention**: `[Auto] update {file_path} from {old_version} to {new_version}` — auto_committer.py uses this pattern to find and merge PRs.
+- **Branch naming convention**: `update-{file_path}-to-{new_version}` (matches what auto_updater uses, so a newer automatic update can find and close the PR as superseded).
+- **Commit message convention**: `[Auto] update {file_path} from {old_version} to {new_version}` — auto_pr_checker.py watches PRs with `[Auto]` in the title and alerts when one is stuck.
 - **Never edit README versions in a cask PR** — `auto_readme_updater.py` owns the README version cells.
 - **Meta casks are never manually updated** — always use `auto_meta_updater.py`.
 - **Do not cross-update multiple casks in one PR** — each cask gets its own branch and PR so CI can test them independently.

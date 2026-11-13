@@ -369,8 +369,17 @@ class GitService:
     def _branch_prefix(file_path):
         return "update-{0}-to-".format(file_path)
 
-    def has_open_pull_request(self, branch_name):
-        return any(pr['headRefName'] == branch_name for pr in self.open_pull_requests)
+    def find_open_pull_request(self, branch_name):
+        return next((pr for pr in self.open_pull_requests if pr['headRefName'] == branch_name), None)
+
+    def enable_auto_merge(self, pull_request, required = True):
+        if not self.really_push:
+            return
+
+        # GitHub merges the pull request once the required `conclusion` check passes
+        result = subprocess.run(['gh', 'pr', 'merge', str(pull_request), '--auto', '--squash'], check = required)
+        if result.returncode != 0:
+            Logger.output("Could not enable auto-merge for pull request[{0}]".format(pull_request))
 
     def prepare_git_branch(self, branch_name):
         if self.really_push:
@@ -392,6 +401,7 @@ class GitService:
             check = True)
         pull_request_url = output.stdout.strip()
         Logger.log('created pull request', pull_request_url)
+        self.enable_auto_merge(pull_request_url)
         return pull_request_url
 
     def close_superseded_pull_requests(self, file_path, branch_name, pull_request_url):
@@ -411,8 +421,10 @@ class GitService:
 
 def update_cask(file_path, sdk_version, latest_sdk_release, is_arm_supported, cask_service, git_service):
     branch_name = git_service.branch_name(file_path, latest_sdk_release)
-    if git_service.has_open_pull_request(branch_name):
+    open_pull_request = git_service.find_open_pull_request(branch_name)
+    if open_pull_request is not None:
         Logger.output("An open pull request for branch[{0}] already exists. Skipping".format(branch_name))
+        git_service.enable_auto_merge(open_pull_request['number'], required = False)
         return
 
     git_service.prepare_git_branch(branch_name)

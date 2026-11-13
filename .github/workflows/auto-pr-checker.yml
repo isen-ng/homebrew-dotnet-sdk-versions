@@ -1,0 +1,37 @@
+name: auto-pr-checker
+
+on:
+  schedule:
+    # 03:47 UTC (11:47 GMT+8) daily, after all automatic pull requests of the day had time to pass CI and auto-merge.
+    # Order: auto-updater 22:17 -> auto-meta-updater 00:17 -> auto-readme-updater 02:17 -> auto-pr-checker 03:47
+    - cron: "47 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      # Fails the run, which notifies the author, when an automatic pull request needs manual attention
+      - name: Run auto_pr_checker.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./auto_pr_checker.py

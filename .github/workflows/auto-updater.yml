@@ -3,8 +3,8 @@ name: auto-updater
 on:
   schedule:
     # 22:17 UTC (06:17 GMT+8) daily. Off the hour because GitHub delays or drops top-of-hour schedules.
-    # Order: auto-updater 22:17 -> auto-committer 23:47 -> auto-meta-updater 00:17 -> auto-committer 01:47
-    #        -> auto-readme-updater 02:17 -> auto-committer 03:47
+    # Order: auto-updater 22:17 -> auto-meta-updater 00:17 -> auto-readme-updater 02:17 -> auto-pr-checker 03:47
+    # Each updater's pull requests auto-merge once CI passes, well before the next updater runs.
     - cron: "17 22 * * *"
   workflow_dispatch:
 

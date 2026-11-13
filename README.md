@@ -2,7 +2,7 @@
 
 [![Continuous-integration](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/ci.yml/badge.svg)](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/ci.yml)
 [![Auto-updater](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/auto-updater.yml/badge.svg)](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/auto-updater.yml)
-[![Auto-committer](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/auto-commit.yml/badge.svg)](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/auto-commit.yml)
+[![Auto-PR-checker](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/auto-pr-checker.yml/badge.svg)](https://github.com/isen-ng/homebrew-dotnet-sdk-versions/actions/workflows/auto-pr-checker.yml)
 
 This tap contains different versions that you can install in parallel to the latest version provided by the
 [official cask](https://github.com/Homebrew/homebrew-cask/blob/master/Casks/d/dotnet-sdk.rb).
