@@ -25,7 +25,9 @@ Three scheduled Github Actions workflows keep the casks up to date. They run dai
 `releases.json` and authors a pull request if there is a newer version released. A cask that already
 has an open pull request for that version is skipped. When a newer version supersedes an open pull
 request, the old pull request is closed. If one cask fails, the others are still processed and the
-run fails at the end so the author is notified.
+run fails at the end so the author is notified. Each `releases.json` is downloaded once per run from
+`https://builds.dotnet.microsoft.com/dotnet/release-metadata/<major>.<minor>/releases.json`. The cask's row
+in `README.md` is set to the new version, whatever version it showed before.
 
 All the releases and their notes are published [here](https://github.com/dotnet/core/tree/main/release-notes).
 

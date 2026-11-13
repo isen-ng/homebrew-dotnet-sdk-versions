@@ -213,7 +213,7 @@ Create `Casks/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}.rb` with:
 ```
 
 This will:
-- Download `releases.json` for the major.minor band from `github.com/dotnet/core`
+- Download `releases.json` for the major.minor band from `builds.dotnet.microsoft.com/dotnet/release-metadata`
 - Find the latest patch release for the feature band
 - Download the `.pkg`, verify SHA-512, compute SHA-256
 - Rewrite the cask file with correct version, sha256, and url
