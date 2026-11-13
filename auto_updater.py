@@ -197,6 +197,11 @@ class CaskService:
     url_x64_pattern = re.compile(r'url_x64 = "([^\s]+)"')
     url_arm64_pattern = re.compile(r'url_arm64 = "([^\s]+)"')
 
+    releases_json_url = 'https://builds.dotnet.microsoft.com/dotnet/release-metadata/{}/releases.json'
+
+    # Shared across updaters so each channel's releases.json is downloaded at most once per run.
+    _releases_json_cache = {}
+
     def __init__(self, version_pattern):
         self.version_pattern = version_pattern
 
@@ -213,9 +218,14 @@ class CaskService:
     def download_release_json(sdk_version):
         sdk_major_minor_version = sdk_version.getMajorMinor()
 
-        url = 'https://raw.githubusercontent.com/dotnet/core/master/release-notes/{}/releases.json'.format(sdk_major_minor_version)
-        with urllib.request.urlopen(url, timeout = 60) as f:
-            return json.loads(f.read().decode('utf-8'))
+        cache = CaskService._releases_json_cache
+        if sdk_major_minor_version not in cache:
+            url = CaskService.releases_json_url.format(sdk_major_minor_version)
+            Logger.log('downloading', url)
+            with urllib.request.urlopen(url, timeout = 60) as f:
+                cache[sdk_major_minor_version] = json.loads(f.read().decode('utf-8'))
+
+        return cache[sdk_major_minor_version]
 
     @staticmethod
     def cask_is_meta(file_path):
@@ -288,7 +298,7 @@ class CaskService:
         return True
 
     @staticmethod
-    def update_read_me(file_path, sdk_release, latest_sdk_release):
+    def update_read_me(file_path, latest_sdk_release):
         # converts from "Casks/dotnet-sdk10-0-200.rb" to "dotnet-sdk10-0-200"
         cask_name = file_path.replace('Casks/', '').replace('.rb', '')
         file_path = 'README.md'
@@ -296,10 +306,19 @@ class CaskService:
         with open(file_path, 'r') as file:
             content = file.read()
 
-        old_line_pattern = re.compile(rf'(\|\s*`{re.escape(cask_name)}`\s*\|\s*){re.escape(str(sdk_release))}(\s*\|)')
-
+        # Replace whatever version the row currently shows, so a README that drifted from the cask heals itself.
+        row_pattern = re.compile(rf'^(\|\s*`{re.escape(cask_name)}`\s*\|)([^|\n]*)(\|)', re.MULTILINE)
         new_sdk_version = latest_sdk_release['sdk']['version']
-        content = old_line_pattern.sub(rf'\g<1>{new_sdk_version}\g<2>', content)
+
+        def replace_cell(match):
+            old_cell = match.group(2)
+            # keep the column width when the new version fits, so the table stays aligned
+            new_cell = ' {0} '.format(new_sdk_version).ljust(len(old_cell))
+            return match.group(1) + new_cell + match.group(3)
+
+        content, count = row_pattern.subn(replace_cell, content)
+        if count == 0:
+            Logger.output("Could not find README row for {0}".format(cask_name))
 
         with open(file_path, 'w') as file:
             file.write(content)
@@ -433,7 +452,7 @@ def update_cask(file_path, sdk_version, latest_sdk_release, is_arm_supported, ca
     if not is_cask_updated:
         return
 
-    cask_service.update_read_me(file_path, sdk_version, latest_sdk_release)
+    cask_service.update_read_me(file_path, latest_sdk_release)
     pull_request_url = git_service.push_git_branch(file_path, sdk_version, latest_sdk_release, branch_name)
     git_service.close_superseded_pull_requests(file_path, branch_name, pull_request_url)
 

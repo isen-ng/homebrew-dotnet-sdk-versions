@@ -18,7 +18,7 @@ Use this skill whenever a user asks to:
 
 - **Repo**: `https://github.com/isen-ng/homebrew-dotnet-sdk-versions`
 - **Casks**: `Casks/dotnet-sdk{MAJOR}-{MINOR}-{FEATURE}.rb` (versioned), `Casks/dotnet-sdk{MAJOR}.rb` (meta)
-- **Release info source**: `https://raw.githubusercontent.com/dotnet/core/master/release-notes/{MAJOR}.{MINOR}/releases.json`
+- **Release info source**: `https://builds.dotnet.microsoft.com/dotnet/release-metadata/{MAJOR}.{MINOR}/releases.json`
 - **auto_updater.py** automates this weekly; use this skill for manual or out-of-band updates
 
 ---
@@ -68,7 +68,7 @@ Use this when the auto-updater is broken, the version has jumped a feature band,
 ### Step 1: Find the correct release data
 
 ```bash
-curl -s https://raw.githubusercontent.com/dotnet/core/master/release-notes/10.0/releases.json \
+curl -s https://builds.dotnet.microsoft.com/dotnet/release-metadata/10.0/releases.json \
   | python3 -c "
 import json,sys
 data = json.load(sys.stdin)
