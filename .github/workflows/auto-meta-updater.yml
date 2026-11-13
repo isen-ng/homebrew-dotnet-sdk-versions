@@ -2,19 +2,35 @@ name: auto-meta-updater
 
 on:
   schedule:
-    # run at 1900UTC (3am +8GMT) everyday, 2 hours after regular updater, 1 hour after first commiter
-    - cron: "0 19 * * *"
+    # 00:17 UTC (08:17 GMT+8) daily, 30 minutes after the first auto-committer run merged the cask updates.
+    # Order: auto-updater 22:17 -> auto-committer 23:47 -> auto-meta-updater 00:17 -> auto-committer 01:47
+    - cron: "17 0 * * *"
   workflow_dispatch:
-  
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 
 jobs:
   update:
 
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
+      # Push with the PAT, not GITHUB_TOKEN: pushes made with GITHUB_TOKEN don't trigger CI on the PR.
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.UPDATER_PUSH_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
 
       - name: Set git username and email, so we can commit and push
         run: |
@@ -23,6 +39,5 @@ jobs:
 
       - name: Run auto_meta_updater.py
         env:
-          GITHUB_USER: ${{ secrets.GITHUB_USER }}
           GITHUB_TOKEN: ${{ secrets.UPDATER_PUSH_TOKEN }}
         run: ./auto_meta_updater.py --really_commit --really_push
