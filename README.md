@@ -24,7 +24,7 @@ dotnet --list-sdks
 | Version       | .NET SDK |
 | ------------- | -------- |
 | `dotnet-sdk11`| 11.0.100 |
-| `dotnet-sdk10`| 10.0.403 |
+| `dotnet-sdk10`| 10.0.404 |
 | `dotnet-sdk9` | 9.0.321  |
 | `dotnet-sdk8` | 8.0.428  |
 | `dotnet-sdk7` | 7.0.410  |
@@ -50,7 +50,7 @@ dotnet --list-sdks
 | `dotnet-sdk9-0-200` | 9.0.205  | x64 & arm64 |                                          |
 | `dotnet-sdk9-0-100` | 9.0.124  | x64 & arm64 |                                          |
 | `dotnet-sdk8-0-400` | 8.0.428  | x64 & arm64 |                                          |
-| `dotnet-sdk8-0-300` | 8.0.303  | x64 & arm64 |                                          |
+| `dotnet-sdk8-0-300` | 8.0.319  | x64 & arm64 |                                          |
 | `dotnet-sdk8-0-200` | 8.0.206  | x64 & arm64 |                                          |
 | `dotnet-sdk8-0-100` | 8.0.134  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-400` | 7.0.410  | x64 & arm64 |                                          |
@@ -58,7 +58,7 @@ dotnet --list-sdks
 | `dotnet-sdk7-0-200` | 7.0.203  | x64 & arm64 |                                          |
 | `dotnet-sdk7-0-100` | 7.0.120  | x64 & arm64 |                                          |
 | `dotnet-sdk6-0-400` | 6.0.428  | x64 & arm64 |                                          |
-| `dotnet-sdk6-0-300` | 6.0.303  | x64 & arm64 |                                          |
+| `dotnet-sdk6-0-300` | 6.0.321  | x64 & arm64 |                                          |
 | `dotnet-sdk6-0-200` | 6.0.203  | x64 & arm64 |                                          |
 | `dotnet-sdk6-0-100` | 6.0.136  | x64 & arm64 |                                          |
 | `dotnet-sdk5-0-400` | 5.0.408  | x64         | When installed on arm64, use `dotnetx64` |
